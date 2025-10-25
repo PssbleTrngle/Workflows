@@ -1,0 +1,6 @@
+- uses: actions/setup-java@v4
+  with:
+     java-version: {{ javaVersion }}
+     distribution: temurin
+
+- uses: gradle/actions/setup-gradle@v4

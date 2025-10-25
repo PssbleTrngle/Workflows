@@ -1,0 +1,47 @@
+name: Release
+on:
+   release:
+      types: [published]
+
+env:
+   CI: true
+
+jobs:
+   build:
+      runs-on: ubuntu-latest
+      timeout-minutes: 20
+      permissions:
+         contents: read
+         {{#if upload.github}}
+         packages: write
+         {{else}}
+         packages: read
+         {{/if}}
+      steps:
+         - uses: actions/checkout@v4
+           with:
+              lfs: true
+              
+         {{> java }}
+
+
+         - name: Build and upload
+           uses: gradle/gradle-build-action@v2
+           with:
+              arguments: build publish
+           env:
+              {{#if upload.modrinth}}
+              MODRINTH_TOKEN: {{ var 'secrets.MODRINTH_TOKEN' }}
+              {{/if}}
+              {{#if upload.curseforge}}
+              CURSEFORGE_TOKEN: {{ var 'secrets.CURSEFORGE_TOKEN' }}
+              {{/if}}
+              CHANGELOG: {{ var 'github.event.release.body' }}
+              RELEASE_VERSION: {{ var 'github.event.release.tag_name' }}
+              {{#if upload.github}}
+              GITHUB_TOKEN: {{ var 'secrets.GITHUB_TOKEN' }}
+              {{/if}}
+              {{#if upload.nexus}}
+              NEXUS_USER: {{ var 'secrets.NEXUS_USER' }}
+              NEXUS_TOKEN: {{ var 'secrets.NEXUS_TOKEN' }}
+              {{/if}}

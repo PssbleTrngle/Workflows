@@ -1,0 +1,57 @@
+name: Bug Report
+description: File a bug report
+labels: ["bug"]
+{{#if assignee}}
+assignees: ["{{assignee}}"]
+{{/if}}
+
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Also tell us, what did you expect to happen?
+      placeholder: Tell us what you see!
+    validations:
+      required: true
+
+  {{#if (multiple loaders.length)}}
+  - type: dropdown
+    id: loader
+    attributes:
+      label: Loader
+      multiple: false
+      options:
+      {{#each loaders as |loader|}}        
+        - "{{ loader }}"
+      {{/each}}
+    validations:
+      required: true
+  {{/if}}
+
+  - type: input
+    id: version-version
+    attributes:
+      label: Mod Version
+    validations:
+      required: true
+
+  {{#if (multiple versions.length)}}
+  - type: dropdown
+    id: minecraft-version
+    attributes:
+      label: Minecraft Version
+      multiple: false
+      options:
+      {{#each versions as |version|}}        
+        - "{{ version }}"
+      {{/each}}
+    validations:
+      required: true
+  {{/if}}
+
+  - type: input
+    id: logs
+    attributes:
+      label: log output
+      description: Please copy and paste your log output to https://mclo.gs/ or a similar site and paste the link here.

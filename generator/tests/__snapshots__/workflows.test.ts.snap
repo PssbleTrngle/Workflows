@@ -1,0 +1,347 @@
+// Bun Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`minecraft test workflows generates test workflow without sonar: test workflow with push and pull_request 1`] = `
+"# <meta>
+#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+# </meta>
+
+name: Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: "Upload Artifact"
+        default: false
+        required: true
+        type: boolean
+
+  pull_request:
+    types: [opened, synchronize]
+  push:
+    branches: ["[0-9]+.[0-9]+.[0-9x]+"]
+
+env:
+  CI: true
+
+concurrency:
+  group: \${{github.workflow}}-\${{github.ref}}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build
+        run: ./gradlew build check
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: "**/build/libs/*.jar"
+"
+`;
+
+exports[`minecraft test workflows generates test workflow with sonar: test workflow with only pull_request 1`] = `
+"# <meta>
+#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+# </meta>
+
+name: Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: "Upload Artifact"
+        default: false
+        required: true
+        type: boolean
+
+  pull_request:
+    types: [opened, synchronize]
+
+env:
+  CI: true
+
+concurrency:
+  group: \${{github.workflow}}-\${{github.ref}}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build
+        run: ./gradlew build check
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: "**/build/libs/*.jar"
+"
+`;
+
+exports[`minecaft release workflows generates release workflow with curseforge: release workflow with curseforge 1`] = `
+"# <meta>
+#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+# </meta>
+
+name: Release
+on:
+  release:
+    types: [published]
+
+env:
+  CI: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build and upload
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build publish
+        env:
+          CURSEFORGE_TOKEN: \${{secrets.CURSEFORGE_TOKEN}}
+          CHANGELOG: \${{github.event.release.body}}
+          RELEASE_VERSION: \${{github.event.release.tag_name}}
+"
+`;
+
+exports[`minecaft release workflows generates release workflow with modrinth: release workflow with modrinth 1`] = `
+"# <meta>
+#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+# </meta>
+
+name: Release
+on:
+  release:
+    types: [published]
+
+env:
+  CI: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build and upload
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build publish
+        env:
+          MODRINTH_TOKEN: \${{secrets.MODRINTH_TOKEN}}
+          CHANGELOG: \${{github.event.release.body}}
+          RELEASE_VERSION: \${{github.event.release.tag_name}}
+"
+`;
+
+exports[`minecaft release workflows generates release workflow with github: release workflow with github 1`] = `
+"# <meta>
+#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+# </meta>
+
+name: Release
+on:
+  release:
+    types: [published]
+
+env:
+  CI: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build and upload
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build publish
+        env:
+          CHANGELOG: \${{github.event.release.body}}
+          RELEASE_VERSION: \${{github.event.release.tag_name}}
+          GITHUB_TOKEN: \${{secrets.GITHUB_TOKEN}}
+"
+`;
+
+exports[`minecaft release workflows generates release workflow with nexus: release workflow with nexus 1`] = `
+"# <meta>
+#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+# </meta>
+
+name: Release
+on:
+  release:
+    types: [published]
+
+env:
+  CI: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build and upload
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build publish
+        env:
+          CHANGELOG: \${{github.event.release.body}}
+          RELEASE_VERSION: \${{github.event.release.tag_name}}
+          NEXUS_USER: \${{secrets.NEXUS_USER}}
+          NEXUS_TOKEN: \${{secrets.NEXUS_TOKEN}}
+"
+`;
+
+exports[`minecraft test workflows generates sonar workflow: sonar workflow 1`] = `
+"# <meta>
+#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+# </meta>
+
+name: Analyze
+on:
+  push:
+    branches: ["[0-9]+.[0-9]+.[0-9x]+"]
+
+env:
+  CI: true
+
+concurrency:
+  group: \${{github.workflow}}-\${{github.ref}}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: \${{runner.os}}-sonar
+          restore-keys: \${{runner.os}}-sonar
+
+      - name: Build & Analyze
+        run: ./gradlew build check sonar
+        env:
+          SONAR_TOKEN: \${{secrets.SONAR_TOKEN}}
+          SONAR_HOST_URL: \${{secrets.SONAR_HOST_URL}}
+"
+`;

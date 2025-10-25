@@ -1,0 +1,8 @@
+{
+   "name": "@pssbletrngle/github-meta",
+   "private": true,
+   "workspaces": [
+      "generator",
+      "bot"
+   ]
+}

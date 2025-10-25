@@ -1,0 +1,308 @@
+// Bun Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`minecraft bug templates generates bug template without loader and versions: bug template without loader and versions 1`] = `
+"# <meta>
+#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+# </meta>
+
+name: Bug Report
+description: File a bug report
+labels: ["bug"]
+
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Also tell us, what did you expect to happen?
+      placeholder: Tell us what you see!
+    validations:
+      required: true
+
+  - type: input
+    id: version-version
+    attributes:
+      label: Mod Version
+    validations:
+      required: true
+
+  - type: input
+    id: logs
+    attributes:
+      label: log output
+      description: Please copy and paste your log output to https://mclo.gs/ or a similar site and paste the link here.
+"
+`;
+
+exports[`minecraft bug templates generates bug template without loader and single version: bug template without loader and single version 1`] = `
+"# <meta>
+#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+# </meta>
+
+name: Bug Report
+description: File a bug report
+labels: ["bug"]
+
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Also tell us, what did you expect to happen?
+      placeholder: Tell us what you see!
+    validations:
+      required: true
+
+  - type: input
+    id: version-version
+    attributes:
+      label: Mod Version
+    validations:
+      required: true
+
+  - type: input
+    id: logs
+    attributes:
+      label: log output
+      description: Please copy and paste your log output to https://mclo.gs/ or a similar site and paste the link here.
+"
+`;
+
+exports[`minecraft bug templates generates bug template without loader and multiple versions: bug template without loader and multiple versions 1`] = `
+"# <meta>
+#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+# </meta>
+
+name: Bug Report
+description: File a bug report
+labels: ["bug"]
+
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Also tell us, what did you expect to happen?
+      placeholder: Tell us what you see!
+    validations:
+      required: true
+
+  - type: input
+    id: version-version
+    attributes:
+      label: Mod Version
+    validations:
+      required: true
+
+  - type: dropdown
+    id: minecraft-version
+    attributes:
+      label: Minecraft Version
+      multiple: false
+      options:
+        - "1.20.1"
+        - "1.21.1"
+    validations:
+      required: true
+
+  - type: input
+    id: logs
+    attributes:
+      label: log output
+      description: Please copy and paste your log output to https://mclo.gs/ or a similar site and paste the link here.
+"
+`;
+
+exports[`minecraft bug templates generates bug template single loader and no versions: bug template single loader and no versions 1`] = `
+"# <meta>
+#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+# </meta>
+
+name: Bug Report
+description: File a bug report
+labels: ["bug"]
+
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Also tell us, what did you expect to happen?
+      placeholder: Tell us what you see!
+    validations:
+      required: true
+
+  - type: input
+    id: version-version
+    attributes:
+      label: Mod Version
+    validations:
+      required: true
+
+  - type: input
+    id: logs
+    attributes:
+      label: log output
+      description: Please copy and paste your log output to https://mclo.gs/ or a similar site and paste the link here.
+"
+`;
+
+exports[`minecraft bug templates generates bug template multiple loaders and no versions: bug template multiple loaders and no versions 1`] = `
+"# <meta>
+#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+# </meta>
+
+name: Bug Report
+description: File a bug report
+labels: ["bug"]
+
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Also tell us, what did you expect to happen?
+      placeholder: Tell us what you see!
+    validations:
+      required: true
+
+  - type: dropdown
+    id: loader
+    attributes:
+      label: Loader
+      multiple: false
+      options:
+        - "neoforge"
+        - "fabric"
+    validations:
+      required: true
+
+  - type: input
+    id: version-version
+    attributes:
+      label: Mod Version
+    validations:
+      required: true
+
+  - type: input
+    id: logs
+    attributes:
+      label: log output
+      description: Please copy and paste your log output to https://mclo.gs/ or a similar site and paste the link here.
+"
+`;
+
+exports[`minecraft bug templates generates bug template multiple loaders and single version: bug template multiple loaders and single version 1`] = `
+"# <meta>
+#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+# </meta>
+
+name: Bug Report
+description: File a bug report
+labels: ["bug"]
+
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Also tell us, what did you expect to happen?
+      placeholder: Tell us what you see!
+    validations:
+      required: true
+
+  - type: dropdown
+    id: loader
+    attributes:
+      label: Loader
+      multiple: false
+      options:
+        - "neoforge"
+        - "fabric"
+    validations:
+      required: true
+
+  - type: input
+    id: version-version
+    attributes:
+      label: Mod Version
+    validations:
+      required: true
+
+  - type: input
+    id: logs
+    attributes:
+      label: log output
+      description: Please copy and paste your log output to https://mclo.gs/ or a similar site and paste the link here.
+"
+`;
+
+exports[`minecraft bug templates generates bug template multiple loaders and multiple versions: bug template multiple loaders and multiple versions 1`] = `
+"# <meta>
+#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+# </meta>
+
+name: Bug Report
+description: File a bug report
+labels: ["bug"]
+
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Also tell us, what did you expect to happen?
+      placeholder: Tell us what you see!
+    validations:
+      required: true
+
+  - type: dropdown
+    id: loader
+    attributes:
+      label: Loader
+      multiple: false
+      options:
+        - "neoforge"
+        - "fabric"
+    validations:
+      required: true
+
+  - type: input
+    id: version-version
+    attributes:
+      label: Mod Version
+    validations:
+      required: true
+
+  - type: dropdown
+    id: minecraft-version
+    attributes:
+      label: Minecraft Version
+      multiple: false
+      options:
+        - "1.20.1"
+        - "1.21.1"
+    validations:
+      required: true
+
+  - type: input
+    id: logs
+    attributes:
+      label: log output
+      description: Please copy and paste your log output to https://mclo.gs/ or a similar site and paste the link here.
+"
+`;
