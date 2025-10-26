@@ -1,10 +1,9 @@
 import type { RuntimeOptions } from "handlebars";
 import { format } from "prettier";
+import type { Generator, TemplateData } from "./generator";
 import helpers from "./helpers";
 import { compileFile } from "./load";
 import { withHeader } from "./meta";
-
-export type TemplateData = Record<string, unknown>;
 
 export default function createYamlGenerator(
   folder: string,
@@ -13,7 +12,7 @@ export default function createYamlGenerator(
     header = true,
     ...options
   }: { defaultData?: TemplateData; header?: boolean } & RuntimeOptions
-) {
+): Generator {
   return async (path: string, data: TemplateData = {}) => {
     const template = await compileFile(folder, path);
     let generated = template(

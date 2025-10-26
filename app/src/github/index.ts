@@ -1,7 +1,10 @@
 import type { WebhookEventDefinition } from "@octokit/webhooks/types";
 import { App, createNodeMiddleware } from "octokit";
 import config from "../config";
-import { cloneAndUpdate } from "./git";
+import detectBranches from "./branches";
+import { updateMetadataFiles } from "./generator";
+import { cloneAndModify } from "./git";
+import createGitUser from "./user";
 
 const app = new App({
   appId: config.app.id,
@@ -25,12 +28,27 @@ app.webhooks.on("push", async ({ payload, octokit }) => {
   if (payload.commits.some(shouldTriggerUpdate)) {
     app.log.info(`config changed for ${payload.repository.full_name}`);
 
-    const response = await octokit.rest.apps.createInstallationAccessToken({
-      installation_id: payload.installation?.id!!,
-      repository_ids: [payload.repository.id],
-    });
+    if (!payload.installation) {
+      octokit.log.warn(
+        `installation missing for ${payload.repository.full_name}`
+      );
+      return;
+    }
 
-    cloneAndUpdate(payload.repository, response.data.token);
+    const branches = await detectBranches(octokit, payload.repository);
+    const user = await createGitUser(payload, octokit);
+
+    for (const branch of branches) {
+      const checkout = branches.length > 1 ? `metadata/${branch}` : "metadata";
+
+      await cloneAndModify(
+        payload.repository,
+        user,
+        updateMetadataFiles,
+        branch,
+        checkout
+      );
+    }
   }
 });
 

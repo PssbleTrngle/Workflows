@@ -1,0 +1,11 @@
+{
+   "$schema": "http://localhost:8080/schema/config.json",
+   "type": "minecraft",
+   "issueTemplates": false,
+   "upload": {
+      "modrinth": true,
+      "curseforge": true,
+      "nexus": true,
+      "github": true
+   }
+}

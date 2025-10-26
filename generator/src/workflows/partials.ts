@@ -4,7 +4,7 @@ const partialFiles = ["java.yml"];
 
 async function loadPartial(file: string) {
   const template = await compileFile("workflows", file);
-  const name = file.substring(0, file.lastIndexOf("."));
+  const name = file.substring(0, file.indexOf("."));
   return [name, template];
 }
 

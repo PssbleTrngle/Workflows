@@ -12,6 +12,14 @@ function requireEnv(key: string) {
   throw new Error(`environment variable '${key}' missing`);
 }
 
+function intEnv(key: string) {
+  const stringValue = env(key);
+  if (!stringValue) return null;
+  const value = Number.parseInt(stringValue);
+  if (Number.isNaN(value)) return null;
+  return value;
+}
+
 async function requireFile(path: string) {
   const file = Bun.file(path);
   if (await file.exists()) {
@@ -31,5 +39,8 @@ export default {
   },
   webhooks: {
     secret: requireEnv("WEBHOOK_SECRET"),
+  },
+  server: {
+    port: intEnv("PORT") ?? 8080,
   },
 };

@@ -1,0 +1,8 @@
+{
+   "$schema": "http://localhost:8080/schema/config.json",
+   "type": "minecraft",
+   "loaders": [
+      "neoforge",
+      "fabric"
+   ]
+}

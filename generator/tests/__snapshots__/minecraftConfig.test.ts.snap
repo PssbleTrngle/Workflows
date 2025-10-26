@@ -1,0 +1,50 @@
+// Bun Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`minecraft workflow generation generates workflows with uploads: release workflow with all uploads 1`] = `
+"# <meta>
+#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+# </meta>
+
+name: Release
+on:
+  release:
+    types: [published]
+
+env:
+  CI: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build and upload
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build publish
+        env:
+          MODRINTH_TOKEN: \${{secrets.MODRINTH_TOKEN}}
+          CURSEFORGE_TOKEN: \${{secrets.CURSEFORGE_TOKEN}}
+          CHANGELOG: \${{github.event.release.body}}
+          RELEASE_VERSION: \${{github.event.release.tag_name}}
+          GITHUB_TOKEN: \${{secrets.GITHUB_TOKEN}}
+          NEXUS_USER: \${{secrets.NEXUS_USER}}
+          NEXUS_TOKEN: \${{secrets.NEXUS_TOKEN}}
+"
+`;

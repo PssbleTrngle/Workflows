@@ -1,8 +1,12 @@
 {
    "name": "@pssbletrngle/github-meta",
    "private": true,
+   "scripts": {
+      "debug": "bun run --inspect app/src/main.ts",
+      "dev": "bun run --watch app/src/main.ts"
+   },
    "workspaces": [
       "generator",
-      "bot"
+      "app"
    ]
 }

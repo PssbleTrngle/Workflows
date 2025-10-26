@@ -1,8 +1,4 @@
 {
-   "$schema": "file:///D:/repos/Other/Workflows/generator/src/config.schema.json",
-   "type": "minecraft",
-   "loaders": [
-      "forge",
-      "fabric"
-   ]
+   "$schema": "http://localhost:8080/schema/config.json",
+   "type": "web"
 }
