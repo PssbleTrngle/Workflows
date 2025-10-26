@@ -1,7 +1,7 @@
-import type { WebhookEventDefinition } from "@octokit/webhooks/types";
 import { $ } from "bun";
 import { existsSync, mkdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
+import config from "../config";
 
 export type GitUser = {
   token: string;
@@ -9,16 +9,17 @@ export type GitUser = {
   name: string;
 };
 
-const basePath = "./tmp";
+const basePath = config.git.cloneDir;
 
 if (!existsSync(basePath)) {
   mkdirSync(basePath, { recursive: true });
 }
 
 type DuplicateBehaviour = "abort" | "skip" | "delete";
+type Repository = { clone_url: string; full_name: string };
 
 async function clone(
-  repository: WebhookEventDefinition<"push">["repository"],
+  repository: Repository,
   branch: string,
   token: string,
   behaviour: DuplicateBehaviour
@@ -83,7 +84,7 @@ async function checkoutBranch(repositoryPath: string, branch: string) {
 }
 
 export async function cloneAndModify(
-  repository: WebhookEventDefinition<"push">["repository"],
+  repository: Repository,
   user: GitUser,
   action: (path: string) => Promise<string | boolean>,
   branch: string,

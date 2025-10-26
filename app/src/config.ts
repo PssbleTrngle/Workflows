@@ -43,4 +43,7 @@ export default {
   server: {
     port: intEnv("PORT") ?? 8080,
   },
+  git: {
+    cloneDir: requireEnv("GIT_CLONE_DIR"),
+  },
 };

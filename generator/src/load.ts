@@ -1,5 +1,5 @@
 import { compile } from "handlebars";
-import { readdirSync, statSync } from "node:fs";
+import { existsSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 
 function pathOf(...parts: string[]) {
@@ -16,7 +16,9 @@ export async function compileFile(...path: string[]) {
 }
 
 export async function listTemplates(type: string, ...path: string[]) {
-  const files = readdirSync(pathOf(type, ...path));
+  const folder = pathOf(type, ...path);
+  if (!existsSync(folder)) return [];
+  const files = readdirSync(folder);
   return files
     .map((it) => join(...path, it))
     .filter((it) => statSync(pathOf(type, it)).isFile());

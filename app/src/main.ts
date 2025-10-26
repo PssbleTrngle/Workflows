@@ -1,6 +1,7 @@
 import { configSchema } from "@pssbletrngle/github-meta-generator";
 import express from "express";
 import config from "./config";
+import { ApiError, errorHandler } from "./error";
 import githubMiddleware from "./github";
 import { devMiddlware } from "./security";
 
@@ -17,7 +18,13 @@ server.get("/schema/config.json", (_, response) => {
   response.json(configSchema);
 });
 
-server.use(githubMiddleware);
+server.use("/metadata", githubMiddleware);
+
+server.use((req) => {
+  throw new ApiError(`cannot call ${req.method} on ${req.path}`, 404);
+});
+
+server.use(errorHandler);
 
 server.listen(config.server.port, () => {
   console.info(`Server running at ${config.server.port}`);
