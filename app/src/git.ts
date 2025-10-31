@@ -1,7 +1,7 @@
 import { $ } from "bun";
 import { existsSync, mkdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
-import config from "../config";
+import config from "./config";
 
 export type GitUser = {
   token: string;
@@ -63,10 +63,11 @@ async function configureGit(repositoryPath: string, user: GitUser) {
   await $`git config --local user.name ${user.name}`.cwd(repositoryPath);
   await $`git config --local user.email ${user.email}`.cwd(repositoryPath);
   await $`git config --local commit.gpgsign false`.cwd(repositoryPath);
+  await $`git config --local push.autoSetupRemote true`.cwd(repositoryPath);
 }
 
 async function branchExists(repositoryPath: string, branch: string) {
-  const output = await $`git rev-parse ${branch} --verify`
+  const output = await $`git ls-remote --exit-code --heads origin ${branch}`
     .cwd(repositoryPath)
     .nothrow()
     .quiet();
@@ -83,19 +84,17 @@ async function checkoutBranch(repositoryPath: string, branch: string) {
   }
 }
 
-export async function cloneAndModify(
-  repository: Repository,
+async function wrappedCloneAndModify<T extends ActionResult>(
+  repositoryPath: string,
   user: GitUser,
-  action: (path: string) => Promise<string | boolean>,
-  branch: string,
+  action: (path: string) => Promise<T | false>,
   checkout?: string
 ) {
-  const repositoryPath = await clone(repository, branch, user.token, "delete");
   if (checkout) await checkoutBranch(repositoryPath, checkout);
   await configureGit(repositoryPath, user);
 
-  const message = await action(repositoryPath);
-  if (message === false) return;
+  const result = await action(repositoryPath);
+  if (result === false) return;
 
   await $`git add .`.cwd(repositoryPath).quiet();
 
@@ -108,9 +107,40 @@ export async function cloneAndModify(
 
   console.info(`-> creating commit as ${user.name}`);
 
-  await $`git commit -m "${message}"`.cwd(repositoryPath).quiet();
+  await $`git commit -m "${result.message}"`.cwd(repositoryPath).quiet();
 
-  console.info("<- completed actions and pushed changes");
+  await $`git push`.cwd(repositoryPath).quiet();
 
-  rmSync(repositoryPath, { recursive: true });
+  console.info("-> completed actions and pushed changes");
+
+  return result;
+}
+
+export type ActionResult = {
+  message: string;
+};
+
+export async function cloneAndModify<T extends ActionResult>(
+  repository: Repository,
+  user: GitUser,
+  action: (path: string) => Promise<T | false>,
+  branch: string,
+  checkout?: string
+): Promise<undefined | T> {
+  const repositoryPath = await clone(repository, branch, user.token, "delete");
+
+  try {
+    const result = await wrappedCloneAndModify(
+      repositoryPath,
+      user,
+      action,
+      checkout
+    );
+    rmSync(repositoryPath, { recursive: true });
+    return result;
+  } catch (ex: any) {
+    console.error(`<- an error occurred executing action: ${ex.message}`);
+    rmSync(repositoryPath, { recursive: true });
+    throw ex;
+  }
 }

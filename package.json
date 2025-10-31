@@ -7,6 +7,8 @@
    },
    "workspaces": [
       "generator",
-      "app"
-   ]
+      "app",
+      "ui"
+   ],
+   "packageManager": "bun@1.2.17"
 }

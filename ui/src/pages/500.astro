@@ -1,0 +1,13 @@
+---
+import Layout from "../layout.astro";
+
+interface Props {
+  error: Error;
+}
+
+const { error } = Astro.props;
+---
+
+<Layout>
+  {error.message}
+</Layout>

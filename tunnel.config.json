@@ -1,0 +1,5 @@
+{
+   "$schema": "https://raw.githubusercontent.com/PssbleTrngle/Tunnel/refs/heads/main/client/config.schema.json",
+   "target": "https://webhooks.new.macarena.ceo",
+   "port": 8888
+}

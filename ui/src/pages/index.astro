@@ -1,0 +1,36 @@
+---
+import { Octokit } from "octokit";
+import Layout from "../layout.astro";
+import { request } from "../lib/api";
+
+const octokit = new Octokit({ auth: Astro.locals.session.token });
+
+async function listRepos() {
+  const { data } = await octokit.rest.repos.listForAuthenticatedUser({
+    per_page: 20,
+    type: "owner",
+    sort: "pushed",
+  });
+
+  return data;
+}
+
+const [repos, statuses] = await Promise.all([
+  listRepos(),
+  request<Record<string, string>>(Astro.locals, "status"),
+]);
+---
+
+<Layout>
+  <h1>Welcome</h1>
+  <ul>
+    {
+      repos.map((repo) => (
+        <li>
+          {repo.full_name} {statuses[repo.full_name]}
+          <button hx-post="/metadata/action/setup">Setup</button>
+        </li>
+      ))
+    }
+  </ul>
+</Layout>

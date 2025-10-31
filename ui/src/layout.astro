@@ -1,0 +1,160 @@
+---
+import Indicator from "./components/Indicator.astro";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Webhooks Dashboard</title>
+
+    <script
+      src="https://unpkg.com/htmx.org@2.0.6"
+      integrity="sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z/B2WVG4smwBkRVm"
+      crossorigin="anonymous"></script>
+
+    <script
+      src="https://cdn.jsdelivr.net/gh/Emtyloc/json-enc-custom@v0.1.0/json-enc-custom.js"
+      integrity="sha384-Xmoag3cx+WuzS2M04Kz2I2nAN0ULAxHFmZWwTW/dYvIRloFtnBO3DEIvfErGZIYn"
+      crossorigin="anonymous"></script>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/htmx-ext-response-targets@2.0.2"
+      integrity="sha384-aiAPowx3gG+h620/TJLIfLPgBcn6DMWlhu45oOhWVwTOjds9E6X2pmGbT4Xc8XMJ"
+      crossorigin="anonymous"></script>
+  </head>
+  <body
+    hx-ext="json-enc-custom,response-targets"
+    hx-indicator="#loading-indicator"
+  >
+    <Indicator />
+    <main>
+      <slot />
+    </main>
+  </body>
+
+  <style is:global>
+    :root {
+      --accent: #7e56c2;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+
+      background: #1e2129;
+      color: #ddd;
+      font-family: sans-serif;
+
+      ::selection {
+        background: var(--accent);
+      }
+    }
+
+    main {
+      padding: 1em 0;
+      display: grid;
+      justify-content: center;
+    }
+
+    button {
+      cursor: pointer;
+      user-select: none;
+
+      &:hover {
+        filter: brightness(110%);
+      }
+
+      &:disabled {
+        filter: opacity(90%);
+        cursor: not-allowed;
+
+        &[data-disabled-by-htmx] {
+          cursor: wait;
+        }
+
+        &:hover {
+          filter: brightness(110%), opacity(90%);
+        }
+      }
+    }
+
+    form {
+      accent-color: var(--accent);
+
+      input,
+      button,
+      select {
+        border: none;
+        border-radius: 0.2em;
+        outline: 0px solid var(--accent);
+        outline-offset: 2px;
+        transition:
+          outline 0.1s ease,
+          filter 0.1s ease;
+
+        &:focus-visible {
+          outline-width: 2px;
+        }
+      }
+
+      input,
+      button,
+      option {
+        background: #353a47;
+        color: #ddd;
+      }
+
+      select {
+        appearance: base-select;
+        background: transparent;
+
+        &::picker(select) {
+          appearance: base-select;
+        }
+      }
+
+      select[multiple] {
+        overflow: hidden;
+      }
+
+      option {
+        padding: 0.5em;
+
+        &:checked {
+          background: #565e72;
+        }
+      }
+
+      input,
+      button {
+        padding: 1em;
+      }
+
+      label {
+        margin-top: 0.5em;
+        margin-bottom: -0.5em;
+      }
+
+      button[type="submit"] {
+        background: var(--accent);
+      }
+
+      #error {
+        &:not(:empty) {
+          background: #f024;
+          outline: solid 1px #f02;
+          outline-offset: 2px;
+        }
+
+        border-radius: 0.2em;
+        padding: 0.2em;
+        margin: 0;
+        text-align: center;
+      }
+    }
+  </style>
+</html>

@@ -1,4 +1,4 @@
 {
-   "$schema": "http://localhost:8080/schema/config.json",
+   "$schema": "http://localhost:8888/schema/config.json",
    "type": "web"
 }

@@ -1,4 +1,4 @@
-name: github-metadata-sync
+name: github-webhooks
 
 services:
   app:

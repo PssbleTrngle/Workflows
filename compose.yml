@@ -1,0 +1,13 @@
+name: github-webhooks
+
+services:
+  redis:
+    image: redis
+    container_name: webhooks-redis
+    volumes:
+      - redis:/data
+    ports:
+      - 6379:6379
+
+volumes:
+  redis:

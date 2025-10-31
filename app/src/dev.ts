@@ -9,7 +9,7 @@ function generateHash(from: string, type: string) {
   return `${type}=${hex}`;
 }
 
-export const devMiddlware: RequestHandler = async (request, _, next) => {
+const forgeSignature: RequestHandler = async (request, _, next) => {
   if (request.method === "POST" && request.body) {
     request.headers["x-hub-signature-256"] = generateHash(
       request.body,
@@ -20,3 +20,10 @@ export const devMiddlware: RequestHandler = async (request, _, next) => {
 
   return next();
 };
+
+const logRequests: RequestHandler = (request, _, next) => {
+  console.info(`${request.method} -> ${request.originalUrl}`);
+  return next();
+};
+
+export const devMiddlware = [forgeSignature, logRequests];

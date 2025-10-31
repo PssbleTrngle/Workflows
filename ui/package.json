@@ -1,0 +1,20 @@
+{
+  "name": "@pssbletrngle/webhooks-ui",
+  "dependencies": {
+    "@astrojs/node": "^9.5.0",
+    "astro": "^5.15.3"
+  },
+  "exports": {
+    ".": "./dist/server/entry.mjs"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "type": "module",
+  "devDependencies": {
+    "htmx.org": "^2.0.8"
+  }
+}

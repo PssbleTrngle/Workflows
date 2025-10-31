@@ -1,9 +1,9 @@
 import { configSchema } from "@pssbletrngle/github-meta-generator";
 import express from "express";
 import config from "./config";
-import { ApiError, errorHandler } from "./error";
-import githubMiddleware from "./github";
-import { devMiddlware } from "./security";
+import { devMiddlware } from "./dev";
+import { cutoff, errorHandler } from "./error";
+import metadataMiddleware from "./metadata";
 
 const server = express();
 
@@ -18,12 +18,9 @@ server.get("/schema/config.json", (_, response) => {
   response.json(configSchema);
 });
 
-server.use("/metadata", githubMiddleware);
+server.use("/metadata", metadataMiddleware);
 
-server.use((req) => {
-  throw new ApiError(`cannot call ${req.method} on ${req.path}`, 404);
-});
-
+server.use(cutoff);
 server.use(errorHandler);
 
 server.listen(config.server.port, () => {

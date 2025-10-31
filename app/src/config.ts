@@ -46,4 +46,8 @@ export default {
   git: {
     cloneDir: requireEnv("GIT_CLONE_DIR"),
   },
+  redis: {
+    host: env("REDIS_HOST") ?? "localhost",
+    port: intEnv("REDIS_PORT") ?? 6379,
+  },
 };
