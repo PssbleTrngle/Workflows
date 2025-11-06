@@ -1,5 +1,6 @@
-import { Router } from "express";
+import { json, Router } from "express";
 import { type App } from "octokit";
+import z from "zod";
 import { cutoff } from "../error";
 import { authorize, type AuthenticatedResponse } from "./auth";
 import { getStatus, getStatuses, saveStatus } from "./cache";
@@ -8,6 +9,8 @@ export default function createApiRoutes(_: App) {
   const router = Router();
 
   router.use(...authorize("fail"));
+
+  router.use(json());
 
   router.get(
     "/status/:owner/:repo",
@@ -34,10 +37,22 @@ export default function createApiRoutes(_: App) {
     res.json(merged);
   });
 
-  router.post("/setup/:owner/:repo", async (req, res) => {
-    await saveStatus(req.params, "not-set-up");
+  const setupParams = z.array(
+    z.object({
+      repo: z.string().nonempty(),
+      owner: z.string().nonempty(),
+    })
+  );
 
-    res.json({ success: true });
+  router.post("/setup", async (req, res) => {
+    const data = setupParams.parse(req.body);
+
+    const status = "not-set-up";
+    for (const entry of data) {
+      await saveStatus(entry, status);
+    }
+
+    res.json({ success: true, status });
   });
 
   router.use(cutoff);

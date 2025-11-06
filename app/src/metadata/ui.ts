@@ -23,14 +23,18 @@ function createCallback(app: App): RequestHandler {
   };
 }
 
+export async function proxyUI() {
+  const { createProxyMiddleware } = await import("http-proxy-middleware");
+  return createProxyMiddleware({
+    target: "http://localhost:4321",
+    changeOrigin: true,
+  });
+}
+
 async function astroOrProxy(): Promise<RequestHandler> {
   if (process.env.NODE_ENV === "development") {
     console.info("Proxing UI requests to local dev server");
-    const { createProxyMiddleware } = await import("http-proxy-middleware");
-    return createProxyMiddleware({
-      target: "http://localhost:4321",
-      changeOrigin: true,
-    });
+    return proxyUI();
   }
 
   return handler;

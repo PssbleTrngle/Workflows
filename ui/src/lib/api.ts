@@ -20,42 +20,49 @@ async function createError(response: Response) {
   return new ApiError(response.statusText, response.status);
 }
 
-export async function request<T>(
-  { origin, session }: App.Locals,
-  endpoint: string,
-  init: RequestInit = {}
-) {
-  const url = new URL(endpoint, `${origin}/metadata/api/`);
-  const response = await fetch(url, {
-    ...init,
-    headers: {
-      Accept: "application/json",
-      Authorization: `Token ${session.token}`,
-      ...init.headers,
-    },
-  });
+export type ApiClient = {
+  request<T>(endpoint: string, init?: RequestInit): Promise<T>;
+  submit<T>(endpoint: string, data?: unknown, init?: RequestInit): Promise<T>;
+};
 
-  if (!response.ok) {
-    throw await createError(response);
+export default function createApiClient(
+  origin: string,
+  token: string
+): ApiClient {
+  async function request<T>(endpoint: string, init: RequestInit = {}) {
+    const url = new URL(endpoint, `${origin}/metadata/api/`);
+    const response = await fetch(url, {
+      ...init,
+      headers: {
+        Accept: "application/json",
+        Authorization: `Token ${token}`,
+        ...init.headers,
+      },
+    });
+
+    if (!response.ok) {
+      throw await createError(response);
+    }
+
+    const json = await response.json();
+    return json as T;
   }
 
-  const json = await response.json();
-  return json as T;
-}
+  async function submit<T>(
+    endpoint: string,
+    data: unknown,
+    init: RequestInit = {}
+  ) {
+    return request<T>(endpoint, {
+      method: "POST",
+      body: data === undefined ? data : JSON.stringify(data),
+      ...init,
+      headers: {
+        "Content-Type": "application/json",
+        ...init.headers,
+      },
+    });
+  }
 
-export async function submit<T>(
-  locals: App.Locals,
-  endpoint: string,
-  data: unknown,
-  init: RequestInit = {}
-) {
-  return request(locals, endpoint, {
-    method: "POST",
-    body: JSON.stringify(data),
-    ...init,
-    headers: {
-      "Content-Type": "application/json",
-      ...init.headers,
-    },
-  });
+  return { request, submit };
 }

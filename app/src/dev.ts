@@ -1,6 +1,7 @@
-import type { RequestHandler } from "express";
+import { type RequestHandler } from "express";
 import { createHmac } from "node:crypto";
 import config from "./config";
+import { proxyUI } from "./metadata/ui";
 
 function generateHash(from: string, type: string) {
   const hash = createHmac(type, config.webhooks.secret);
@@ -10,6 +11,9 @@ function generateHash(from: string, type: string) {
 }
 
 const forgeSignature: RequestHandler = async (request, _, next) => {
+  // this does only work if the express.text({ type: '*/*' }) middlware is used
+  // which breaks other things again
+
   if (request.method === "POST" && request.body) {
     request.headers["x-hub-signature-256"] = generateHash(
       request.body,
@@ -26,4 +30,23 @@ const logRequests: RequestHandler = (request, _, next) => {
   return next();
 };
 
-export const devMiddlware = [forgeSignature, logRequests];
+async function devUIProxy(): Promise<RequestHandler> {
+  const patterns = [
+    /^\/@vite\//,
+    /^\/@fs\//,
+    /^\/@id\//,
+    /^\/src\/.+\.astro/,
+    /^\/node_modules\/.+\.m?js/,
+  ];
+  const uiProxy = await proxyUI();
+  return (req, res, next) => {
+    if (patterns.some((it) => it.test(req.path))) {
+      return uiProxy(req, res, next);
+    }
+    return next();
+  };
+}
+
+export async function createDevMiddleware() {
+  return [forgeSignature, logRequests, await devUIProxy()];
+}

@@ -1,17 +1,15 @@
 import { configSchema } from "@pssbletrngle/github-meta-generator";
 import express from "express";
 import config from "./config";
-import { devMiddlware } from "./dev";
+import { createDevMiddleware } from "./dev";
 import { cutoff, errorHandler } from "./error";
 import metadataMiddleware from "./metadata";
 
 const server = express();
 
-server.use(express.text({ type: "*/*" }));
-
 if (process.env.NODE_ENV === "development") {
   console.info("Installing dev middleware");
-  server.use(devMiddlware);
+  server.use(await createDevMiddleware());
 }
 
 server.get("/schema/config.json", (_, response) => {

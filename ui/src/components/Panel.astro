@@ -1,0 +1,53 @@
+---
+import Status from "./Status.astro";
+
+type Props = {
+  repo: any;
+  status: string;
+};
+
+const { status, repo } = Astro.props as Props;
+---
+
+<li class="panel">
+  <a class="title" href={repo.html_url}>
+    {repo.full_name}
+  </a>
+  {
+    status ? (
+      <Status value={status} />
+    ) : (
+      <form hx-post="/metadata/action/setup">
+        <input type="hidden" name="owner" value={repo.owner.login} />
+        <input type="hidden" name="repo" value={repo.name} />
+        <button>Setup</button>
+      </form>
+    )
+  }
+</li>
+
+<style scoped>
+  .panel {
+    background: #0001;
+    width: 350px;
+    height: 150px;
+    border-radius: 10px;
+
+    display: grid;
+    grid-template:
+      "title status" 2em
+      "description description"
+      / 1fr 100px;
+
+    padding: 1em;
+  }
+
+  .title {
+    color: var(--text);
+    grid-area: title;
+  }
+
+  .status {
+    grid-area: status;
+  }
+</style>

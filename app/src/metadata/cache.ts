@@ -27,6 +27,12 @@ export function getStatus(repository: Repository) {
 }
 
 export async function getStatuses(owner: string) {
-  const results = await redis.hgetall(statusPrefix);
-  return results as Record<string, RepositoryStatus>;
+  const keys = await redis.keys(statusKey({ owner, repo: "*" }));
+  const entries = await Promise.all(
+    keys.map(async (it) => [
+      it.substring(statusPrefix.length).replace(":", "/"),
+      await redis.get(it),
+    ])
+  );
+  return Object.fromEntries(entries) as Record<string, RepositoryStatus>;
 }

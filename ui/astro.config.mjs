@@ -10,6 +10,11 @@ export default defineConfig({
   }),
   vite: {
     server: {
+      hmr: {
+        host: "localhost",
+        protocol: "ws",
+        clientPort: 4321,
+      },
       allowedHosts: ["webhooks.new.macarena.ceo"],
       proxy: {
         "/metadata/api": {

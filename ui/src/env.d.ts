@@ -1,8 +1,7 @@
 declare namespace App {
   interface Locals {
     origin: string;
-    session: {
-      token: string;
-    };
+    octokit: import("octokit").Octokit;
+    api: import("./lib/api").ApiClient;
   }
 }

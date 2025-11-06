@@ -1,9 +1,8 @@
 ---
-import { Octokit } from "octokit";
+import Panel from "../components/Panel.astro";
 import Layout from "../layout.astro";
-import { request } from "../lib/api";
 
-const octokit = new Octokit({ auth: Astro.locals.session.token });
+const { api, octokit } = Astro.locals;
 
 async function listRepos() {
   const { data } = await octokit.rest.repos.listForAuthenticatedUser({
@@ -17,7 +16,7 @@ async function listRepos() {
 
 const [repos, statuses] = await Promise.all([
   listRepos(),
-  request<Record<string, string>>(Astro.locals, "status"),
+  api.request<Record<string, string>>("status"),
 ]);
 ---
 
@@ -26,11 +25,22 @@ const [repos, statuses] = await Promise.all([
   <ul>
     {
       repos.map((repo) => (
-        <li>
-          {repo.full_name} {statuses[repo.full_name]}
-          <button hx-post="/metadata/action/setup">Setup</button>
-        </li>
+        <Panel repo={repo} status={statuses[repo.full_name]} />
       ))
     }
   </ul>
 </Layout>
+
+<style scoped>
+  ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+
+    width: 90vw;
+    max-width: 1200px;
+
+    gap: 20px;
+    padding: 10px;
+  }
+</style>

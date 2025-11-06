@@ -1,7 +1,16 @@
 ---
+import Status from "../../components/Status.astro";
+
 export const partial = true;
 
-console.log(Astro.cookies);
+// TODO csrf token?
+const data = await Astro.request.formData();
+const owner = data.get("owner");
+const repo = data.get("repo");
+
+const { status } = await Astro.locals.api.submit<{ status: string }>("setup", [
+  { owner, repo },
+]);
 ---
 
-<p>Triggered</p>
+<Status value={status} />

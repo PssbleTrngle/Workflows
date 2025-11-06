@@ -16,11 +16,6 @@ import Indicator from "./components/Indicator.astro";
       crossorigin="anonymous"></script>
 
     <script
-      src="https://cdn.jsdelivr.net/gh/Emtyloc/json-enc-custom@v0.1.0/json-enc-custom.js"
-      integrity="sha384-Xmoag3cx+WuzS2M04Kz2I2nAN0ULAxHFmZWwTW/dYvIRloFtnBO3DEIvfErGZIYn"
-      crossorigin="anonymous"></script>
-
-    <script
       src="https://cdn.jsdelivr.net/npm/htmx-ext-response-targets@2.0.2"
       integrity="sha384-aiAPowx3gG+h620/TJLIfLPgBcn6DMWlhu45oOhWVwTOjds9E6X2pmGbT4Xc8XMJ"
       crossorigin="anonymous"></script>
@@ -38,6 +33,7 @@ import Indicator from "./components/Indicator.astro";
   <style is:global>
     :root {
       --accent: #7e56c2;
+      --text: #ddd;
     }
 
     html,
@@ -46,7 +42,7 @@ import Indicator from "./components/Indicator.astro";
       padding: 0;
 
       background: #1e2129;
-      color: #ddd;
+      color: var(--text);
       font-family: sans-serif;
 
       ::selection {
