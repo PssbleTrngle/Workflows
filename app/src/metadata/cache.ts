@@ -17,7 +17,7 @@ type Repository = {
 
 export async function saveStatus(
   repository: Repository,
-  status: RepositoryStatus
+  status: RepositoryStatus,
 ) {
   await redis.set(statusKey(repository), status);
 }
@@ -32,7 +32,7 @@ export async function getStatuses(owner: string) {
     keys.map(async (it) => [
       it.substring(statusPrefix.length).replace(":", "/"),
       await redis.get(it),
-    ])
+    ]),
   );
   return Object.fromEntries(entries) as Record<string, RepositoryStatus>;
 }

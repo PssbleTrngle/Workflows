@@ -19,6 +19,11 @@
             "^lint"
          ]
       },
+      "format": {
+         "dependsOn": [
+            "^format"
+         ]
+      },
       "test": {
          "dependsOn": [
             "^test"

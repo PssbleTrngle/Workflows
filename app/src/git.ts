@@ -22,7 +22,7 @@ async function clone(
   repository: Repository,
   branch: string,
   token: string,
-  behaviour: DuplicateBehaviour
+  behaviour: DuplicateBehaviour,
 ) {
   const url = new URL(repository.clone_url);
   console.info(`-> cloning into ${url} @ ${branch}`);
@@ -88,7 +88,7 @@ async function wrappedCloneAndModify<T extends ActionResult>(
   repositoryPath: string,
   user: GitUser,
   action: (path: string) => Promise<T | false>,
-  checkout?: string
+  checkout?: string,
 ) {
   if (checkout) await checkoutBranch(repositoryPath, checkout);
   await configureGit(repositoryPath, user);
@@ -125,7 +125,7 @@ export async function cloneAndModify<T extends ActionResult>(
   user: GitUser,
   action: (path: string) => Promise<T | false>,
   branch: string,
-  checkout?: string
+  checkout?: string,
 ): Promise<undefined | T> {
   const repositoryPath = await clone(repository, branch, user.token, "delete");
 
@@ -134,7 +134,7 @@ export async function cloneAndModify<T extends ActionResult>(
       repositoryPath,
       user,
       action,
-      checkout
+      checkout,
     );
     rmSync(repositoryPath, { recursive: true });
     return result;

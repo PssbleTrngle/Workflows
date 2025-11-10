@@ -9,7 +9,7 @@ const client = new Redis({
   retryStrategy: (times) => {
     const millis = Math.min(10, times) * 1000;
     console.warn(
-      `could not connect to redis at ${host}:${port}, retrying in ${millis}ms...`
+      `could not connect to redis at ${host}:${port}, retrying in ${millis}ms...`,
     );
     return millis;
   },

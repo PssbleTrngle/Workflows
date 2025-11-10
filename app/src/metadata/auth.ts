@@ -13,7 +13,7 @@ type Authentication = Awaited<
 
 export async function login(
   response: Response,
-  authentication: Authentication
+  authentication: Authentication,
 ) {
   const expires =
     authentication.expiresAt === undefined

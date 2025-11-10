@@ -22,7 +22,7 @@ function detectVersionsFrom(branches: string[]) {
 
 export default async function detectProperties(
   repositoryPath: string,
-  { config, branches }: MetadataContext
+  { config, branches }: MetadataContext,
 ) {
   if (config.type === "web") {
     if (config.manager === "detect") {
@@ -39,7 +39,7 @@ export default async function detectProperties(
       if (detected.length) {
         config.versions = detected;
         console.info(
-          `  -> detected minecraft versions: ${detected.join(", ")}`
+          `  -> detected minecraft versions: ${detected.join(", ")}`,
         );
       }
     }

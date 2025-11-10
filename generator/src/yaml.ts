@@ -11,7 +11,7 @@ export default function createYamlGenerator(
     defaultData = {},
     header = true,
     ...options
-  }: { defaultData?: TemplateData; header?: boolean } & RuntimeOptions
+  }: { defaultData?: TemplateData; header?: boolean } & RuntimeOptions,
 ): Generator {
   return async (key: string[], data: TemplateData = {}) => {
     const template = await loadTemplate(folder, ...key);
@@ -23,7 +23,7 @@ export default function createYamlGenerator(
           ...helpers,
           ...options.helpers,
         },
-      }
+      },
     );
     if (header) generated = await withHeader(generated);
     return format(generated, { parser: "yaml" });

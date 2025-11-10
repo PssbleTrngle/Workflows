@@ -31,7 +31,7 @@ function check(config: ConfigSchema, key: string) {
 
 export async function generateWithConfig(
   config: ConfigSchema,
-  acceptor: Acceptor
+  acceptor: Acceptor,
 ) {
   await Promise.all(
     schemaTypes.map(async ({ key, path, generate }) => {
@@ -47,8 +47,8 @@ export async function generateWithConfig(
 
           const generated = await generate([config.type, ...key], config);
           await acceptor(output, generated);
-        })
+        }),
       );
-    })
+    }),
   );
 }

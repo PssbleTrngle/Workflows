@@ -18,7 +18,7 @@ export default function createApiRoutes(_: App) {
       // TODO authorization guard
       const status = await getStatus(req.params);
       res.json({ status: status ?? "not-set-up" });
-    }
+    },
   );
 
   router.get("/status", async (_, res: AuthenticatedResponse) => {
@@ -41,7 +41,7 @@ export default function createApiRoutes(_: App) {
     z.object({
       repo: z.string().nonempty(),
       owner: z.string().nonempty(),
-    })
+    }),
   );
 
   router.post("/setup", async (req, res) => {

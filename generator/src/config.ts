@@ -76,7 +76,7 @@ export type ConfigType = ConfigSchema["type"];
 
 export function validateConfig(
   input: unknown,
-  allowDetected: boolean = true
+  allowDetected: boolean = true,
 ): ConfigSchema {
   if (allowDetected) return schema.parse(input);
   return resolvedSchema.parse(input);

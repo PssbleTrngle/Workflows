@@ -11,6 +11,7 @@
     "gen:meta": "bun run scripts/meta.ts",
     "gen:templates": "bun run scripts/templates.ts",
     "lint": "eslint {src,scripts}",
+    "format": "biome format --write src",
     "test": "bun test"
   },
   "dependencies": {

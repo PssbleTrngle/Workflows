@@ -27,7 +27,7 @@ async function cleanupMetafiles(path: string): Promise<void> {
           console.info(`     deleted previously generated file ${name}`);
         }
       }
-    })
+    }),
   );
 }
 
@@ -43,7 +43,7 @@ async function shouldModify(file: BunFile, config: ConfigSchema) {
 
 export async function updateMetadataFiles(
   repositoryPath: string,
-  context: MetadataContext
+  context: MetadataContext,
 ): Promise<ActionResult> {
   const config = await detectProperties(repositoryPath, context);
 

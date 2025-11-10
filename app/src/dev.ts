@@ -17,7 +17,7 @@ const forgeSignature: RequestHandler = async (request, _, next) => {
   if (request.method === "POST" && request.body) {
     request.headers["x-hub-signature-256"] = generateHash(
       request.body,
-      "sha256"
+      "sha256",
     );
     request.headers["x-hub-signature"] = generateHash(request.body, "sha1");
   }

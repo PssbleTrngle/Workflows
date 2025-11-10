@@ -19,7 +19,7 @@ type RequiredPayload = {
 
 export default async function createGitUser(
   payload: RequiredPayload,
-  octokit: Octokit
+  octokit: Octokit,
 ): Promise<GitUser> {
   const [tokenResponse, userData] = await Promise.all([
     octokit.rest.apps.createInstallationAccessToken({

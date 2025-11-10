@@ -67,7 +67,7 @@ app.webhooks.on("push", async ({ payload, octokit }) => {
       user,
       (path) => updateMetadataFiles(path, context),
       branch,
-      checkout
+      checkout,
     );
 
     if (checkout) {
