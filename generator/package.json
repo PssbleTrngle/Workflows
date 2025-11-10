@@ -21,6 +21,9 @@
     "yaml": "^2.8.1",
     "zod": "^4.1.12"
   },
+  "devDependencies": {
+    "@pssbletrngle/webhooks-configs": "workspace:*"
+  },
   "peerDependencies": {
     "typescript": "^5"
   }

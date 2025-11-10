@@ -5,9 +5,7 @@
       "name": "@pssbletrngle/github-meta",
       "devDependencies": {
         "@biomejs/biome": "^2.3.4",
-        "eslint": "^9.39.1",
         "turbo": "^2.6.0",
-        "typescript-eslint": "^8.46.3",
       },
     },
     "app": {
@@ -15,21 +13,30 @@
       "dependencies": {
         "@pssbletrngle/github-meta-generator": "workspace:*",
         "@pssbletrngle/webhooks-ui": "workspace:*",
+        "@types/bun": "latest",
+        "@types/cookie-parser": "^1.4.10",
+        "@types/express": "^5.0.4",
         "cookie-parser": "^1.4.7",
+        "dotenv": "^17.2.3",
         "express": "^5.1.0",
+        "http-proxy-middleware": "^3.0.5",
         "ioredis": "^5.8.2",
         "octokit": "^5.0.4",
         "zod": "^4.1.12",
       },
       "devDependencies": {
-        "@types/bun": "latest",
-        "@types/cookie-parser": "^1.4.10",
-        "@types/express": "^5.0.4",
-        "dotenv": "^17.2.3",
-        "http-proxy-middleware": "^3.0.5",
+        "@pssbletrngle/webhooks-configs": "workspace:*",
       },
       "peerDependencies": {
         "typescript": "^5",
+      },
+    },
+    "config": {
+      "name": "@pssbletrngle/webhooks-configs",
+      "devDependencies": {
+        "eslint": "^9.39.1",
+        "eslint-plugin-astro": "^1.5.0",
+        "typescript-eslint": "^8.46.3",
       },
     },
     "generator": {
@@ -40,6 +47,9 @@
         "prettier": "^3.6.2",
         "yaml": "^2.8.1",
         "zod": "^4.1.12",
+      },
+      "devDependencies": {
+        "@pssbletrngle/webhooks-configs": "workspace:*",
       },
       "peerDependencies": {
         "typescript": "^5",
@@ -53,7 +63,7 @@
         "octokit": "^5.0.4",
       },
       "devDependencies": {
-        "eslint-plugin-astro": "^1.5.0",
+        "@pssbletrngle/webhooks-configs": "workspace:*",
       },
       "peerDependencies": {
         "zod": "^3.25.76",
@@ -292,6 +302,8 @@
     "@pkgr/core": ["@pkgr/core@0.2.9", "", {}, "sha512-QNqXyfVS2wm9hweSYD2O7F0G06uurj9kZ96TRQE5Y9hU7+tgdZwIkbAKc5Ocy1HxEY2kuDQa6cQ1WRs/O5LFKA=="],
 
     "@pssbletrngle/github-meta-generator": ["@pssbletrngle/github-meta-generator@workspace:generator"],
+
+    "@pssbletrngle/webhooks-configs": ["@pssbletrngle/webhooks-configs@workspace:config"],
 
     "@pssbletrngle/webhooks-server": ["@pssbletrngle/webhooks-server@workspace:app"],
 
