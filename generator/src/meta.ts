@@ -1,16 +1,17 @@
 import type { BunFile } from "bun";
-import { join } from "node:path";
-import { compileFile } from "./load";
+import { source, version } from "../dist/meta.json";
+import { loadTemplate } from "../dist/templates";
 
-const { version = "0.0.0-dev", name } = await Bun.file(
-  join(__dirname, "..", "package.json")
-).json();
+export type Meta = {
+  version: string;
+  source: string;
+};
 
 export async function createHeader() {
-  const template = await compileFile("meta.xml");
+  const template = await loadTemplate("meta.xml");
 
   const generated = template({
-    link: name,
+    source,
     version,
     generatedAt: new Date().toISOString(),
   });
@@ -28,6 +29,6 @@ export async function withHeader(generated: string) {
 
 export async function isGenerated(file: BunFile) {
   const content = await file.text();
-  const needle = `<source>${name}</source>`;
+  const needle = `<source>${source}</source>`;
   return content.includes(needle);
 }

@@ -1,0 +1,28 @@
+name: Test
+
+on:
+   workflow_dispatch:
+   push:
+
+env:
+   CI: true
+
+concurrency:
+   group: ${{ github.workflow }}-${{ github.ref }}
+   cancel-in-progress: true
+
+jobs:
+   my-job:
+      name: my-job
+      runs-on: ubuntu-latest
+      steps:
+         - uses: actions/checkout@v4
+
+         - name: Setup Bun
+           uses: oven-sh/setup-bun@v2
+
+         - name: Install Dependencies
+           run: bun install --frozen-lockfile
+
+         - name: Run tests
+           run: bun run check

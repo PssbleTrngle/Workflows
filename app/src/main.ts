@@ -7,7 +7,7 @@ import metadataMiddleware from "./metadata";
 
 const server = express();
 
-if (process.env.NODE_ENV === "development") {
+if (config.dev) {
   console.info("Installing dev middleware");
   server.use(await createDevMiddleware());
 }

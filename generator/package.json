@@ -5,16 +5,22 @@
   "exports": {
     ".": "./src/index.ts"
   },
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "build": "bun run gen:meta && bun run gen:templates",
+    "gen:meta": "bun run scripts/meta.ts",
+    "gen:templates": "bun run scripts/templates.ts",
+    "lint": "eslint {src,scripts}",
+    "test": "bun test"
   },
   "dependencies": {
+    "@types/bun": "latest",
     "handlebars": "^4.7.8",
     "prettier": "^3.6.2",
     "yaml": "^2.8.1",
     "zod": "^4.1.12"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
   }
 }

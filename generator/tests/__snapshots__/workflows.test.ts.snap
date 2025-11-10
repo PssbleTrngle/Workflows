@@ -2,7 +2,7 @@
 
 exports[`minecraft test workflows generates test workflow without sonar: test workflow with push and pull_request 1`] = `
 "# <meta>
-#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
 # </meta>
@@ -59,7 +59,7 @@ jobs:
 
 exports[`minecraft test workflows generates test workflow with sonar: test workflow with only pull_request 1`] = `
 "# <meta>
-#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
 # </meta>
@@ -114,7 +114,7 @@ jobs:
 
 exports[`minecaft release workflows generates release workflow with curseforge: release workflow with curseforge 1`] = `
 "# <meta>
-#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
 # </meta>
@@ -159,7 +159,7 @@ jobs:
 
 exports[`minecaft release workflows generates release workflow with modrinth: release workflow with modrinth 1`] = `
 "# <meta>
-#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
 # </meta>
@@ -204,7 +204,7 @@ jobs:
 
 exports[`minecaft release workflows generates release workflow with github: release workflow with github 1`] = `
 "# <meta>
-#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
 # </meta>
@@ -249,7 +249,7 @@ jobs:
 
 exports[`minecaft release workflows generates release workflow with nexus: release workflow with nexus 1`] = `
 "# <meta>
-#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
 # </meta>
@@ -295,7 +295,7 @@ jobs:
 
 exports[`minecraft test workflows generates sonar workflow: sonar workflow 1`] = `
 "# <meta>
-#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
 # </meta>

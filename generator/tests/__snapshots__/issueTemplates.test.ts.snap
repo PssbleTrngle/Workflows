@@ -2,7 +2,7 @@
 
 exports[`minecraft bug templates generates bug template without loader and versions: bug template without loader and versions 1`] = `
 "# <meta>
-#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
 # </meta>
@@ -38,7 +38,7 @@ body:
 
 exports[`minecraft bug templates generates bug template without loader and single version: bug template without loader and single version 1`] = `
 "# <meta>
-#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
 # </meta>
@@ -74,7 +74,7 @@ body:
 
 exports[`minecraft bug templates generates bug template without loader and multiple versions: bug template without loader and multiple versions 1`] = `
 "# <meta>
-#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
 # </meta>
@@ -121,7 +121,7 @@ body:
 
 exports[`minecraft bug templates generates bug template single loader and no versions: bug template single loader and no versions 1`] = `
 "# <meta>
-#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
 # </meta>
@@ -157,7 +157,7 @@ body:
 
 exports[`minecraft bug templates generates bug template multiple loaders and no versions: bug template multiple loaders and no versions 1`] = `
 "# <meta>
-#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
 # </meta>
@@ -204,7 +204,7 @@ body:
 
 exports[`minecraft bug templates generates bug template multiple loaders and single version: bug template multiple loaders and single version 1`] = `
 "# <meta>
-#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
 # </meta>
@@ -251,7 +251,7 @@ body:
 
 exports[`minecraft bug templates generates bug template multiple loaders and multiple versions: bug template multiple loaders and multiple versions 1`] = `
 "# <meta>
-#    <source>https://github.com/PssbleTrngle/Workflows</source>
+#    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
 # </meta>

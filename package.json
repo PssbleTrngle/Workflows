@@ -2,13 +2,19 @@
    "name": "@pssbletrngle/github-meta",
    "private": true,
    "scripts": {
-      "debug": "bun run --inspect app/src/main.ts",
-      "dev": "bun run --watch app/src/main.ts"
+      "dev": "turbo dev",
+      "check": "turbo check-types lint test",
+      "build": "turbo build"
    },
    "workspaces": [
       "generator",
       "app",
       "ui"
    ],
-   "packageManager": "bun@1.2.17"
+   "packageManager": "bun@1.2.17",
+   "devDependencies": {
+      "eslint": "^9.39.1",
+      "typescript-eslint": "^8.46.3",
+      "turbo": "^2.6.0"
+   }
 }

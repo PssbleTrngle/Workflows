@@ -1,14 +1,14 @@
-import { basename, join } from "node:path";
+import { join } from "node:path";
+import { listTemplates } from "../dist/templates";
 import type { ConfigSchema } from "./config";
 import { generateIssueTemplate } from "./issueTemplates/generate";
-import { listTemplates } from "./load";
 import { generateWorkflow } from "./workflows/generate";
 
 export type Acceptor = (path: string, content: string) => Promise<void>;
 
 export type TemplateData = Record<string, unknown>;
 
-export type Generator = (path: string, data?: TemplateData) => Promise<string>;
+export type Generator = (key: string[], data?: TemplateData) => Promise<string>;
 
 type SchemaType = {
   key: keyof ConfigSchema;
@@ -40,14 +40,12 @@ export async function generateWithConfig(
       const schemas = await listTemplates(key, config.type);
 
       await Promise.all(
-        schemas.map(async (file) => {
-          const fileName = basename(file);
-          const name = fileName.substring(0, fileName.indexOf("."));
+        schemas.map(async ({ key, name }) => {
           if (check(config, name)) return;
 
-          const output = join(path, fileName);
+          const output = join(path, ...key);
 
-          const generated = await generate(file, config);
+          const generated = await generate([config.type, ...key], config);
           await acceptor(output, generated);
         })
       );

@@ -1,13 +1,13 @@
 {
-  "name": "@pssbletrngle/github-meta-bot",
+  "name": "@pssbletrngle/webhooks-server",
   "module": "src/main.ts",
   "type": "module",
   "private": true,
-  "devDependencies": {
-    "@types/bun": "latest",
-    "@types/cookie-parser": "^1.4.10",
-    "@types/express": "^5.0.4",
-    "http-proxy-middleware": "^3.0.5"
+  "scripts": {
+    "dev": "bun run --watch src/main.ts",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src",
+    "build": "bun build --outdir ./dist --target=bun --sourcemap=linked --env disable src/main.ts"
   },
   "peerDependencies": {
     "typescript": "^5"
@@ -16,9 +16,14 @@
     "@pssbletrngle/github-meta-generator": "workspace:*",
     "@pssbletrngle/webhooks-ui": "workspace:*",
     "cookie-parser": "^1.4.7",
-    "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "ioredis": "^5.8.2",
-    "octokit": "^5.0.4"
+    "octokit": "^5.0.4",
+    "zod": "^4.1.12",
+    "@types/bun": "latest",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/express": "^5.0.4",
+    "http-proxy-middleware": "^3.0.5",
+    "dotenv": "^17.2.3"
   }
 }

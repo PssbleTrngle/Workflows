@@ -1,4 +1,5 @@
 import { validateConfig } from "@pssbletrngle/github-meta-generator";
+import { packageManagerSchema } from "../../../generator/src/config";
 import type { MetadataContext } from "./branches";
 
 function detect(branches: string[], pattern: RegExp): string[] {
@@ -27,7 +28,7 @@ export default async function detectProperties(
     if (config.manager === "detect") {
       const { packageManager } = await Bun.file("package.json").json();
       const [, match] = /^(\w+)@/.exec(packageManager) ?? [];
-      config.manager = match as any;
+      config.manager = packageManagerSchema.parse(match);
       console.log(`  -> detected package manager ${config.manager}`);
     }
   }

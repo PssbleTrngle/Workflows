@@ -1,46 +1,40 @@
-# use the official Bun image
-# see all versions at https://hub.docker.com/r/oven/bun/tags
 FROM oven/bun:1 AS base
 WORKDIR /usr/src/
 
-# install dependencies into temp directory
-# this will cache them and speed up future builds
-FROM base AS install
-# RUN mkdir -p /temp/dev
-# COPY package.json bun.lock /temp/dev/
-# RUN cd /temp/dev && bun install --frozen-lockfile
+FROM base AS turbo
 
-# install with --production (exclude devDependencies)
-WORKDIR /temp/prod
+RUN bun --global add turbo@^2
 
-COPY package.json bun.lock .
-COPY generator/package.json ./generator/
-COPY app/package.json ./app/
-RUN bun install --frozen-lockfile --production --linker hoisted
+# prune repository
+FROM turbo AS prepare
 
-FROM base AS builder
-# COPY --from=install /temp/dev/node_modules node_modules
 COPY . .
 
-# copy production dependencies and source code into final image
+RUN turbo prune @pssbletrngle/webhooks-server --docker
+
+# install dependencies and build project
+FROM turbo AS builder
+
+COPY --from=prepare /usr/src/out/json/ .
+RUN bun install --frozen-lockfile --production
+
+COPY --from=prepare /usr/src/out/full/ .
+RUN bun run build
+
+# run the app
 FROM base AS runner
 
 ENV NODE_ENV=production
 
-COPY --from=install /temp/prod/node_modules node_modules
-
-COPY --from=builder /usr/src/app/src ./app/src
-COPY --from=builder /usr/src/app/package.json ./app/
-
-COPY --from=builder /usr/src/generator/src ./generator/src
-COPY --from=builder /usr/src/generator/package.json ./generator/
+COPY --from=builder --chown=bun:bun /usr/src/app/dist ./app
+# required for generator metadata
+# COPY generator/package.json generator/
+# COPY generator/templates generator/templates
 
 ENV GITHUB_APP_PRIVATE_KEY_FILE=/usr/private-key.pem
 ENV GIT_CLONE_DIR=/usr/tmp
-RUN mkdir $GIT_CLONE_DIR
-RUN chown bun:bun $GIT_CLONE_DIR
+RUN mkdir "$GIT_CLONE_DIR" && chown bun:bun "$GIT_CLONE_DIR"
 
-# run the app
 USER bun
 EXPOSE 8080/tcp
-ENTRYPOINT [ "bun", "run", "app/src/main.ts" ]
+ENTRYPOINT [ "bun", "run", "app/main.js" ]

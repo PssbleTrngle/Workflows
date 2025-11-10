@@ -138,8 +138,10 @@ export async function cloneAndModify<T extends ActionResult>(
     );
     rmSync(repositoryPath, { recursive: true });
     return result;
-  } catch (ex: any) {
-    console.error(`<- an error occurred executing action: ${ex.message}`);
+  } catch (ex) {
+    if (ex instanceof Error) {
+      console.error(`<- an error occurred executing action: ${ex.message}`);
+    }
     rmSync(repositoryPath, { recursive: true });
     throw ex;
   }

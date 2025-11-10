@@ -1,12 +1,9 @@
-import type { WebhookEventDefinition } from "@octokit/webhooks/types";
 import {
   validateConfig,
   type ConfigSchema,
 } from "@pssbletrngle/github-meta-generator";
 import type { Octokit } from "octokit";
 import { configPath } from "./generator";
-
-type Repository = WebhookEventDefinition<"push">["repository"];
 
 type RepoSearch = {
   owner: string;
@@ -49,18 +46,9 @@ export type MetadataContext = {
 
 export async function createMetadataContext(
   octokit: Octokit,
-  repository: Repository,
+  search: RepoSearch,
   branch: string
 ) {
-  const owner = repository.owner?.name;
-  if (!owner)
-    throw new Error(`owner missing for repository ${repository.full_name}`);
-
-  const search = {
-    owner,
-    repo: repository.name,
-  };
-
   const [config, branches] = await Promise.all([
     fetchConfig(octokit, branch, search),
     fetchBranches(octokit, search),

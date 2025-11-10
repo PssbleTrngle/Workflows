@@ -31,6 +31,15 @@ app.webhooks.onError((error) => {
 app.webhooks.on("push", async ({ payload, octokit }) => {
   const { commits, ref, repository, installation } = payload;
 
+  const owner = repository.owner?.login;
+  if (!owner)
+    throw new Error(`owner missing for repository ${repository.full_name}`);
+
+  const repo = {
+    owner,
+    repo: repository.name,
+  };
+
   if (commits.some(shouldTriggerUpdate)) {
     app.log.info(`config changed for ${repository.full_name}`);
 
@@ -45,7 +54,7 @@ app.webhooks.on("push", async ({ payload, octokit }) => {
     if (!branch)
       throw new Error(`unable to decode branch name from ref '${ref}'`);
 
-    const context = await createMetadataContext(octokit, repository, branch);
+    const context = await createMetadataContext(octokit, repo, branch);
     if (!context) return;
 
     const checkout =
@@ -63,8 +72,7 @@ app.webhooks.on("push", async ({ payload, octokit }) => {
 
     if (checkout) {
       const search = {
-        owner: repository.owner?.name!,
-        repo: repository.name,
+        ...repo,
         base: branch,
         head: checkout,
       };

@@ -1,9 +1,5 @@
 {
   "name": "@pssbletrngle/webhooks-ui",
-  "dependencies": {
-    "@astrojs/node": "^9.5.0",
-    "astro": "^5.15.3"
-  },
   "exports": {
     ".": "./dist/server/entry.mjs"
   },
@@ -11,10 +7,20 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "lint": "eslint src",
+    "check-types": "tsc --noEmit"
   },
   "type": "module",
+  "dependencies": {
+    "@astrojs/node": "^9.5.0",
+    "astro": "^5.15.4",
+    "octokit": "^5.0.4"
+  },
+  "peerDependencies": {
+    "zod": "^3.25.76"
+  },
   "devDependencies": {
-    "htmx.org": "^2.0.8"
+    "eslint-plugin-astro": "^1.5.0"
   }
 }

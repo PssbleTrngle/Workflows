@@ -1,5 +1,5 @@
 <meta>
-   <source>{{ link }}</source>
+   <source>{{ source }}</source>
    <version>{{ version }}</version>
    <timestamp>{{ generatedAt }}</timestamp>
 </meta>

@@ -1,9 +1,9 @@
-import { compileFile } from "../load";
+import { loadTemplate } from "../../dist/templates";
 
 const partialFiles = ["java.yml"];
 
 async function loadPartial(file: string) {
-  const template = await compileFile("workflows", file);
+  const template = await loadTemplate("workflows", file);
   const name = file.substring(0, file.indexOf("."));
   return [name, template];
 }

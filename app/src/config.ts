@@ -1,6 +1,9 @@
-import dotenv from "dotenv";
+const dev = process.env.NODE_ENV !== "production";
 
-dotenv.config({ path: [".env.dev", ".env.local"] });
+if (dev) {
+  const dotenv = await import("dotenv");
+  dotenv.config({ path: [".env.dev", ".env.local"] });
+}
 
 function env(key: string) {
   return process.env[key];
@@ -29,6 +32,7 @@ async function requireFile(path: string) {
 }
 
 export default {
+  dev,
   app: {
     id: requireEnv("GITHUB_APP_ID"),
     privateKey: await requireFile(requireEnv("GITHUB_APP_PRIVATE_KEY_FILE")),
