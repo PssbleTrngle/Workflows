@@ -1,11 +1,12 @@
 import type { WebhookEventDefinition } from "@octokit/webhooks/types";
+import { configPath } from "@pssbletrngle/github-meta-generator";
 import { App, createNodeMiddleware } from "octokit";
 import config from "../config";
 import { cloneAndModify } from "../git";
 import createGitUser from "../user";
 import createApiRoutes from "./api";
 import { createMetadataContext } from "./branches";
-import { configPath, updateMetadataFiles } from "./generator";
+import { updateMetadataFiles } from "./generator";
 import createUIMiddlware from "./ui";
 
 const app = new App({
@@ -67,7 +68,7 @@ app.webhooks.on("push", async ({ payload, octokit }) => {
       user,
       (path) => updateMetadataFiles(path, context),
       branch,
-      checkout,
+      checkout
     );
 
     if (checkout) {
