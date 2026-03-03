@@ -11,6 +11,9 @@
     "build": "bun build --outdir ./dist --target=bun --sourcemap=linked --env disable src/main.ts"
   },
   "peerDependencies": {
+    "@octokit/oauth-app": "^8.0.3",
+    "@octokit/webhooks": "^14.2.0",
+    "@types/express-serve-static-core": "^5.0.0",
     "typescript": "^5"
   },
   "dependencies": {
