@@ -1,4 +1,4 @@
-// Bun Snapshot v1, https://goo.gl/fbAQLP
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
 
 exports[`minecraft bug templates generates bug template without loader and versions: bug template without loader and versions 1`] = `
 "# <meta>

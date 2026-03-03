@@ -46,9 +46,13 @@ const commonSchema = z.object({
     .default(true)
     .describe("generate issue templates"),
   configs: z.boolean().default(true).describe("generate config files"),
+  assignee: z
+    .string()
+    .optional()
+    .describe("assignee to be used in issue templates"),
   overwrite: z
     .enum(["generated", "always"])
-    .default("always")
+    .default("generated")
     .describe("whether to only overwrite generated files or any file"),
   strategy: z
     .enum(["pull_request", "push"])

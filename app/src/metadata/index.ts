@@ -6,6 +6,7 @@ import { cloneAndModify } from "../git";
 import createGitUser from "../user";
 import createApiRoutes from "./api";
 import { createMetadataContext } from "./branches";
+import { saveStatus } from "./cache";
 import { updateMetadataFiles } from "./generator";
 import createUIMiddlware from "./ui";
 
@@ -41,58 +42,68 @@ app.webhooks.on("push", async ({ payload, octokit }) => {
     repo: repository.name,
   };
 
-  if (commits.some(shouldTriggerUpdate)) {
-    app.log.info(`config changed for ${repository.full_name}`);
+  if (commits.some(shouldTriggerUpdate))
+    try {
+      app.log.info(`config changed for ${repository.full_name}`);
 
-    if (!installation) {
-      octokit.log.warn(`installation missing for ${repository.full_name}`);
-      return;
+      if (!installation) {
+        octokit.log.warn(`installation missing for ${repository.full_name}`);
+        return;
+      }
+
+      await saveStatus(repo, "running");
+
+      const user = await createGitUser({ repository, installation }, octokit);
+
+      const [, branch] = /^refs\/heads\/(.+)$/.exec(ref) ?? [];
+      if (!branch)
+        throw new Error(`unable to decode branch name from ref '${ref}'`);
+
+      const context = await createMetadataContext(octokit, repo, branch);
+      if (!context) return;
+
+      const checkout =
+        context.config.strategy === "pull_request"
+          ? `metadata/${branch}`
+          : undefined;
+
+      await cloneAndModify(
+        repository,
+        user,
+        (path) => updateMetadataFiles(path, context),
+        branch,
+        checkout,
+      );
+
+      if (checkout) {
+        const search = {
+          ...repo,
+          base: branch,
+          head: checkout,
+        };
+        const { data: openPRs } = await octokit.rest.pulls.list({
+          ...search,
+          head: `${repo.owner}:${checkout}`,
+          state: "open",
+        });
+        if (openPRs.length) return;
+
+        await octokit.rest.pulls.create({
+          ...search,
+          title: "Generate Metadata Files",
+        });
+
+        console.info("-> created pull request");
+
+        await saveStatus(repo, "opened-pr");
+      } else {
+        await saveStatus(repo, "up-to-date");
+      }
+
+      console.info(`<- finished metafile update for ${repository.full_name}`);
+    } catch {
+      await saveStatus(repo, "failed");
     }
-
-    const user = await createGitUser({ repository, installation }, octokit);
-
-    const [, branch] = /^refs\/heads\/(.+)$/.exec(ref) ?? [];
-    if (!branch)
-      throw new Error(`unable to decode branch name from ref '${ref}'`);
-
-    const context = await createMetadataContext(octokit, repo, branch);
-    if (!context) return;
-
-    const checkout =
-      context.config.strategy === "pull_request"
-        ? `metadata/${branch}`
-        : undefined;
-
-    await cloneAndModify(
-      repository,
-      user,
-      (path) => updateMetadataFiles(path, context),
-      branch,
-      checkout,
-    );
-
-    if (checkout) {
-      const search = {
-        ...repo,
-        base: branch,
-        head: checkout,
-      };
-      const { data: openPRs } = await octokit.rest.pulls.list({
-        ...search,
-        state: "open",
-      });
-      if (openPRs.length) return;
-
-      await octokit.rest.pulls.create({
-        ...search,
-        title: "Generate Metadata Files",
-      });
-
-      console.info("-> created pull request");
-    }
-
-    console.info(`<- finished metafile update for ${repository.full_name}`);
-  }
 });
 
 const appMiddleware = createNodeMiddleware(app);

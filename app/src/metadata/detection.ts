@@ -2,12 +2,18 @@ import { validateConfig } from "@pssbletrngle/github-meta-generator";
 import { packageManagerSchema } from "../../../generator/src/config";
 import type { MetadataContext } from "./branches";
 
+function uniq<T>(values: T[]): T[] {
+  return values.filter((v, i, a) => a.indexOf(v) === i);
+}
+
 function detect(branches: string[], pattern: RegExp): string[] {
-  return branches
-    .map((branch) => pattern.exec(branch))
-    .map((it) => it?.[1] as string)
-    .filter((it) => !!it)
-    .filter((it) => !it.startsWith("metadata/"));
+  return uniq(
+    branches
+      .map((branch) => pattern.exec(branch))
+      .map((it) => it?.[1] as string)
+      .filter((it) => !!it)
+      .filter((it) => !it.startsWith("metadata/")),
+  );
 }
 
 function detectLoadersFrom(branches: string[]) {

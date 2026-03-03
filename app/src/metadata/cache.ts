@@ -4,7 +4,7 @@ export type RepositoryStatus =
   | "opened-pr"
   | "up-to-date"
   | "running"
-  | "not-set-up";
+  | "failed";
 
 const statusPrefix = "metadata:status:";
 const statusKey = ({ owner, repo }: Repository) =>

@@ -17,8 +17,6 @@ exports[`minecaft issue labeler generates labeler config without loader and sing
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
 # </meta>
 
-1.21.1:
-  - "1.21.1"
 "
 `;
 
@@ -29,9 +27,9 @@ exports[`minecaft issue labeler generates labeler config without loader and mult
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
 # </meta>
 
-1.20.1:
+1.20.1.x:
   - "1.20.1"
-1.21.1:
+1.21.1.x:
   - "1.21.1"
 "
 `;
@@ -43,8 +41,6 @@ exports[`minecaft issue labeler generates labeler config single loader and no ve
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
 # </meta>
 
-neoforge:
-  - "neoforge"
 "
 `;
 
@@ -73,9 +69,6 @@ neoforge:
   - "neoforge"
 fabric:
   - "fabric"
-
-1.21.1:
-  - "1.21.1"
 "
 `;
 
@@ -91,9 +84,9 @@ neoforge:
 fabric:
   - "fabric"
 
-1.20.1:
+1.20.1.x:
   - "1.20.1"
-1.21.1:
+1.21.1.x:
   - "1.21.1"
 "
 `;

@@ -1,5 +1,7 @@
 ---
-const { value } = Astro.props;
+const { value } = Astro.props as {
+  value: string;
+};
 ---
 
 <span class="status">{value}</span>

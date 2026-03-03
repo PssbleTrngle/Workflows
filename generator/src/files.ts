@@ -48,10 +48,10 @@ export async function generateInFolder(
 
   console.info(`-> generating files...`);
   await generateWithConfig(config, async (path, content) => {
-    console.info(`     created ${path}`);
     const file = Bun.file(join(repositoryPath, path));
 
     if (await shouldModify(file, config)) {
+      console.info(`     created ${path}`);
       await file.write(content);
     }
   });

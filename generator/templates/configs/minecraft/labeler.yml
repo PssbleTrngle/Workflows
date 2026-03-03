@@ -1,9 +1,13 @@
+{{#if (multiple loaders.length)}}
 {{#each loaders as |loader|}}     
 {{ loader }}:
   - "{{ loader }}" 
 {{/each}}
+{{/if}}
 
+{{#if (multiple versions.length)}}
 {{#each versions as |version|}}       
-{{ version }}:
+{{ version }}.x:
   - "{{ version }}" 
 {{/each}}
+{{/if}}

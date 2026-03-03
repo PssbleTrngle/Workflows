@@ -3,7 +3,12 @@ import { type App } from "octokit";
 import z from "zod";
 import { cutoff } from "../error";
 import { authorize, type AuthenticatedResponse } from "./auth";
-import { getStatus, getStatuses, saveStatus } from "./cache";
+import {
+  getStatus,
+  getStatuses,
+  saveStatus,
+  type RepositoryStatus,
+} from "./cache";
 
 export default function createApiRoutes(_: App) {
   const router = Router();
@@ -17,7 +22,7 @@ export default function createApiRoutes(_: App) {
     async (req, res: AuthenticatedResponse) => {
       // TODO authorization guard
       const status = await getStatus(req.params);
-      res.json({ status: status ?? "not-set-up" });
+      res.json({ status: status });
     },
   );
 
@@ -47,7 +52,7 @@ export default function createApiRoutes(_: App) {
   router.post("/setup", async (req, res) => {
     const data = setupParams.parse(req.body);
 
-    const status = "not-set-up";
+    const status: RepositoryStatus = "up-to-date";
     for (const entry of data) {
       await saveStatus(entry, status);
     }

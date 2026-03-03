@@ -24,7 +24,7 @@ const { status, repo } = Astro.props as Props;
     status ? (
       <Status value={status} />
     ) : (
-      <form hx-post="/metadata/action/setup">
+      <form hx-post="/metadata/action/setup" hx-swap="outerHTML">
         <input type="hidden" name="owner" value={repo.owner.login} />
         <input type="hidden" name="repo" value={repo.name} />
         <button>Setup</button>

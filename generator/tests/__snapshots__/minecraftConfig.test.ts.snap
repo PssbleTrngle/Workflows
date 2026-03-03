@@ -1,4 +1,4 @@
-// Bun Snapshot v1, https://goo.gl/fbAQLP
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
 
 exports[`minecraft workflow generation generates workflows with uploads: release workflow with all uploads 1`] = `
 "# <meta>
@@ -39,12 +39,12 @@ jobs:
         with:
           arguments: build publish
         env:
-          MODRINTH_TOKEN: \${{secrets.MODRINTH_TOKEN}}
-          CURSEFORGE_TOKEN: \${{secrets.CURSEFORGE_TOKEN}}
-          CHANGELOG: \${{github.event.release.body}}
-          RELEASE_VERSION: \${{github.event.release.tag_name}}
-          GITHUB_TOKEN: \${{secrets.GITHUB_TOKEN}}
-          NEXUS_USER: \${{secrets.NEXUS_USER}}
-          NEXUS_TOKEN: \${{secrets.NEXUS_TOKEN}}
+          MODRINTH_TOKEN: \${{ secrets.MODRINTH_TOKEN }}
+          CURSEFORGE_TOKEN: \${{ secrets.CURSEFORGE_TOKEN }}
+          CHANGELOG: \${{ github.event.release.body }}
+          RELEASE_VERSION: \${{ github.event.release.tag_name }}
+          GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+          NEXUS_USER: \${{ secrets.NEXUS_USER }}
+          NEXUS_TOKEN: \${{ secrets.NEXUS_TOKEN }}
 "
 `;
