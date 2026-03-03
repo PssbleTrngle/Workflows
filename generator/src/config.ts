@@ -45,6 +45,7 @@ const commonSchema = z.object({
     .boolean()
     .default(true)
     .describe("generate issue templates"),
+  configs: z.boolean().default(true).describe("generate config files"),
   overwrite: z
     .enum(["generated", "always"])
     .default("always")

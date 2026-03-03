@@ -5,7 +5,7 @@ describe("minecraft test workflows", () => {
   it("generates test workflow without sonar", async () => {
     const generated = await generateWorkflow(["minecraft", "test.yml"]);
     expect(generated).toMatchSnapshot(
-      "test workflow with push and pull_request"
+      "test workflow with push and pull_request",
     );
   });
 

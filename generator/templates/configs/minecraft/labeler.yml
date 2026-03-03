@@ -1,0 +1,9 @@
+{{#each loaders as |loader|}}     
+{{ loader }}:
+  - "{{ loader }}" 
+{{/each}}
+
+{{#each versions as |version|}}       
+{{ version }}:
+  - "{{ version }}" 
+{{/each}}

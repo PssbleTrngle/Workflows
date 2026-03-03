@@ -7,17 +7,19 @@ describe("minecraft workflow generation", () => {
   it("generates workflows without sonar", async () => {
     const config = await loadConfigFixture(
       "minecraft",
-      "configWithLoaders.json"
+      "configWithLoaders.json",
     );
 
     const acceptor = createTestAcceptor();
 
     await generateWithConfig(config, acceptor);
 
-    expect(acceptor.count()).toBe(5);
+    expect(acceptor.count()).toBe(7);
+    acceptor.expect(".github/labeler.yml").not.toBeUndefined();
     acceptor.expect(".github/workflows/sonar.yml").toBeUndefined();
     acceptor.expect(".github/workflows/release.yml").not.toBeUndefined();
     acceptor.expect(".github/workflows/test.yml").not.toBeUndefined();
+    acceptor.expect(".github/workflows/labeler.yml").not.toBeUndefined();
 
     acceptor
       .expect(".github/ISSUE_TEMPLATE/bug_report.yml")
@@ -36,16 +38,18 @@ describe("minecraft workflow generation", () => {
 
     await generateWithConfig(config, acceptor);
 
-    expect(acceptor.count()).toBe(3);
+    expect(acceptor.count()).toBe(5);
+    acceptor.expect(".github/labeler.yml").not.toBeUndefined();
     acceptor.expect(".github/workflows/sonar.yml").not.toBeUndefined();
     acceptor.expect(".github/workflows/release.yml").not.toBeUndefined();
     acceptor.expect(".github/workflows/test.yml").not.toBeUndefined();
+    acceptor.expect(".github/workflows/labeler.yml").not.toBeUndefined();
   });
 
   it("generates workflows with uploads", async () => {
     const config = await loadConfigFixture(
       "minecraft",
-      "configWithUploads.json"
+      "configWithUploads.json",
     );
 
     const acceptor = createTestAcceptor();

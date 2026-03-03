@@ -1,6 +1,7 @@
 import { join } from "node:path";
 import { listTemplates } from "../dist/templates";
 import type { ConfigSchema } from "./config";
+import { generateConfig } from "./configs/generate";
 import { generateIssueTemplate } from "./issueTemplates/generate";
 import { generateWorkflow } from "./workflows/generate";
 
@@ -23,6 +24,7 @@ const schemaTypes: SchemaType[] = [
     generate: generateIssueTemplate,
   },
   { key: "workflows", path: ".github/workflows", generate: generateWorkflow },
+  { key: "configs", path: ".github", generate: generateConfig },
 ];
 
 function check(config: ConfigSchema, key: string) {

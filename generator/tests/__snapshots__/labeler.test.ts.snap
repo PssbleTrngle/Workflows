@@ -1,0 +1,99 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`minecaft issue labeler generates labeler config without loader and versions: labeler config without loader and versions 1`] = `
+"# <meta>
+#    <source>@pssbletrngle/github-meta-generator</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+# </meta>
+
+"
+`;
+
+exports[`minecaft issue labeler generates labeler config without loader and single version: labeler config without loader and single version 1`] = `
+"# <meta>
+#    <source>@pssbletrngle/github-meta-generator</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+# </meta>
+
+1.21.1:
+  - "1.21.1"
+"
+`;
+
+exports[`minecaft issue labeler generates labeler config without loader and multiple versions: labeler config without loader and multiple versions 1`] = `
+"# <meta>
+#    <source>@pssbletrngle/github-meta-generator</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+# </meta>
+
+1.20.1:
+  - "1.20.1"
+1.21.1:
+  - "1.21.1"
+"
+`;
+
+exports[`minecaft issue labeler generates labeler config single loader and no versions: labeler config single loader and no versions 1`] = `
+"# <meta>
+#    <source>@pssbletrngle/github-meta-generator</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+# </meta>
+
+neoforge:
+  - "neoforge"
+"
+`;
+
+exports[`minecaft issue labeler generates labeler config multiple loaders and no versions: labeler config multiple loaders and no versions 1`] = `
+"# <meta>
+#    <source>@pssbletrngle/github-meta-generator</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+# </meta>
+
+neoforge:
+  - "neoforge"
+fabric:
+  - "fabric"
+"
+`;
+
+exports[`minecaft issue labeler generates labeler config multiple loaders and single version: labeler config multiple loaders and single version 1`] = `
+"# <meta>
+#    <source>@pssbletrngle/github-meta-generator</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+# </meta>
+
+neoforge:
+  - "neoforge"
+fabric:
+  - "fabric"
+
+1.21.1:
+  - "1.21.1"
+"
+`;
+
+exports[`minecaft issue labeler generates labeler config multiple loaders and multiple versions: labeler config multiple loaders and multiple versions 1`] = `
+"# <meta>
+#    <source>@pssbletrngle/github-meta-generator</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+# </meta>
+
+neoforge:
+  - "neoforge"
+fabric:
+  - "fabric"
+
+1.20.1:
+  - "1.20.1"
+1.21.1:
+  - "1.21.1"
+"
+`;
