@@ -1,9 +1,15 @@
 ---
-import type { components } from "@octokit/openapi-types";
 import Status from "./Status.astro";
 
 type Props = {
-  repo: components["schemas"]["repository"];
+  repo: {
+    html_url: string;
+    full_name: string;
+    name: string;
+    owner: {
+      login: string;
+    };
+  };
   status: string;
 };
 

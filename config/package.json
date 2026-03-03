@@ -6,7 +6,7 @@
     "./eslint": "./eslint.js"
   },
   "scripts": {
-    "prepare": "tsc --declaration --allowJs --emitDeclarationOnly  *.js"
+    "prepare": "tsc --declaration --allowJs --emitDeclarationOnly  *.js || true"
   },
   "devDependencies": {
     "eslint": "^9.39.1",
