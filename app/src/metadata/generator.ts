@@ -5,7 +5,7 @@ import detectProperties from "./detection";
 
 export async function updateMetadataFiles(
   repositoryPath: string,
-  context: MetadataContext
+  context: MetadataContext,
 ): Promise<ActionResult> {
   const config = await detectProperties(repositoryPath, context);
 

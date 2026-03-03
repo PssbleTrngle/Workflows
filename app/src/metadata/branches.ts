@@ -18,7 +18,7 @@ async function fetchBranches(octokit: Octokit, search: RepoSearch) {
 async function fetchConfig(
   octokit: Octokit,
   branch: string,
-  search: RepoSearch
+  search: RepoSearch,
 ) {
   const { data } = await octokit.rest.repos.getContent({
     ...search,
@@ -47,7 +47,7 @@ export type MetadataContext = {
 export async function createMetadataContext(
   octokit: Octokit,
   search: RepoSearch,
-  branch: string
+  branch: string,
 ) {
   const [config, branches] = await Promise.all([
     fetchConfig(octokit, branch, search),

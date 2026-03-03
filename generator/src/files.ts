@@ -24,7 +24,7 @@ async function cleanupMetafiles(path: string): Promise<void> {
           console.info(`     deleted previously generated file ${name}`);
         }
       }
-    })
+    }),
   );
 }
 
@@ -40,7 +40,7 @@ async function shouldModify(file: BunFile, config: ConfigSchema) {
 
 export async function generateInFolder(
   repositoryPath: string,
-  config: ConfigSchema
+  config: ConfigSchema,
 ) {
   console.info(`-> found config for type ${config.type}`);
 

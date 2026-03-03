@@ -1,5 +1,6 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "@pssbletrngle/github-meta",
@@ -58,13 +59,13 @@
     "ui": {
       "name": "@pssbletrngle/webhooks-ui",
       "dependencies": {
-        "@astrojs/check": "^0.9.5",
         "@astrojs/node": "^9.5.0",
         "astro": "^5.15.4",
         "octokit": "^5.0.4",
         "typescript": "^5.9.3",
       },
       "devDependencies": {
+        "@astrojs/check": "^0.9.5",
         "@pssbletrngle/webhooks-configs": "workspace:*",
       },
       "peerDependencies": {
