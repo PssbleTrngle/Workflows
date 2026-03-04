@@ -36,7 +36,7 @@ jobs:
            id: meta
            uses: docker/metadata-action@v5
            with:
-              images: ${{ env.REGISTRY }}/${{ env.GITHUB_REPO }}-dashboard
+              images: ${{ env.REGISTRY }}/${{ env.GITHUB_REPO }}
               tags: |
                  type=raw,value=latest
                  type=raw,value=stable,enable=${{ github.event_name == 'release' }}
