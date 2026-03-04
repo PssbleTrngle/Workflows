@@ -9,5 +9,6 @@ const { error } = Astro.props;
 ---
 
 <Layout>
-  {error.message}
+  <h1>Internal Server Error</h1>
+  <p>{error.message}</p>
 </Layout>

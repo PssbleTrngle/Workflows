@@ -1,0 +1,52 @@
+name: Publish Docker Image
+
+on:
+   workflow_dispatch:
+   push:
+      branches: [main]
+   release:
+      types: [published]
+
+concurrency:
+   group: ${{ github.workflow }}-${{ github.ref }}
+   cancel-in-progress: true
+
+env:
+   REGISTRY: ghcr.io
+   GITHUB_REPO: ${{ github.repository }}
+
+jobs:
+   docker:
+      permissions:
+         contents: read
+         packages: write
+
+      runs-on: ubuntu-latest
+      steps:
+         - uses: actions/checkout@v6
+
+         - name: Log in to the Container registry
+           uses: docker/login-action@v4
+           with:
+              registry: ${{ env.REGISTRY }}
+              username: ${{ github.actor }}
+              password: ${{ secrets.GITHUB_TOKEN }}
+
+         - name: Extract metadata (tags, labels) for Docker
+           id: meta
+           uses: docker/metadata-action@v5
+           with:
+              images: ${{ env.REGISTRY }}/${{ env.GITHUB_REPO }}-dashboard
+              tags: |
+                 type=raw,value=latest
+                 type=raw,value=stable,enable=${{ github.event_name == 'release' }}
+                 type=semver,pattern={{version}},enable=${{ github.event_name == 'release' }}
+                 type=sha,priority=250,enable=${{ github.event_name != 'release' }}
+
+         - name: Build and push Docker image
+           uses: docker/build-push-action@v6
+           with:
+              context: .
+              push: true
+              tags: ${{ steps.meta.outputs.tags }}
+              labels: ${{ steps.meta.outputs.labels }}

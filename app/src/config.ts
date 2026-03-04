@@ -55,3 +55,5 @@ export default {
     port: intEnv("REDIS_PORT") ?? 6379,
   },
 };
+
+console.debug("loaded config");

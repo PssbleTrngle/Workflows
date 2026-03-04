@@ -1,7 +1,7 @@
 export class ApiError extends Error {
   constructor(
     message: string,
-    public readonly status: number
+    public readonly status: number,
   ) {
     super(message);
   }
@@ -27,7 +27,7 @@ export type ApiClient = {
 
 export default function createApiClient(
   origin: string,
-  token: string
+  token: string,
 ): ApiClient {
   async function request<T>(endpoint: string, init: RequestInit = {}) {
     const url = new URL(endpoint, `${origin}/metadata/api/`);
@@ -51,7 +51,7 @@ export default function createApiClient(
   async function submit<T>(
     endpoint: string,
     data: unknown,
-    init: RequestInit = {}
+    init: RequestInit = {},
   ) {
     return request<T>(endpoint, {
       method: "POST",

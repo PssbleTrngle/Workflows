@@ -11,8 +11,7 @@
       "dev": "turbo dev",
       "check": "turbo check-types lint test",
       "format": "turbo format",
-      "build": "turbo build",
-      "prepare": "git-hooks"
+      "build": "turbo build"
    },
    "git-hooks": {
       "pre-commit": "bun format",
