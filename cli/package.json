@@ -1,0 +1,38 @@
+{
+  "name": "@pssbletrngle/github-meta-generator-cli",
+  "type": "module",
+  "exports": {
+    ".": "./src/main.ts"
+  },
+  "bin": {
+    "metagen": "./dist/main.js"
+  },
+  "files": [
+    "dist/**/*.js"
+  ],
+  "scripts": {
+    "build": "bun build --outdir ./dist --target=bun --sourcemap=linked --env disable src/main.ts",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src",
+    "format": "biome format --write src"
+  },
+  "dependencies": {
+    "@pssbletrngle/github-meta-generator": "workspace:*",
+    "@types/bun": "latest",
+    "prompts": "^2.4.2"
+  },
+  "devDependencies": {
+    "@pssbletrngle/webhooks-configs": "workspace:*",
+    "@types/prompts": "^2.4.9"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PssbleTrngle/Workflows.git"
+  }
+}

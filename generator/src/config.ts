@@ -62,6 +62,10 @@ const commonSchema = z.object({
 
 const schema = webSchema.or(minecraftSchema).and(commonSchema);
 
+type CommonSchema = z.infer<typeof commonSchema>;
+export type MinecraftConfigSchema = z.infer<typeof minecraftSchema> &
+  CommonSchema;
+export type WebConfigSchema = z.infer<typeof webSchema> & CommonSchema;
 export type ConfigSchema = z.infer<typeof schema>;
 
 const resolvedSchema = schema.superRefine((data, context) => {

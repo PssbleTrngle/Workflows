@@ -12,8 +12,7 @@
     "gen:templates": "bun run scripts/templates.ts",
     "lint": "eslint {src,scripts}",
     "format": "biome format --write src",
-    "test": "bun test",
-    "cli": "bun run src/cli.ts"
+    "test": "bun test"
   },
   "dependencies": {
     "@types/bun": "latest",
