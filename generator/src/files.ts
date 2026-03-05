@@ -1,11 +1,10 @@
-import {
-  generateWithConfig,
-  isGenerated,
-  type ConfigSchema,
-} from "@pssbletrngle/github-meta-generator";
 import type { BunFile } from "bun";
 import { readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
+import meta from "../dist/meta.json";
+import type { ConfigSchema } from "./config";
+import { generateWithConfig } from "./generator";
+import { isGenerated, type Meta } from "./meta";
 
 export const configPath = ".github/metadata-config.json";
 
@@ -41,7 +40,7 @@ async function shouldModify(file: BunFile, config: ConfigSchema) {
 export async function generateInFolder(
   repositoryPath: string,
   config: ConfigSchema,
-) {
+): Promise<Meta> {
   console.info(`-> found config for type ${config.type}`);
 
   await cleanupMetafiles(join(repositoryPath, ".github"));
@@ -55,4 +54,6 @@ export async function generateInFolder(
       await file.write(content);
     }
   });
+
+  return meta;
 }

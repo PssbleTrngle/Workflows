@@ -1,15 +1,36 @@
 ---
 import type { RepositoryStatus } from "@pssbletrngle/webhooks-types/metadata";
 
-const { value } = Astro.props as {
+const icons: Record<RepositoryStatus, string> = {
+  failed: "🧨",
+  "opened-pr": "🙏",
+  "up-to-date": "✅",
+  running: "🏃‍♂️",
+};
+
+const { branch, value } = Astro.props as {
+  branch: string;
   value: RepositoryStatus;
 };
+
+const icon = icons[value];
 ---
 
-<span class="status">{value}</span>
+<span class="status">
+  <span>{branch}</span>
+  <span class="value">{value} {icon}</span>
+  <slot />
+</span>
 
 <style scoped>
   .status {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 1em;
+  }
+
+  .value {
     background: #fff4;
     padding: 0.5em;
     border-radius: 9999px;

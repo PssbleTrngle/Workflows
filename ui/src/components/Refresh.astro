@@ -6,7 +6,7 @@ const { repo } = Astro.props as { repo: Repository };
 
 <form
   hx-post="/metadata/action/refresh"
-  hx-target="closest .panel"
+  hx-target="closest .status"
   hx-swap="outerHTML"
 >
   <input type="hidden" name="owner" value={repo.owner.login} />
@@ -19,6 +19,6 @@ const { repo } = Astro.props as { repo: Repository };
   button {
     background: transparent;
     padding: 0;
-    font-size: 2em;
+    font-size: 1.5em;
   }
 </style>

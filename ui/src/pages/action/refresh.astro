@@ -1,10 +1,10 @@
 ---
 import type { RepositoryStatus } from "@pssbletrngle/webhooks-types/metadata";
-import Panel from "../../components/Panel.astro";
+import Status from "../../components/Status.astro";
 
 export const partial = true;
 
-const { api, octokit } = Astro.locals;
+const { api } = Astro.locals;
 
 // TODO csrf token?
 // TODO validation?
@@ -12,14 +12,9 @@ const data = await Astro.request.formData();
 const owner = data.get("owner") as string;
 const repo = data.get("repo") as string;
 
-const { data: repository } = await octokit.rest.repos.get({
-  owner,
-  repo,
-});
-
 const { status } = await api.submit<{ status: RepositoryStatus }>("refresh", [
   { owner, repo },
 ]);
 ---
 
-<Panel status={status} repo={repository} />
+<Status value={status} branch="main" />

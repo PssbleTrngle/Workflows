@@ -2,24 +2,27 @@
 import type { Repository } from "@pssbletrngle/webhooks-types";
 import type { RepositoryStatus } from "@pssbletrngle/webhooks-types/metadata";
 import Refresh from "./Refresh.astro";
-import Setup from "./Setup.astro";
 import Status from "./Status.astro";
 
 type Props = {
   repo: Repository;
-  status?: RepositoryStatus;
+  status?: Record<string, RepositoryStatus>;
 };
 
-const { status, repo } = Astro.props as Props;
-const canRefresh = status !== "running" || true;
+const { status = {}, repo } = Astro.props as Props;
 ---
 
 <li class="panel">
   <a class="title" href={repo.html_url}>
     {repo.full_name}
   </a>
-  {status ? <Status value={status} /> : <Setup repo={repo} />}
-  {canRefresh && <Refresh repo={repo} />}
+  {
+    Object.entries(status).map(([branch, status]) => (
+      <Status branch={branch} value={status}>
+        <Refresh repo={repo} />
+      </Status>
+    ))
+  }
 </li>
 
 <style scoped>
@@ -30,20 +33,12 @@ const canRefresh = status !== "running" || true;
     border-radius: 10px;
 
     display: grid;
-    grid-template:
-      "title status" 2em
-      "description description"
-      / 1fr 100px;
+    grid-template-rows: repeat(auto-fit, 3em);
 
     padding: 1em;
   }
 
   .title {
     color: var(--text);
-    grid-area: title;
-  }
-
-  .status {
-    grid-area: status;
   }
 </style>

@@ -5,7 +5,7 @@ import { App, createNodeMiddleware } from "octokit";
 import config from "../config";
 import { createAppGitUser } from "../user";
 import createApiRoutes from "./api";
-import generateMetadata from "./execute";
+import generateMetadata from "./generator";
 import createUIMiddlware from "./ui";
 
 const app = new App({

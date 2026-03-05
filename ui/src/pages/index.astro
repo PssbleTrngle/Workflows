@@ -1,5 +1,8 @@
 ---
-import type { RepositoryStatus } from "@pssbletrngle/webhooks-types/metadata";
+import type {
+  RepositoryStatus,
+  StatusResult,
+} from "@pssbletrngle/webhooks-types/metadata";
 import Panel from "../components/Panel.astro";
 import Layout from "../layout.astro";
 
@@ -15,10 +18,21 @@ async function listRepos() {
   return data;
 }
 
-const [repos, statuses] = await Promise.all([
-  listRepos(),
-  api.request<Record<string, RepositoryStatus | undefined>>("status"),
-]);
+async function listStatuses() {
+  const entries = await api.request<StatusResult[]>("status");
+
+  const map: Record<string, Record<string, RepositoryStatus>> = {};
+
+  entries.forEach(({ search, status }) => {
+    const repository = `${search.owner}/${search.repo}`;
+    if (!(repository in map)) map[repository] = {};
+    map[repository][search.base] = status;
+  });
+
+  return map;
+}
+
+const [repos, statuses] = await Promise.all([listRepos(), listStatuses()]);
 ---
 
 <Layout>

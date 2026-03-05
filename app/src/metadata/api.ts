@@ -5,8 +5,8 @@ import z from "zod";
 import { cutoff } from "../error";
 import { createAuthenticatedGitUser } from "../user";
 import { authorize, type AuthenticatedResponse } from "./auth";
-import { getStatus, getStatuses } from "./cache";
-import generateMetadata from "./execute";
+import { getStatusesByOwner, getStatusesByRepository } from "./cache";
+import generateMetadata from "./generator";
 
 export default function createApiRoutes(_: App) {
   const router = Router();
@@ -19,7 +19,7 @@ export default function createApiRoutes(_: App) {
     "/status/:owner/:repo",
     async (req, res: AuthenticatedResponse) => {
       // TODO authorization guard
-      const status = await getStatus(req.params);
+      const status = await getStatusesByRepository(req.params);
       res.json({ status: status });
     },
   );
@@ -35,9 +35,8 @@ export default function createApiRoutes(_: App) {
       ...organizations.data.map((it) => it.login),
     ];
 
-    const statuses = await Promise.all(namespaces.map(getStatuses));
-    const merged = statuses.reduce((a, b) => ({ ...a, ...b }), {});
-    res.json(merged);
+    const statuses = await Promise.all(namespaces.map(getStatusesByOwner));
+    res.json(statuses.flat());
   });
 
   const repoParams = z.object({

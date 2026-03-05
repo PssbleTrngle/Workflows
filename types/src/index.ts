@@ -13,3 +13,9 @@ export type RepoSearch = {
   owner: string;
   repo: string;
 };
+
+export type RepoSearchWithBranch = {
+  owner: string;
+  repo: string;
+  base: string;
+};
