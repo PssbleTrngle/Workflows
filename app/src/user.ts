@@ -12,25 +12,47 @@ async function createUserInfo(octokit: Octokit) {
   return { name, email };
 }
 
+export type Installation = { id: number } | { token: string };
+
 type RequiredPayload = {
-  installation: { id: number };
   repository: { id: number };
+  installation: Installation;
 };
 
-export default async function createGitUser(
+async function extractToken(
+  { repository, installation }: RequiredPayload,
+  octokit: Octokit,
+) {
+  if ("token" in installation) return installation.token;
+
+  const tokenResponse = await octokit.rest.apps.createInstallationAccessToken({
+    installation_id: installation.id,
+    repository_ids: [repository.id],
+  });
+
+  return tokenResponse.data.token;
+}
+
+export async function createAppGitUser(
   payload: RequiredPayload,
   octokit: Octokit,
 ): Promise<GitUser> {
-  const [tokenResponse, userData] = await Promise.all([
-    octokit.rest.apps.createInstallationAccessToken({
-      installation_id: payload.installation.id,
-      repository_ids: [payload.repository.id],
-    }),
+  const [token, userData] = await Promise.all([
+    extractToken(payload, octokit),
     createUserInfo(octokit),
   ]);
 
   return {
-    token: tokenResponse.data.token,
+    token,
     ...userData,
   };
+}
+
+export async function createAuthenticatedGitUser(
+  token: string,
+  octokit: Octokit,
+): Promise<GitUser> {
+  const { data } = await octokit.rest.users.getAuthenticated();
+  if (!data.email) throw new Error("cannot commit without user email");
+  return { token, email: data.email, name: data.login };
 }

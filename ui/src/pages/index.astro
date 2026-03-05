@@ -1,4 +1,5 @@
 ---
+import type { RepositoryStatus } from "@pssbletrngle/webhooks-types/metadata";
 import Panel from "../components/Panel.astro";
 import Layout from "../layout.astro";
 
@@ -16,7 +17,7 @@ async function listRepos() {
 
 const [repos, statuses] = await Promise.all([
   listRepos(),
-  api.request<Record<string, string>>("status"),
+  api.request<Record<string, RepositoryStatus | undefined>>("status"),
 ]);
 ---
 

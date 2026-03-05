@@ -1,14 +1,12 @@
+import type { RepositoryStatus } from "@pssbletrngle/webhooks-types/metadata";
 import { json, Router } from "express";
 import { type App } from "octokit";
 import z from "zod";
 import { cutoff } from "../error";
+import { createAuthenticatedGitUser } from "../user";
 import { authorize, type AuthenticatedResponse } from "./auth";
-import {
-  getStatus,
-  getStatuses,
-  saveStatus,
-  type RepositoryStatus,
-} from "./cache";
+import { getStatus, getStatuses } from "./cache";
+import generateMetadata from "./execute";
 
 export default function createApiRoutes(_: App) {
   const router = Router();
@@ -42,19 +40,30 @@ export default function createApiRoutes(_: App) {
     res.json(merged);
   });
 
-  const setupParams = z.array(
-    z.object({
-      repo: z.string().nonempty(),
-      owner: z.string().nonempty(),
-    }),
-  );
+  const repoParams = z.object({
+    repo: z.string().nonempty(),
+    owner: z.string().nonempty(),
+  });
 
-  router.post("/setup", async (req, res) => {
-    const data = setupParams.parse(req.body);
+  const reposParams = z.array(repoParams);
+
+  router.post("/refresh", async (req, res: AuthenticatedResponse) => {
+    const data = reposParams.parse(req.body);
 
     const status: RepositoryStatus = "up-to-date";
+
+    const { octokit, token } = res.locals;
+    const user = await createAuthenticatedGitUser(token, octokit);
+
+    // TODO async, maybe in chunks?
     for (const entry of data) {
-      await saveStatus(entry, status);
+      const { data: repository } = await octokit.rest.repos.get(entry);
+
+      // use saved branches?
+      const branches = [repository.default_branch];
+      for (const branch of branches) {
+        await generateMetadata(repository, branch, octokit, user);
+      }
     }
 
     res.json({ success: true, status });

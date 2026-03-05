@@ -1,36 +1,25 @@
 ---
+import type { Repository } from "@pssbletrngle/webhooks-types";
+import type { RepositoryStatus } from "@pssbletrngle/webhooks-types/metadata";
+import Refresh from "./Refresh.astro";
+import Setup from "./Setup.astro";
 import Status from "./Status.astro";
 
 type Props = {
-  repo: {
-    html_url: string;
-    full_name: string;
-    name: string;
-    owner: {
-      login: string;
-    };
-  };
-  status: string;
+  repo: Repository;
+  status?: RepositoryStatus;
 };
 
 const { status, repo } = Astro.props as Props;
+const canRefresh = status !== "running" || true;
 ---
 
 <li class="panel">
   <a class="title" href={repo.html_url}>
     {repo.full_name}
   </a>
-  {
-    status ? (
-      <Status value={status} />
-    ) : (
-      <form hx-post="/metadata/action/setup" hx-swap="outerHTML">
-        <input type="hidden" name="owner" value={repo.owner.login} />
-        <input type="hidden" name="repo" value={repo.name} />
-        <button>Setup</button>
-      </form>
-    )
-  }
+  {status ? <Status value={status} /> : <Setup repo={repo} />}
+  {canRefresh && <Refresh repo={repo} />}
 </li>
 
 <style scoped>

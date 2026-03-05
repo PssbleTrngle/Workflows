@@ -1,0 +1,11 @@
+---
+import type { Repository } from "@pssbletrngle/webhooks-types";
+
+const { repo } = Astro.props as { repo: Repository };
+---
+
+<form hx-post="/metadata/action/setup" hx-swap="outerHTML">
+  <input type="hidden" name="owner" value={repo.owner.login} />
+  <input type="hidden" name="repo" value={repo.name} />
+  <button>Setup</button>
+</form>

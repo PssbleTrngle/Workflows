@@ -14,6 +14,7 @@
       "name": "@pssbletrngle/webhooks-server",
       "dependencies": {
         "@pssbletrngle/github-meta-generator": "workspace:*",
+        "@pssbletrngle/webhooks-types": "workspace:*",
         "@pssbletrngle/webhooks-ui": "workspace:*",
         "@types/bun": "latest",
         "@types/cookie-parser": "^1.4.10",
@@ -75,10 +76,21 @@
         "typescript": "^5",
       },
     },
+    "types": {
+      "name": "@pssbletrngle/webhooks-types",
+      "devDependencies": {
+        "@pssbletrngle/webhooks-configs": "workspace:*",
+        "@types/bun": "latest",
+      },
+      "peerDependencies": {
+        "typescript": "^5",
+      },
+    },
     "ui": {
       "name": "@pssbletrngle/webhooks-ui",
       "dependencies": {
         "@astrojs/node": "9.5.4",
+        "@pssbletrngle/webhooks-types": "workspace:*",
         "astro": "5.18.0",
         "octokit": "^5.0.4",
         "typescript": "^5.9.3",
@@ -347,6 +359,8 @@
     "@pssbletrngle/webhooks-configs": ["@pssbletrngle/webhooks-configs@workspace:config"],
 
     "@pssbletrngle/webhooks-server": ["@pssbletrngle/webhooks-server@workspace:app"],
+
+    "@pssbletrngle/webhooks-types": ["@pssbletrngle/webhooks-types@workspace:types"],
 
     "@pssbletrngle/webhooks-ui": ["@pssbletrngle/webhooks-ui@workspace:ui"],
 

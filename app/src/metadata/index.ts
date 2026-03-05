@@ -1,13 +1,11 @@
 import type { WebhookEventDefinition } from "@octokit/webhooks/types";
 import { configPath } from "@pssbletrngle/github-meta-generator";
+import type { Repository } from "@pssbletrngle/webhooks-types";
 import { App, createNodeMiddleware } from "octokit";
 import config from "../config";
-import { cloneAndModify } from "../git";
-import createGitUser from "../user";
+import { createAppGitUser } from "../user";
 import createApiRoutes from "./api";
-import { createMetadataContext } from "./branches";
-import { saveStatus } from "./cache";
-import { updateMetadataFiles } from "./generator";
+import generateMetadata from "./execute";
 import createUIMiddlware from "./ui";
 
 const app = new App({
@@ -33,77 +31,30 @@ app.webhooks.onError((error) => {
 app.webhooks.on("push", async ({ payload, octokit }) => {
   const { commits, ref, repository, installation } = payload;
 
-  const owner = repository.owner?.login;
-  if (!owner)
+  function isValidRepository(
+    value: typeof repository,
+  ): value is Repository & typeof repository {
+    return !!repository.owner?.login;
+  }
+
+  if (!isValidRepository(repository))
     throw new Error(`owner missing for repository ${repository.full_name}`);
 
-  const repo = {
-    owner,
-    repo: repository.name,
-  };
+  if (commits.some(shouldTriggerUpdate)) {
+    app.log.info(`config changed for ${repository.full_name}`);
 
-  if (commits.some(shouldTriggerUpdate))
-    try {
-      app.log.info(`config changed for ${repository.full_name}`);
-
-      if (!installation) {
-        octokit.log.warn(`installation missing for ${repository.full_name}`);
-        return;
-      }
-
-      await saveStatus(repo, "running");
-
-      const user = await createGitUser({ repository, installation }, octokit);
-
-      const [, branch] = /^refs\/heads\/(.+)$/.exec(ref) ?? [];
-      if (!branch)
-        throw new Error(`unable to decode branch name from ref '${ref}'`);
-
-      const context = await createMetadataContext(octokit, repo, branch);
-      if (!context) return;
-
-      const checkout =
-        context.config.strategy === "pull_request"
-          ? `metadata/${branch}`
-          : undefined;
-
-      await cloneAndModify(
-        repository,
-        user,
-        (path) => updateMetadataFiles(path, context),
-        branch,
-        checkout,
-      );
-
-      if (checkout) {
-        const search = {
-          ...repo,
-          base: branch,
-          head: checkout,
-        };
-        const { data: openPRs } = await octokit.rest.pulls.list({
-          ...search,
-          head: `${repo.owner}:${checkout}`,
-          state: "open",
-        });
-        if (openPRs.length) return;
-
-        await octokit.rest.pulls.create({
-          ...search,
-          title: "Generate Metadata Files",
-        });
-
-        console.info("-> created pull request");
-
-        await saveStatus(repo, "opened-pr");
-      } else {
-        await saveStatus(repo, "up-to-date");
-      }
-
-      console.info(`<- finished metafile update for ${repository.full_name}`);
-    } catch {
-      await saveStatus(repo, "failed");
+    if (!installation) {
+      octokit.log.warn(`installation missing for ${repository.full_name}`);
+      return;
     }
+
+    const [, branch] = /^refs\/heads\/(.+)$/.exec(ref) ?? [];
+    if (!branch)
+      throw new Error(`unable to decode branch name from ref '${ref}'`);
+
+    const user = await createAppGitUser({ repository, installation }, octokit);
+    await generateMetadata(repository, branch, octokit, user);
+  }
 });
 
 const appMiddleware = createNodeMiddleware(app);

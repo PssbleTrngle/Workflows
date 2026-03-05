@@ -34,6 +34,7 @@ type AuthenticationStrategy = "redirect" | "fail";
 
 export type AuthenticatedContext = {
   octokit: Octokit;
+  token: string;
 };
 
 export type AuthenticatedHandler = RequestHandler<
@@ -59,10 +60,11 @@ function extractToken(req: Request) {
 }
 
 function createHandler(strategy: AuthenticationStrategy): AuthenticatedHandler {
-  return (req, res, next) => {
+  return async (req, res, next) => {
     const token = extractToken(req);
 
     if (token) {
+      res.locals.token = token;
       res.locals.octokit = new Octokit({ auth: token });
       return next();
     }

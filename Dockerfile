@@ -25,6 +25,9 @@ RUN bun run build
 # run the app
 FROM base AS runner
 
+RUN apt-get -y update
+RUN apt-get -y install git
+
 ENV NODE_ENV=production
 
 COPY --from=builder --chown=bun:bun /usr/src/app/dist ./server

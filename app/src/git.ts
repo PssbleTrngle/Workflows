@@ -1,3 +1,4 @@
+import type { Repository } from "@pssbletrngle/webhooks-types";
 import { $ } from "bun";
 import { existsSync, mkdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
@@ -16,7 +17,6 @@ if (!existsSync(basePath)) {
 }
 
 type DuplicateBehaviour = "abort" | "skip" | "delete";
-type Repository = { clone_url: string; full_name: string };
 
 async function clone(
   repository: Repository,
@@ -52,9 +52,10 @@ async function clone(
 }
 
 async function detectChanges(path: string) {
-  const output = await $`git diff --quiet && git diff --cached --quiet `
-    .nothrow()
-    .cwd(path);
+  const output =
+    await $`git diff --cached --quiet --ignore-matching-lines="#\\s+<"`
+      .nothrow()
+      .cwd(path);
 
   return output.exitCode === 1;
 }

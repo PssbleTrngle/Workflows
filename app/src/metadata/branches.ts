@@ -3,12 +3,8 @@ import {
   validateConfig,
   type ConfigSchema,
 } from "@pssbletrngle/github-meta-generator";
+import type { RepoSearch } from "@pssbletrngle/webhooks-types";
 import type { Octokit } from "octokit";
-
-type RepoSearch = {
-  owner: string;
-  repo: string;
-};
 
 async function fetchBranches(octokit: Octokit, search: RepoSearch) {
   const { data } = await octokit.rest.repos.listBranches(search);

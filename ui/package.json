@@ -13,6 +13,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@pssbletrngle/webhooks-types": "workspace:*",
     "@astrojs/node": "9.5.4",
     "astro": "5.18.0",
     "octokit": "^5.0.4",

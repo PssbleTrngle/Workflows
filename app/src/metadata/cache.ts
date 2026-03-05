@@ -1,28 +1,19 @@
+import type { RepoSearch } from "@pssbletrngle/webhooks-types";
+import type { RepositoryStatus } from "@pssbletrngle/webhooks-types/metadata";
 import redis from "../redis";
 
-export type RepositoryStatus =
-  | "opened-pr"
-  | "up-to-date"
-  | "running"
-  | "failed";
-
 const statusPrefix = "metadata:status:";
-const statusKey = ({ owner, repo }: Repository) =>
+const statusKey = ({ owner, repo }: RepoSearch) =>
   statusPrefix + `${owner}:${repo}`;
 
-type Repository = {
-  owner: string;
-  repo: string;
-};
-
 export async function saveStatus(
-  repository: Repository,
+  repository: RepoSearch,
   status: RepositoryStatus,
 ) {
   await redis.set(statusKey(repository), status);
 }
 
-export function getStatus(repository: Repository) {
+export function getStatus(repository: RepoSearch) {
   return redis.get(statusKey(repository)) as Promise<RepositoryStatus | null>;
 }
 
