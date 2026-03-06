@@ -1,0 +1,23 @@
+{
+  "name": "@pssbletrngle/workflows-events",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src",
+    "format": "biome format --write src"
+  },
+  "dependencies": {
+    "@types/bun": "latest",
+    "amqplib": "^0.10.9"
+  },
+  "devDependencies": {
+    "@pssbletrngle/webhooks-configs": "workspace:*",
+    "@types/amqplib": "^0.10.8"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

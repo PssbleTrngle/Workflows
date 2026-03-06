@@ -1,0 +1,9 @@
+{
+  "extends": "@pssbletrngle/webhooks-configs/tsconfig",
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "src"
+  ]
+}

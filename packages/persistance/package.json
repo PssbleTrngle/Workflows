@@ -1,0 +1,23 @@
+{
+  "name": "@pssbletrngle/workflows-persistance",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src",
+    "format": "biome format --write src"
+  },
+  "dependencies": {
+    "ioredis": "^5.10.0",
+    "@types/bun": "latest"
+  },
+  "devDependencies": {
+    "@pssbletrngle/webhooks-configs": "workspace:*",
+    "@types/dockerode": "^4.0.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

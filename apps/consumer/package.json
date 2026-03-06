@@ -1,0 +1,24 @@
+{
+  "name": "@pssbletrngle/workflows-consumer",
+  "type": "module",
+  "exports": {
+    ".": "./src/main.ts"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src",
+    "format": "biome format --write src"
+  },
+  "dependencies": {
+    "@pssbletrngle/workflows-docker": "workspace:*",
+    "@pssbletrngle/workflows-notifications": "workspace:*",
+    "@pssbletrngle/workflows-events": "workspace:*",
+    "@types/bun": "latest"
+  },
+  "devDependencies": {
+    "@pssbletrngle/webhooks-configs": "workspace:*"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

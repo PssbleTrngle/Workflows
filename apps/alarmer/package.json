@@ -1,0 +1,26 @@
+{
+  "name": "@pssbletrngle/workflows-alarmer",
+  "type": "module",
+  "exports": {
+    ".": "./src/main.ts"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src",
+    "format": "biome format --write src"
+  },
+  "dependencies": {
+    "@pssbletrngle/workflows-docker": "workspace:*",
+    "@pssbletrngle/workflows-notifications": "workspace:*",
+    "@pssbletrngle/workflows-persistance": "workspace:*",
+    "@types/bun": "latest",
+    "node-cron": "^4.2.1"
+  },
+  "devDependencies": {
+    "@pssbletrngle/webhooks-configs": "workspace:*",
+    "@types/node-cron": "^3.0.11"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
