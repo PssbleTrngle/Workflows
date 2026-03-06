@@ -1,5 +1,5 @@
 import { checkHealth, prettyInfo } from "@pssbletrngle/workflows-docker";
-import { sendEmbeds } from "@pssbletrngle/workflows-notifactions";
+import { sendEmbeds } from "@pssbletrngle/workflows-notifications";
 import { schedule } from "node-cron";
 import { lastAlarm, saveAlarmDate } from "./persistance";
 

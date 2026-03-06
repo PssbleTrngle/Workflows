@@ -22,6 +22,7 @@
     "@pssbletrngle/webhooks-types": "workspace:*",
     "@pssbletrngle/workflows-persistance": "workspace:*",
     "@pssbletrngle/workflows-events": "workspace:*",
+    "@pssbletrngle/workflows-notifications": "workspace:*",
     "cookie-parser": "^1.4.7",
     "express": "^5.1.0",
     "octokit": "^5.0.4",

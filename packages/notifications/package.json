@@ -1,5 +1,5 @@
 {
-  "name": "@pssbletrngle/workflows-notifactions",
+  "name": "@pssbletrngle/workflows-notifications",
   "type": "module",
   "exports": {
     ".": "./src/index.ts"

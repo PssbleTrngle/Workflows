@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@pssbletrngle/workflows-docker": "workspace:*",
-    "@pssbletrngle/workflows-notifactions": "workspace:*",
+    "@pssbletrngle/workflows-notifications": "workspace:*",
     "@pssbletrngle/workflows-persistance": "workspace:*",
     "@types/bun": "latest",
     "node-cron": "^4.2.1"

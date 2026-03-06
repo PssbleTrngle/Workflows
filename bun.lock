@@ -14,7 +14,7 @@
       "name": "@pssbletrngle/workflows-alarmer",
       "dependencies": {
         "@pssbletrngle/workflows-docker": "workspace:*",
-        "@pssbletrngle/workflows-notifactions": "workspace:*",
+        "@pssbletrngle/workflows-notifications": "workspace:*",
         "@pssbletrngle/workflows-persistance": "workspace:*",
         "@types/bun": "latest",
         "node-cron": "^4.2.1",
@@ -50,7 +50,7 @@
       "dependencies": {
         "@pssbletrngle/workflows-docker": "workspace:*",
         "@pssbletrngle/workflows-events": "workspace:*",
-        "@pssbletrngle/workflows-notifactions": "workspace:*",
+        "@pssbletrngle/workflows-notifications": "workspace:*",
         "@types/bun": "latest",
       },
       "devDependencies": {
@@ -67,6 +67,7 @@
         "@pssbletrngle/webhooks-types": "workspace:*",
         "@pssbletrngle/webhooks-ui": "workspace:*",
         "@pssbletrngle/workflows-events": "workspace:*",
+        "@pssbletrngle/workflows-notifications": "workspace:*",
         "@pssbletrngle/workflows-persistance": "workspace:*",
         "@types/bun": "latest",
         "@types/cookie-parser": "^1.4.10",
@@ -140,8 +141,8 @@
         "typescript": "^5",
       },
     },
-    "packages/notifactions": {
-      "name": "@pssbletrngle/workflows-notifactions",
+    "packages/notifications": {
+      "name": "@pssbletrngle/workflows-notifications",
       "dependencies": {
         "@types/bun": "latest",
         "dockerode": "^4.0.9",
@@ -492,7 +493,7 @@
 
     "@pssbletrngle/workflows-events": ["@pssbletrngle/workflows-events@workspace:packages/events"],
 
-    "@pssbletrngle/workflows-notifactions": ["@pssbletrngle/workflows-notifactions@workspace:packages/notifactions"],
+    "@pssbletrngle/workflows-notifications": ["@pssbletrngle/workflows-notifications@workspace:packages/notifications"],
 
     "@pssbletrngle/workflows-persistance": ["@pssbletrngle/workflows-persistance@workspace:packages/persistance"],
 

@@ -6,7 +6,7 @@ import {
   subscribeEvent,
   type UpdateContainersCommand,
 } from "@pssbletrngle/workflows-events";
-import { sendEmbeds } from "@pssbletrngle/workflows-notifactions";
+import { sendEmbeds } from "@pssbletrngle/workflows-notifications";
 
 function notifyUpdate(
   { name, tag, keys }: UpdateContainersCommand,
