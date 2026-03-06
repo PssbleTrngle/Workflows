@@ -37,7 +37,7 @@ export default async function detectProperties(
       const { packageManager } = await Bun.file("package.json").json();
       const [, match] = /^(\w+)@/.exec(packageManager) ?? [];
       config.manager = packageManagerSchema.parse(match);
-      console.log(`  -> detected package manager ${config.manager}`);
+      console.info(`  -> detected package manager ${config.manager}`);
     }
   }
 

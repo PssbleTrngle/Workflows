@@ -2,7 +2,9 @@ name: github-webhooks
 
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile
     container_name: app
     ports:
       - "8888:8888"

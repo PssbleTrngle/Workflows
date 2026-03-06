@@ -1,7 +1,7 @@
 import { Redis } from "ioredis";
 import config from "./config";
 
-const { host, port } = config.redis;
+const { host, port } = config;
 
 const client = new Redis({
   host,

@@ -7,7 +7,7 @@ import type {
   RepositoryStatus,
   StatusResult,
 } from "@pssbletrngle/webhooks-types/metadata";
-import redis from "../redis";
+import { redis } from "@pssbletrngle/workflows-persistance";
 
 const statusPrefix = "metadata:status:";
 const statusKey = ({ owner, repo, base }: RepoSearchWithBranch) =>

@@ -1,4 +1,4 @@
-name: Publish Docker Image
+name: Publish Docker Images
 
 on:
    workflow_dispatch:
@@ -17,6 +17,9 @@ env:
 
 jobs:
    docker:
+      strategy:
+         matrix:
+            app: [server, consumer, alarmer]
       permissions:
          contents: read
          packages: write
@@ -36,7 +39,7 @@ jobs:
            id: meta
            uses: docker/metadata-action@v5
            with:
-              images: ${{ env.REGISTRY }}/${{ env.GITHUB_REPO }}
+              images: ${{ env.REGISTRY }}/${{ env.GITHUB_REPO }}-${{ matrix.app }}
               tags: |
                  type=raw,value=latest
                  type=raw,value=stable,enable=${{ github.event_name == 'release' }}
@@ -47,6 +50,7 @@ jobs:
            uses: docker/build-push-action@v6
            with:
               context: .
+              file: apps/${{ matrix.app }}/Dockerfile
               push: true
               tags: ${{ steps.meta.outputs.tags }}
               labels: ${{ steps.meta.outputs.labels }}

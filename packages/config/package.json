@@ -3,7 +3,8 @@
   "private": "true",
   "type": "module",
   "exports": {
-    "./eslint": "./eslint.js"
+    "./eslint": "./eslint.js",
+    "./tsconfig": "./tsconfig.json"
   },
   "scripts": {
     "prepare": "tsc --declaration --allowJs --emitDeclarationOnly  *.js || true"

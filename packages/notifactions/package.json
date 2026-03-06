@@ -1,0 +1,23 @@
+{
+  "name": "@pssbletrngle/workflows-notifactions",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src",
+    "format": "biome format --write src"
+  },
+  "dependencies": {
+    "@types/bun": "latest",
+    "dockerode": "^4.0.9"
+  },
+  "devDependencies": {
+    "@pssbletrngle/webhooks-configs": "workspace:*",
+    "@types/dockerode": "^4.0.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
