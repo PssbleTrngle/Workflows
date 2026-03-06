@@ -16,6 +16,7 @@ if (!existsSync(basePath)) {
   mkdirSync(basePath, { recursive: true });
 }
 
+// retry mechanism
 type DuplicateBehaviour = "abort" | "skip" | "delete";
 
 async function clone(
@@ -128,7 +129,7 @@ export async function cloneAndModify<T extends ActionResult>(
   branch: string,
   checkout?: string,
 ): Promise<undefined | T> {
-  const repositoryPath = await clone(repository, branch, user.token, "delete");
+  const repositoryPath = await clone(repository, branch, user.token, "abort");
 
   try {
     const result = await wrappedCloneAndModify(

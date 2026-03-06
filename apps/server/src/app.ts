@@ -4,6 +4,7 @@ import config from "./config";
 import { registerIssuesHooks } from "./issues";
 import { registerMetadataHooks } from "./metadata";
 import { registerReleasesHooks } from "./releases";
+import { registerSpotlessHooks } from "./spotless";
 
 const app = new App({
   appId: config.app.id,
@@ -17,5 +18,6 @@ registerMetadataHooks(app.webhooks);
 registerReleasesHooks(app.webhooks);
 registerIssuesHooks(app.webhooks);
 registerActionsHooks(app.webhooks);
+registerSpotlessHooks(app.webhooks);
 
 export default app;
