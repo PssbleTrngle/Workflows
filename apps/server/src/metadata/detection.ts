@@ -1,5 +1,7 @@
-import { validateConfig } from "@pssbletrngle/github-meta-generator";
-import { packageManagerSchema } from "../../../generator/src/config";
+import {
+  packageManagerSchema,
+  validateConfig,
+} from "@pssbletrngle/github-meta-generator";
 import type { MetadataContext } from "./branches";
 
 function uniq<T>(values: T[]): T[] {

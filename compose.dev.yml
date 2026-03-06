@@ -6,11 +6,11 @@ services:
     container_name: app
     ports:
       - "8888:8888"
-    env_file: app/.env.local
+    env_file: apps/server/.env.local
     environment:
       REDIS_HOST: redis
     volumes:
-      - ./app/private-key.pem:/usr/private-key.pem
+      - ./apps/server/private-key.pem:/usr/private-key.pem
     depends_on:
       redis:
         condition: service_started

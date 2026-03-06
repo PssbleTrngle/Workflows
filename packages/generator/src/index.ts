@@ -1,4 +1,4 @@
-export { configSchema, validateConfig } from "./config";
+export { configSchema, packageManagerSchema, validateConfig } from "./config";
 export type {
   ConfigSchema,
   MinecraftConfigSchema,

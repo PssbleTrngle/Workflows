@@ -10,7 +10,25 @@
         "turbo": "^2.8.12",
       },
     },
-    "app": {
+    "apps/cli": {
+      "name": "@pssbletrngle/github-meta-generator-cli",
+      "bin": {
+        "metagen": "./dist/main.js",
+      },
+      "dependencies": {
+        "@pssbletrngle/github-meta-generator": "workspace:*",
+        "@types/bun": "latest",
+        "prompts": "^2.4.2",
+      },
+      "devDependencies": {
+        "@pssbletrngle/webhooks-configs": "workspace:*",
+        "@types/prompts": "^2.4.9",
+      },
+      "peerDependencies": {
+        "typescript": "^5",
+      },
+    },
+    "apps/server": {
       "name": "@pssbletrngle/webhooks-server",
       "dependencies": {
         "@pssbletrngle/github-meta-generator": "workspace:*",
@@ -37,22 +55,7 @@
         "typescript": "^5",
       },
     },
-    "cli": {
-      "name": "@pssbletrngle/github-meta-generator-cli",
-      "dependencies": {
-        "@pssbletrngle/github-meta-generator": "workspace:*",
-        "@types/bun": "latest",
-        "prompts": "^2.4.2",
-      },
-      "devDependencies": {
-        "@pssbletrngle/webhooks-configs": "workspace:*",
-        "@types/prompts": "^2.4.9",
-      },
-      "peerDependencies": {
-        "typescript": "^5",
-      },
-    },
-    "config": {
+    "packages/config": {
       "name": "@pssbletrngle/webhooks-configs",
       "devDependencies": {
         "eslint": "^9.39.1",
@@ -60,7 +63,7 @@
         "typescript-eslint": "^8.46.3",
       },
     },
-    "generator": {
+    "packages/generator": {
       "name": "@pssbletrngle/github-meta-generator",
       "dependencies": {
         "@types/bun": "latest",
@@ -76,7 +79,7 @@
         "typescript": "^5",
       },
     },
-    "types": {
+    "packages/types": {
       "name": "@pssbletrngle/webhooks-types",
       "devDependencies": {
         "@pssbletrngle/webhooks-configs": "workspace:*",
@@ -86,7 +89,7 @@
         "typescript": "^5",
       },
     },
-    "ui": {
+    "packages/ui": {
       "name": "@pssbletrngle/webhooks-ui",
       "dependencies": {
         "@astrojs/node": "9.5.4",
@@ -352,17 +355,17 @@
 
     "@pkgr/core": ["@pkgr/core@0.2.9", "", {}, "sha512-QNqXyfVS2wm9hweSYD2O7F0G06uurj9kZ96TRQE5Y9hU7+tgdZwIkbAKc5Ocy1HxEY2kuDQa6cQ1WRs/O5LFKA=="],
 
-    "@pssbletrngle/github-meta-generator": ["@pssbletrngle/github-meta-generator@workspace:generator"],
+    "@pssbletrngle/github-meta-generator": ["@pssbletrngle/github-meta-generator@workspace:packages/generator"],
 
-    "@pssbletrngle/github-meta-generator-cli": ["@pssbletrngle/github-meta-generator-cli@workspace:cli"],
+    "@pssbletrngle/github-meta-generator-cli": ["@pssbletrngle/github-meta-generator-cli@workspace:apps/cli"],
 
-    "@pssbletrngle/webhooks-configs": ["@pssbletrngle/webhooks-configs@workspace:config"],
+    "@pssbletrngle/webhooks-configs": ["@pssbletrngle/webhooks-configs@workspace:packages/config"],
 
-    "@pssbletrngle/webhooks-server": ["@pssbletrngle/webhooks-server@workspace:app"],
+    "@pssbletrngle/webhooks-server": ["@pssbletrngle/webhooks-server@workspace:apps/server"],
 
-    "@pssbletrngle/webhooks-types": ["@pssbletrngle/webhooks-types@workspace:types"],
+    "@pssbletrngle/webhooks-types": ["@pssbletrngle/webhooks-types@workspace:packages/types"],
 
-    "@pssbletrngle/webhooks-ui": ["@pssbletrngle/webhooks-ui@workspace:ui"],
+    "@pssbletrngle/webhooks-ui": ["@pssbletrngle/webhooks-ui@workspace:packages/ui"],
 
     "@rollup/pluginutils": ["@rollup/pluginutils@5.3.0", "", { "dependencies": { "@types/estree": "^1.0.0", "estree-walker": "^2.0.2", "picomatch": "^4.0.2" }, "peerDependencies": { "rollup": "^1.20.0||^2.0.0||^3.0.0||^4.0.0" }, "optionalPeers": ["rollup"] }, "sha512-5EdhGZtnu3V88ces7s53hhfK5KSASnJZv8Lulpc04cWO3REESroJXg73DFsOmgbU2BhwV0E20bu2IDZb3VKW4Q=="],
 

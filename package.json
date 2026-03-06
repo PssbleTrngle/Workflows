@@ -19,11 +19,7 @@
       "commit-msg": "true"
    },
    "workspaces": [
-      "types",
-      "config",
-      "generator",
-      "app",
-      "ui",
-      "cli*"
+      "apps/*",
+      "packages/*"
    ]
 }

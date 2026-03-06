@@ -30,7 +30,7 @@ RUN apt-get -y install git
 
 ENV NODE_ENV=production
 
-COPY --from=builder --chown=bun:bun /usr/src/app/dist ./server
+COPY --from=builder --chown=bun:bun /usr/src/apps/server/dist ./server
 
 ENV GITHUB_APP_PRIVATE_KEY_FILE=/usr/private-key.pem
 ENV GIT_CLONE_DIR=/usr/tmp
