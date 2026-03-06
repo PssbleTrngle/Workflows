@@ -15,12 +15,12 @@ function shouldTriggerUpdate({
   return [added, removed, modified].flat().includes(configPath);
 }
 
-export function registerMetadataHooks(app: App) {
-  app.webhooks.onError((error) => {
+export function registerMetadataHooks(hooks: App["webhooks"]) {
+  hooks.onError((error) => {
     console.error(error);
   });
 
-  app.webhooks.on("push", async ({ payload, octokit }) => {
+  hooks.on("push", async ({ payload, octokit }) => {
     const { commits, ref, repository, installation } = payload;
 
     function isValidRepository(
@@ -33,7 +33,7 @@ export function registerMetadataHooks(app: App) {
       throw new Error(`owner missing for repository ${repository.full_name}`);
 
     if (commits.some(shouldTriggerUpdate)) {
-      app.log.info(`config changed for ${repository.full_name}`);
+      octokit.log.info(`config changed for ${repository.full_name}`);
 
       if (!installation) {
         octokit.log.warn(`installation missing for ${repository.full_name}`);

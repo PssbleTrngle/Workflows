@@ -1,4 +1,5 @@
 import { App } from "octokit";
+import { registerActionsHooks } from "./actions";
 import config from "./config";
 import { registerIssuesHooks } from "./issues";
 import { registerMetadataHooks } from "./metadata";
@@ -12,8 +13,9 @@ const app = new App({
   log: console,
 });
 
-registerMetadataHooks(app);
-registerReleasesHooks(app);
-registerIssuesHooks(app);
+registerMetadataHooks(app.webhooks);
+registerReleasesHooks(app.webhooks);
+registerIssuesHooks(app.webhooks);
+registerActionsHooks(app.webhooks);
 
 export default app;

@@ -28,8 +28,8 @@ const PROJECT = {
   user_id: "PssbleTrngle",
 };
 
-export function registerIssuesHooks(app: App) {
-  app.webhooks.on("issues.assigned", async ({ payload, octokit }) => {
+export function registerIssuesHooks(hooks: App["webhooks"]) {
+  hooks.on("issues.assigned", async ({ payload, octokit }) => {
     const { issue } = payload;
 
     console.info("-> adding issue to backlog:", issue.title);
@@ -71,7 +71,7 @@ export function registerIssuesHooks(app: App) {
     });
   });
 
-  app.webhooks.on("issues.unassigned", async ({ payload, octokit }) => {
+  hooks.on("issues.unassigned", async ({ payload, octokit }) => {
     const { issue } = payload;
     console.log(
       "-> trying to remove issue from backlog if present:",

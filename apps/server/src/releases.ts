@@ -23,12 +23,12 @@ async function handlePackagePublished(event: PackagePublished) {
   });
 }
 
-export function registerReleasesHooks(app: App) {
-  app.webhooks.on("package.published", ({ payload }) =>
+export function registerReleasesHooks(hooks: App["webhooks"]) {
+  hooks.on("package.published", ({ payload }) =>
     handlePackagePublished(payload),
   );
 
-  app.webhooks.on("registry_package.published", async ({ payload }) => {
+  hooks.on("registry_package.published", async ({ payload }) => {
     // check installation type?
     const { registry_package, ...event } = payload;
     await handlePackagePublished({
