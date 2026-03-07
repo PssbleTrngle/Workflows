@@ -1,6 +1,9 @@
 name: Feature Request
 description: Suggest a feature
 labels: ["enhancement"]
+{{#if assignee}}
+assignees: ["{{assignee}}"]
+{{/if}}
 
 body:
   - type: textarea
