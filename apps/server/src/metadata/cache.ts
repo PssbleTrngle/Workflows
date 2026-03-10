@@ -29,6 +29,10 @@ export async function saveStatus(
   eventDispatcher.sendStatusUpdate(repository, status);
 }
 
+export async function deleteStatus(repository: RepoSearchWithBranch) {
+  await redis.del(statusKey(repository));
+}
+
 export function getStatus(repository: RepoSearchWithBranch) {
   return redis.get(statusKey(repository)) as Promise<RepositoryStatus | null>;
 }

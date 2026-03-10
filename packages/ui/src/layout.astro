@@ -27,9 +27,13 @@ import Indicator from "./components/Indicator.astro";
       src="https://cdn.jsdelivr.net/npm/htmx-ext-sse@2.2.4"
       integrity="sha384-A986SAtodyH8eg8x8irJnYUk7i9inVQqYigD6qZ9evobksGNIXfeFvDwLSHcp31N"
       crossorigin="anonymous"></script>
+
+    <script
+      is:inline
+      src="https://unpkg.com/htmx.org@1.9.12/dist/ext/json-enc.js"></script>
   </head>
   <body
-    hx-ext="json-enc-custom,response-targets,sse"
+    hx-ext="json-enc-custom,response-targets,sse,json-enc"
     hx-indicator="#loading-indicator"
     sse-connect="/metadata/api/sse"
   >

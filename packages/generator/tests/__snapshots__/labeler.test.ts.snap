@@ -28,9 +28,9 @@ exports[`minecaft issue labeler generates labeler config without loader and mult
 # </meta>
 
 1.20.1.x:
-  - "1.20.1"
+  - "/^1.20.1$/m"
 1.21.1.x:
-  - "1.21.1"
+  - "/^1.21.1$/m"
 "
 `;
 
@@ -52,9 +52,9 @@ exports[`minecaft issue labeler generates labeler config multiple loaders and no
 # </meta>
 
 neoforge:
-  - "neoforge"
+  - "/^neoforge$/m"
 fabric:
-  - "fabric"
+  - "/^fabric$/m"
 "
 `;
 
@@ -66,9 +66,9 @@ exports[`minecaft issue labeler generates labeler config multiple loaders and si
 # </meta>
 
 neoforge:
-  - "neoforge"
+  - "/^neoforge$/m"
 fabric:
-  - "fabric"
+  - "/^fabric$/m"
 "
 `;
 
@@ -80,13 +80,13 @@ exports[`minecaft issue labeler generates labeler config multiple loaders and mu
 # </meta>
 
 neoforge:
-  - "neoforge"
+  - "/^neoforge$/m"
 fabric:
-  - "fabric"
+  - "/^fabric$/m"
 
 1.20.1.x:
-  - "1.20.1"
+  - "/^1.20.1$/m"
 1.21.1.x:
-  - "1.21.1"
+  - "/^1.21.1$/m"
 "
 `;

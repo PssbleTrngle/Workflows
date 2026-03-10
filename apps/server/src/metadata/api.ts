@@ -1,9 +1,8 @@
-import type { RepositoryStatus } from "@pssbletrngle/webhooks-types/metadata";
 import { json, Router } from "express";
 import { type App } from "octokit";
 import z from "zod";
 import { cutoff } from "../error";
-import { createAuthenticatedGitUser } from "../user";
+import validate from "../validation";
 import { authorize, type AuthenticatedResponse } from "./auth";
 import {
   getStatus,
@@ -11,7 +10,7 @@ import {
   getStatusesByRepository,
 } from "./cache";
 import { eventDispatcher } from "./events";
-import generateMetadata from "./generator";
+import refresh from "./refresh";
 
 export default function createApiRoutes(_: App) {
   const router = Router();
@@ -57,30 +56,20 @@ export default function createApiRoutes(_: App) {
   });
 
   const repoParams = z.object({
-    repo: z.string().nonempty(),
     owner: z.string().nonempty(),
-    base: z.string().nonempty(),
+    repo: z.string().nonempty(),
+    base: z.string().nonempty().optional(),
   });
 
-  const reposParams = z.array(repoParams);
+  router.post(
+    "/refresh",
+    validate(repoParams),
+    async (req, res: AuthenticatedResponse) => {
+      const status = await refresh(req.body, res.locals);
 
-  router.post("/refresh", async (req, res: AuthenticatedResponse) => {
-    const data = reposParams.parse(req.body);
-
-    const status: RepositoryStatus = "up-to-date";
-
-    const { octokit, token } = res.locals;
-    const user = await createAuthenticatedGitUser(token, octokit);
-
-    // TODO async, maybe in chunks?
-    for (const entry of data) {
-      const { data: repository } = await octokit.rest.repos.get(entry);
-
-      await generateMetadata(repository, entry.base, octokit, user);
-    }
-
-    res.json({ success: true, status });
-  });
+      res.json({ success: true, status });
+    },
+  );
 
   router.use(cutoff);
 

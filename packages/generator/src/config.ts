@@ -56,7 +56,7 @@ const commonSchema = z.object({
     .describe("whether to only overwrite generated files or any file"),
   strategy: z
     .enum(["pull_request", "push"])
-    .default("pull_request")
+    .default("push")
     .describe("push changes directory or submit them as a pull request"),
 });
 

@@ -21,3 +21,6 @@ export type RepoSearchWithBranch = {
   repo: string;
   base: string;
 };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Dictionary = Record<string, any>;

@@ -10,6 +10,7 @@
     "build": "bun run gen:meta && bun run gen:templates",
     "gen:meta": "bun run scripts/meta.ts",
     "gen:templates": "bun run scripts/templates.ts",
+    "dev": "bun run scripts/watch.ts",
     "lint": "eslint {src,scripts}",
     "format": "biome format --write src",
     "test": "bun test"

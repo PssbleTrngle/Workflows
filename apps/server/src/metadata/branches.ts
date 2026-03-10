@@ -4,9 +4,10 @@ import {
   type ConfigSchema,
 } from "@pssbletrngle/github-meta-generator";
 import type { RepoSearch } from "@pssbletrngle/webhooks-types";
-import type { Octokit } from "octokit";
+import type { Octokit, RequestError } from "octokit";
+import { deleteStatus } from "./cache";
 
-async function fetchBranches(octokit: Octokit, search: RepoSearch) {
+export async function fetchBranches(octokit: Octokit, search: RepoSearch) {
   const { data } = await octokit.rest.repos.listBranches(search);
   return data.map((it) => it.name);
 }
@@ -16,20 +17,25 @@ async function fetchConfig(
   branch: string,
   search: RepoSearch,
 ) {
-  const { data } = await octokit.rest.repos.getContent({
-    ...search,
-    path: configPath,
-    ref: branch,
-    mediaType: {
-      format: "raw",
-    },
-  });
+  try {
+    const { data } = await octokit.rest.repos.getContent({
+      ...search,
+      path: configPath,
+      ref: branch,
+      mediaType: {
+        format: "raw",
+      },
+    });
 
-  if (typeof data !== "string") {
-    throw new Error(`unable to load config file for branch ${branch}`);
+    if (typeof data !== "string") {
+      throw new Error(`unable to load config file for branch ${branch}`);
+    }
+
+    return validateConfig(JSON.parse(data));
+  } catch (e) {
+    if ((e as RequestError).status === 404) return null;
+    throw e;
   }
-
-  return validateConfig(JSON.parse(data));
 }
 
 const MC_VERSION_PATTERN =
@@ -40,25 +46,58 @@ export type MetadataContext = {
   config: ConfigSchema;
 };
 
-export async function createMetadataContext(
-  octokit: Octokit,
-  search: RepoSearch,
-  branch: string,
-) {
-  const [config, branches] = await Promise.all([
-    fetchConfig(octokit, branch, search),
-    fetchBranches(octokit, search),
-  ]);
-
-  const context: MetadataContext = { branches, config };
-
+function isMainBranch(branch: string, { branches, config }: MetadataContext) {
   if (branch === "main" && !branches.includes("develop")) {
-    return context;
+    return true;
   }
 
   if (config.type === "minecraft" && MC_VERSION_PATTERN.test(branch)) {
-    return context;
+    return true;
   }
 
+  return false;
+}
+
+export async function createMetadataContext(
+  octokit: Octokit,
+  search: RepoSearch,
+  base: string,
+) {
+  const [config, branches] = await Promise.all([
+    fetchConfig(octokit, base, search),
+    fetchBranches(octokit, search),
+  ]);
+
+  if (!config) return null;
+
+  const context: MetadataContext = { branches, config };
+
+  if (isMainBranch(base, context)) return context;
   return null;
+}
+
+// TODO share?
+function notNull<T>(value: T | null | undefined): value is T {
+  return value !== null && value !== undefined;
+}
+
+// TODO remove
+export async function createMetadataContexts(
+  octokit: Octokit,
+  search: RepoSearch,
+) {
+  const branches = await fetchBranches(octokit, search);
+
+  const withConfigs = await Promise.all(
+    branches.map(async (branch) => {
+      const config = await fetchConfig(octokit, branch, search);
+      if (!config) await deleteStatus({ ...search, base: branch });
+      else return { branch, config };
+    }),
+  );
+
+  return withConfigs
+    .filter(notNull)
+    .map(({ config, ...rest }) => ({ ...rest, context: { config, branches } }))
+    .filter(({ branch, context }) => isMainBranch(branch, context));
 }

@@ -3,12 +3,13 @@ import {
   type Meta,
 } from "@pssbletrngle/github-meta-generator";
 import type { Repository } from "@pssbletrngle/webhooks-types";
+import type { RepositoryStatus } from "@pssbletrngle/webhooks-types/metadata";
 import type { Octokit } from "octokit";
 import type { ActionResult } from "../git";
 import { cloneAndModify, type GitUser } from "../git";
 import type { MetadataContext } from "./branches";
 import { createMetadataContext } from "./branches";
-import { saveMetadata, saveStatus } from "./cache";
+import { deleteStatus, getStatus, saveMetadata, saveStatus } from "./cache";
 import detectProperties from "./detection";
 
 type GenerationResult = ActionResult & {
@@ -29,6 +30,10 @@ export async function updateMetadataFiles(
   };
 }
 
+export function metadataBranch(branch: string) {
+  return `metadata/${branch}`;
+}
+
 export default async function generateMetadata(
   repository: Repository,
   branch: string,
@@ -42,14 +47,18 @@ export default async function generateMetadata(
   };
 
   try {
-    await saveStatus(repo, "running");
-
     const context = await createMetadataContext(octokit, repo, branch);
-    if (!context) return;
+
+    if (!context) {
+      deleteStatus(repo);
+      return;
+    }
+
+    await saveStatus(repo, "running");
 
     const checkout =
       context.config.strategy === "pull_request"
-        ? `metadata/${branch}`
+        ? metadataBranch(branch)
         : undefined;
 
     const result = await cloneAndModify(
@@ -60,8 +69,10 @@ export default async function generateMetadata(
       checkout,
     );
 
+    const doneState: RepositoryStatus = checkout ? "opened-pr" : "up-to-date";
+
     if (!result) {
-      await saveStatus(repo, "up-to-date");
+      await saveStatus(repo, doneState);
       return;
     }
 
@@ -82,16 +93,16 @@ export default async function generateMetadata(
         title: "Generate Metadata Files",
       });
 
-      console.info("-> created pull request");
-
-      await saveStatus(repo, "opened-pr");
-    } else {
-      await saveStatus(repo, "up-to-date");
+      octokit.log.info("-> created pull request");
     }
 
+    await saveStatus(repo, doneState);
     await saveMetadata(repo, result.meta);
 
-    console.info(`<- finished metafile update for ${repository.full_name}`);
+    octokit.log.info(`<- finished metafile update for ${repository.full_name}`);
+
+    // TODO maybe return directly?
+    return getStatus(repo);
   } catch (e) {
     await saveStatus(repo, "failed");
     throw e;

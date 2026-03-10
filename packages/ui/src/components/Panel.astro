@@ -1,6 +1,7 @@
 ---
 import type { RepoSearch, Repository } from "@pssbletrngle/webhooks-types";
 import type { RepositoryStatus } from "@pssbletrngle/webhooks-types/metadata";
+import Refresh from "./Refresh.astro";
 import Status from "./Status.astro";
 
 type Props = {
@@ -20,11 +21,16 @@ const subject: RepoSearch = {
   <a class="title" href={repo.html_url}>
     {repo.full_name}
   </a>
-  {
-    Object.entries(status).map(([base, status]) => (
-      <Status subject={{ ...subject, base }} value={status} />
-    ))
-  }
+  <Refresh repo={subject} />
+  <ul class="branches">
+    {
+      Object.entries(status).map(([base, status]) => (
+        <li>
+          <Status subject={{ ...subject, base }} value={status} />
+        </li>
+      ))
+    }
+  </ul>
 </li>
 
 <style scoped>
@@ -35,9 +41,22 @@ const subject: RepoSearch = {
     border-radius: 10px;
 
     display: grid;
-    grid-template-rows: repeat(auto-fit, 3em);
+    grid-template:
+      "title refresh"
+      "branches branches"
+      / 1fr auto;
 
     padding: 1em;
+  }
+
+  .branches {
+    list-style: none;
+    grid-area: branches;
+    padding: 0;
+
+    li:not(:first-child) {
+      margin-top: 0.5em;
+    }
   }
 
   .title {

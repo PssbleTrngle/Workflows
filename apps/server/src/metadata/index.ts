@@ -1,10 +1,11 @@
 import type { WebhookEventDefinition } from "@octokit/webhooks/types";
 import { configPath } from "@pssbletrngle/github-meta-generator";
-import type { Repository } from "@pssbletrngle/webhooks-types";
+import type { RepoSearch, Repository } from "@pssbletrngle/webhooks-types";
 import type { App } from "octokit";
 import { createAppGitUser } from "../user";
 import createApiRoutes from "./api";
-import generateMetadata from "./generator";
+import { saveStatus } from "./cache";
+import generateMetadata, { metadataBranch } from "./generator";
 import createUIMiddlware from "./ui";
 
 function shouldTriggerUpdate({
@@ -50,6 +51,32 @@ export function registerMetadataHooks(hooks: App["webhooks"]) {
       );
       await generateMetadata(repository, branch, octokit, user);
     }
+  });
+
+  hooks.on("pull_request.closed", async ({ payload, octokit }) => {
+    // const user = await createUserInfo(octokit);
+
+    const { pull_request, repository } = payload;
+
+    // TODO might be possible if authentication as bot is always possible
+    // if (pull_request.user.login !== user.name) return;
+    if (pull_request.head.ref !== metadataBranch(pull_request.base.ref)) return;
+
+    octokit.log.info(
+      `metadata pull request merged for ${pull_request.head.label}`,
+    );
+
+    const search: RepoSearch = {
+      owner: repository.owner.login,
+      repo: repository.name,
+    };
+
+    await octokit.rest.git.deleteRef({
+      ...search,
+      ref: `heads/${pull_request.head.ref}`,
+    });
+
+    saveStatus({ ...search, base: pull_request.base.ref }, "up-to-date");
   });
 }
 

@@ -1,7 +1,7 @@
 import type { Octokit } from "octokit";
 import type { GitUser } from "./git";
 
-async function createUserInfo(octokit: Octokit) {
+export async function createUserInfo(octokit: Octokit) {
   const { data } = await octokit.rest.apps.getAuthenticated();
   if (!data?.slug) throw new Error("failed to fetch app information");
   const name = `${data.slug}[bot]`;

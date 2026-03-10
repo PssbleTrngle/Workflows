@@ -31,7 +31,8 @@ async function clone(
   url.username = "x-access-token";
   url.password = token;
 
-  const repositoryPath = join(basePath, repository.full_name);
+  const relativePath = join(repository.full_name, branch);
+  const repositoryPath = join(basePath, relativePath);
   if (existsSync(repositoryPath)) {
     const message = `there is already a process running for ${repository.full_name}`;
     if (behaviour === "abort") throw new Error(message);
@@ -43,7 +44,7 @@ async function clone(
     }
   }
 
-  await $`git clone ${url} --branch ${branch} ${repository.full_name}`
+  await $`git clone ${url} --branch ${branch} ${relativePath}`
     .cwd(basePath)
     .quiet();
 
