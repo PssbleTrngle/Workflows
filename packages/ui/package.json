@@ -14,13 +14,14 @@
   "type": "module",
   "dependencies": {
     "@pssbletrngle/webhooks-types": "workspace:*",
+    "@pssbletrngle/workflows-shared": "workspace:*",
     "@astrojs/node": "9.5.4",
     "astro": "5.18.0",
     "octokit": "^5.0.4",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "@pssbletrngle/webhooks-configs": "workspace:*"
   },
   "devDependencies": {
-    "@astrojs/check": "0.9.6",
-    "@pssbletrngle/webhooks-configs": "workspace:*"
+    "@astrojs/check": "0.9.6"
   }
 }

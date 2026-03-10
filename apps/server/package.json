@@ -24,6 +24,8 @@
     "@pssbletrngle/workflows-persistance": "workspace:*",
     "@pssbletrngle/workflows-events": "workspace:*",
     "@pssbletrngle/workflows-notifications": "workspace:*",
+    "@pssbletrngle/workflows-shared": "workspace:*",
+    "@pssbletrngle/webhooks-configs": "workspace:*",
     "cookie-parser": "^1.4.7",
     "express": "^5.1.0",
     "octokit": "^5.0.4",
@@ -33,8 +35,5 @@
     "@types/express": "^5.0.4",
     "http-proxy-middleware": "^3.0.5",
     "dotenv": "^17.2.3"
-  },
-  "devDependencies": {
-    "@pssbletrngle/webhooks-configs": "workspace:*"
   }
 }

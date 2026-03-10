@@ -9,9 +9,7 @@
    "scripts": {
       "check-types": "tsc --noEmit",
       "lint": "eslint src",
-      "format": "biome format --write src"
-   },
-   "devDependencies": {
+      "format": "biome format --write src",
       "@types/bun": "latest",
       "@pssbletrngle/webhooks-configs": "workspace:*"
    },

@@ -1,9 +1,7 @@
 ---
-import {
-  createTopic,
-  type RepoSearchWithBranch,
-} from "@pssbletrngle/webhooks-types";
+import type { RepoSearchWithBranch } from "@pssbletrngle/webhooks-types";
 import type { RepositoryStatus } from "@pssbletrngle/webhooks-types/metadata";
+import { createTopic } from "@pssbletrngle/workflows-shared";
 import Refresh from "./Refresh.astro";
 
 const icons: Record<RepositoryStatus, string> = {

@@ -13,15 +13,13 @@
     "apps/alarmer": {
       "name": "@pssbletrngle/workflows-alarmer",
       "dependencies": {
+        "@pssbletrngle/webhooks-configs": "workspace:*",
         "@pssbletrngle/workflows-docker": "workspace:*",
         "@pssbletrngle/workflows-notifications": "workspace:*",
         "@pssbletrngle/workflows-persistance": "workspace:*",
         "@types/bun": "latest",
-        "node-cron": "^4.2.1",
-      },
-      "devDependencies": {
-        "@pssbletrngle/webhooks-configs": "workspace:*",
         "@types/node-cron": "^3.0.11",
+        "node-cron": "^4.2.1",
       },
       "peerDependencies": {
         "typescript": "^5",
@@ -34,12 +32,10 @@
       },
       "dependencies": {
         "@pssbletrngle/github-meta-generator": "workspace:*",
-        "@types/bun": "latest",
-        "prompts": "^2.4.2",
-      },
-      "devDependencies": {
         "@pssbletrngle/webhooks-configs": "workspace:*",
+        "@types/bun": "latest",
         "@types/prompts": "^2.4.9",
+        "prompts": "^2.4.2",
       },
       "peerDependencies": {
         "typescript": "^5",
@@ -48,13 +44,11 @@
     "apps/consumer": {
       "name": "@pssbletrngle/workflows-consumer",
       "dependencies": {
+        "@pssbletrngle/webhooks-configs": "workspace:*",
         "@pssbletrngle/workflows-docker": "workspace:*",
         "@pssbletrngle/workflows-events": "workspace:*",
         "@pssbletrngle/workflows-notifications": "workspace:*",
         "@types/bun": "latest",
-      },
-      "devDependencies": {
-        "@pssbletrngle/webhooks-configs": "workspace:*",
       },
       "peerDependencies": {
         "typescript": "^5",
@@ -64,11 +58,13 @@
       "name": "@pssbletrngle/webhooks-server",
       "dependencies": {
         "@pssbletrngle/github-meta-generator": "workspace:*",
+        "@pssbletrngle/webhooks-configs": "workspace:*",
         "@pssbletrngle/webhooks-types": "workspace:*",
         "@pssbletrngle/webhooks-ui": "workspace:*",
         "@pssbletrngle/workflows-events": "workspace:*",
         "@pssbletrngle/workflows-notifications": "workspace:*",
         "@pssbletrngle/workflows-persistance": "workspace:*",
+        "@pssbletrngle/workflows-shared": "workspace:*",
         "@types/bun": "latest",
         "@types/cookie-parser": "^1.4.10",
         "@types/express": "^5.0.4",
@@ -78,9 +74,6 @@
         "http-proxy-middleware": "^3.0.5",
         "octokit": "^5.0.4",
         "zod": "^4.1.12",
-      },
-      "devDependencies": {
-        "@pssbletrngle/webhooks-configs": "workspace:*",
       },
       "peerDependencies": {
         "@octokit/oauth-app": "^8.0.3",
@@ -101,12 +94,10 @@
     "packages/docker": {
       "name": "@pssbletrngle/workflows-docker",
       "dependencies": {
-        "@types/bun": "latest",
-        "dockerode": "^4.0.9",
-      },
-      "devDependencies": {
         "@pssbletrngle/webhooks-configs": "workspace:*",
+        "@types/bun": "latest",
         "@types/dockerode": "^4.0.1",
+        "dockerode": "^4.0.9",
       },
       "peerDependencies": {
         "typescript": "^5",
@@ -115,12 +106,10 @@
     "packages/events": {
       "name": "@pssbletrngle/workflows-events",
       "dependencies": {
-        "@types/bun": "latest",
-        "amqplib": "^0.10.9",
-      },
-      "devDependencies": {
         "@pssbletrngle/webhooks-configs": "workspace:*",
         "@types/amqplib": "^0.10.8",
+        "@types/bun": "latest",
+        "amqplib": "^0.10.9",
       },
       "peerDependencies": {
         "typescript": "^5",
@@ -129,14 +118,12 @@
     "packages/generator": {
       "name": "@pssbletrngle/github-meta-generator",
       "dependencies": {
+        "@pssbletrngle/webhooks-configs": "workspace:*",
         "@types/bun": "latest",
         "handlebars": "^4.7.8",
         "prettier": "^3.6.2",
         "yaml": "^2.8.1",
         "zod": "^4.1.12",
-      },
-      "devDependencies": {
-        "@pssbletrngle/webhooks-configs": "workspace:*",
       },
       "peerDependencies": {
         "typescript": "^5",
@@ -145,12 +132,10 @@
     "packages/notifications": {
       "name": "@pssbletrngle/workflows-notifications",
       "dependencies": {
-        "@types/bun": "latest",
-        "dockerode": "^4.0.9",
-      },
-      "devDependencies": {
         "@pssbletrngle/webhooks-configs": "workspace:*",
+        "@types/bun": "latest",
         "@types/dockerode": "^4.0.1",
+        "dockerode": "^4.0.9",
       },
       "peerDependencies": {
         "typescript": "^5",
@@ -159,12 +144,20 @@
     "packages/persistance": {
       "name": "@pssbletrngle/workflows-persistance",
       "dependencies": {
+        "@pssbletrngle/webhooks-configs": "workspace:*",
         "@types/bun": "latest",
         "ioredis": "^5.10.0",
       },
-      "devDependencies": {
+      "peerDependencies": {
+        "typescript": "^5",
+      },
+    },
+    "packages/shared": {
+      "name": "@pssbletrngle/workflows-shared",
+      "dependencies": {
         "@pssbletrngle/webhooks-configs": "workspace:*",
-        "@types/dockerode": "^4.0.1",
+        "@pssbletrngle/webhooks-types": "workspace:*",
+        "@types/bun": "latest",
       },
       "peerDependencies": {
         "typescript": "^5",
@@ -172,10 +165,6 @@
     },
     "packages/types": {
       "name": "@pssbletrngle/webhooks-types",
-      "devDependencies": {
-        "@pssbletrngle/webhooks-configs": "workspace:*",
-        "@types/bun": "latest",
-      },
       "peerDependencies": {
         "typescript": "^5",
       },
@@ -184,14 +173,15 @@
       "name": "@pssbletrngle/webhooks-ui",
       "dependencies": {
         "@astrojs/node": "9.5.4",
+        "@pssbletrngle/webhooks-configs": "workspace:*",
         "@pssbletrngle/webhooks-types": "workspace:*",
+        "@pssbletrngle/workflows-shared": "workspace:*",
         "astro": "5.18.0",
         "octokit": "^5.0.4",
         "typescript": "^5.9.3",
       },
       "devDependencies": {
         "@astrojs/check": "0.9.6",
-        "@pssbletrngle/webhooks-configs": "workspace:*",
       },
     },
   },
@@ -497,6 +487,8 @@
     "@pssbletrngle/workflows-notifications": ["@pssbletrngle/workflows-notifications@workspace:packages/notifications"],
 
     "@pssbletrngle/workflows-persistance": ["@pssbletrngle/workflows-persistance@workspace:packages/persistance"],
+
+    "@pssbletrngle/workflows-shared": ["@pssbletrngle/workflows-shared@workspace:packages/shared"],
 
     "@rollup/pluginutils": ["@rollup/pluginutils@5.3.0", "", { "dependencies": { "@types/estree": "^1.0.0", "estree-walker": "^2.0.2", "picomatch": "^4.0.2" }, "peerDependencies": { "rollup": "^1.20.0||^2.0.0||^3.0.0||^4.0.0" }, "optionalPeers": ["rollup"] }, "sha512-5EdhGZtnu3V88ces7s53hhfK5KSASnJZv8Lulpc04cWO3REESroJXg73DFsOmgbU2BhwV0E20bu2IDZb3VKW4Q=="],
 

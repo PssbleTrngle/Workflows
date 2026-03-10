@@ -1,5 +1,5 @@
 {
-  "name": "@pssbletrngle/workflows-persistance",
+  "name": "@pssbletrngle/workflows-shared",
   "type": "module",
   "exports": {
     ".": "./src/index.ts"
@@ -10,9 +10,9 @@
     "format": "biome format --write src"
   },
   "dependencies": {
-    "ioredis": "^5.10.0",
-    "@types/bun": "latest",
-    "@pssbletrngle/webhooks-configs": "workspace:*"
+    "@pssbletrngle/webhooks-configs": "workspace:*",
+    "@pssbletrngle/webhooks-types": "workspace:*",
+    "@types/bun": "latest"
   },
   "peerDependencies": {
     "typescript": "^5"

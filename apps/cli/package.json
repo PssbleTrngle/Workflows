@@ -19,9 +19,7 @@
   "dependencies": {
     "@pssbletrngle/github-meta-generator": "workspace:*",
     "@types/bun": "latest",
-    "prompts": "^2.4.2"
-  },
-  "devDependencies": {
+    "prompts": "^2.4.2",
     "@pssbletrngle/webhooks-configs": "workspace:*",
     "@types/prompts": "^2.4.9"
   },

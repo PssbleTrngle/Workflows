@@ -1,8 +1,6 @@
-import {
-  createTopic,
-  type RepoSearchWithBranch,
-} from "@pssbletrngle/webhooks-types";
+import { type RepoSearchWithBranch } from "@pssbletrngle/webhooks-types";
 import type { RepositoryStatus } from "@pssbletrngle/webhooks-types/metadata";
+import { createTopic } from "@pssbletrngle/workflows-shared";
 import createEventDispatcher, { type EventDispatcher } from "../sse";
 
 type MetadataEventDispatcher = EventDispatcher & {

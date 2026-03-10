@@ -11,9 +11,7 @@
   },
   "dependencies": {
     "@types/bun": "latest",
-    "dockerode": "^4.0.9"
-  },
-  "devDependencies": {
+    "dockerode": "^4.0.9",
     "@pssbletrngle/webhooks-configs": "workspace:*",
     "@types/dockerode": "^4.0.1"
   },
