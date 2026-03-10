@@ -12,7 +12,7 @@
   "dependencies": {
     "@types/bun": "latest",
     "dockerode": "^4.0.9",
-    "@pssbletrngle/webhooks-configs": "workspace:*",
+    "@pssbletrngle/workflows-configs": "workspace:*",
     "@types/dockerode": "^4.0.1"
   },
   "peerDependencies": {

@@ -1,6 +1,6 @@
 // @ts-check
 import js from "@eslint/js";
-import { overrides } from "@pssbletrngle/webhooks-configs/eslint";
+import { overrides } from "@pssbletrngle/workflows-configs/eslint";
 import { defineConfig } from "eslint/config";
 import ts from "typescript-eslint";
 

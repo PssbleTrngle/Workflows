@@ -2,7 +2,9 @@
   "name": "@pssbletrngle/workflows-shared",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    "./config": "./src/config.ts",
+    "./topic": "./src/index.ts",
+    "./util": "./src/util.ts"
   },
   "scripts": {
     "check-types": "tsc --noEmit",
@@ -10,8 +12,8 @@
     "format": "biome format --write src"
   },
   "dependencies": {
-    "@pssbletrngle/webhooks-configs": "workspace:*",
-    "@pssbletrngle/webhooks-types": "workspace:*",
+    "@pssbletrngle/workflows-configs": "workspace:*",
+    "@pssbletrngle/workflows-types": "workspace:*",
     "@types/bun": "latest"
   },
   "peerDependencies": {

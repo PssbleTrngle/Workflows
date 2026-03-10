@@ -1,5 +1,5 @@
 {
-  "name": "@pssbletrngle/webhooks-server",
+  "name": "@pssbletrngle/workflows-server",
   "module": "src/main.ts",
   "type": "module",
   "private": true,
@@ -19,13 +19,13 @@
   },
   "dependencies": {
     "@pssbletrngle/github-meta-generator": "workspace:*",
-    "@pssbletrngle/webhooks-ui": "workspace:*",
-    "@pssbletrngle/webhooks-types": "workspace:*",
+    "@pssbletrngle/workflows-ui": "workspace:*",
+    "@pssbletrngle/workflows-types": "workspace:*",
     "@pssbletrngle/workflows-persistance": "workspace:*",
     "@pssbletrngle/workflows-events": "workspace:*",
     "@pssbletrngle/workflows-notifications": "workspace:*",
     "@pssbletrngle/workflows-shared": "workspace:*",
-    "@pssbletrngle/webhooks-configs": "workspace:*",
+    "@pssbletrngle/workflows-configs": "workspace:*",
     "cookie-parser": "^1.4.7",
     "express": "^5.1.0",
     "octokit": "^5.0.4",

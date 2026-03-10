@@ -1,7 +1,7 @@
 import { redis } from "@pssbletrngle/workflows-persistance";
+import { intEnv } from "@pssbletrngle/workflows-shared/config";
 
-// TODO intEnv?
-const alarmStaleTime = Number.parseInt(process.env.STALE_TIME ?? "86400000");
+const alarmStaleTime = intEnv("STALE_TIME") ?? 86400000;
 
 export async function lastAlarm(id: string) {
   const raw = await redis.get(`alarm:${id}`);

@@ -20,7 +20,8 @@
     "@pssbletrngle/github-meta-generator": "workspace:*",
     "@types/bun": "latest",
     "prompts": "^2.4.2",
-    "@pssbletrngle/webhooks-configs": "workspace:*",
+    "@pssbletrngle/workflows-configs": "workspace:*",
+    "@pssbletrngle/workflows-shared": "workspace:*",
     "@types/prompts": "^2.4.9"
   },
   "peerDependencies": {

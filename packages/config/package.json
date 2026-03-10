@@ -1,5 +1,5 @@
 {
-  "name": "@pssbletrngle/webhooks-configs",
+  "name": "@pssbletrngle/workflows-configs",
   "private": "true",
   "type": "module",
   "exports": {

@@ -1,13 +1,13 @@
 import type { Meta } from "@pssbletrngle/github-meta-generator";
+import { redis } from "@pssbletrngle/workflows-persistance";
 import type {
   RepoSearch,
   RepoSearchWithBranch,
-} from "@pssbletrngle/webhooks-types";
+} from "@pssbletrngle/workflows-types";
 import type {
   RepositoryStatus,
   StatusResult,
-} from "@pssbletrngle/webhooks-types/metadata";
-import { redis } from "@pssbletrngle/workflows-persistance";
+} from "@pssbletrngle/workflows-types/metadata";
 import { eventDispatcher } from "./events";
 
 const statusPrefix = "metadata:status:";

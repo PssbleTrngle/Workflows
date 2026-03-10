@@ -2,14 +2,14 @@ import {
   generateInFolder,
   type Meta,
 } from "@pssbletrngle/github-meta-generator";
-import type { Repository } from "@pssbletrngle/webhooks-types";
-import type { RepositoryStatus } from "@pssbletrngle/webhooks-types/metadata";
+import type { Repository } from "@pssbletrngle/workflows-types";
+import type { RepositoryStatus } from "@pssbletrngle/workflows-types/metadata";
 import type { Octokit } from "octokit";
 import type { ActionResult } from "../git";
 import { cloneAndModify, type GitUser } from "../git";
 import type { MetadataContext } from "./branches";
 import { createMetadataContext } from "./branches";
-import { deleteStatus, getStatus, saveMetadata, saveStatus } from "./cache";
+import { deleteStatus, saveMetadata, saveStatus } from "./cache";
 import detectProperties from "./detection";
 
 type GenerationResult = ActionResult & {
@@ -101,8 +101,7 @@ export default async function generateMetadata(
 
     octokit.log.info(`<- finished metafile update for ${repository.full_name}`);
 
-    // TODO maybe return directly?
-    return getStatus(repo);
+    return doneState;
   } catch (e) {
     await saveStatus(repo, "failed");
     throw e;

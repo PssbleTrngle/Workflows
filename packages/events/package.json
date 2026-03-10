@@ -12,7 +12,7 @@
   "dependencies": {
     "@types/bun": "latest",
     "amqplib": "^0.10.9",
-    "@pssbletrngle/webhooks-configs": "workspace:*",
+    "@pssbletrngle/workflows-configs": "workspace:*",
     "@types/amqplib": "^0.10.8"
   },
   "peerDependencies": {

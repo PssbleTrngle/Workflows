@@ -1,5 +1,5 @@
 {
-   "name": "@pssbletrngle/github-meta",
+   "name": "@pssbletrngle/workflows",
    "devDependencies": {
       "@biomejs/biome": "^2.3.4",
       "bun-git-hooks": "^0.3.1",

@@ -1,4 +1,4 @@
-import type { Dictionary } from "@pssbletrngle/webhooks-types";
+import type { Dictionary } from "@pssbletrngle/workflows-types";
 import type { RequestHandler } from "express-serve-static-core";
 import type { infer as inferType, ZodType } from "zod";
 

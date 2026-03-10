@@ -1,4 +1,4 @@
-import { handler } from "@pssbletrngle/webhooks-ui";
+import { handler } from "@pssbletrngle/workflows-ui";
 import { Router, type RequestHandler } from "express";
 import type { App } from "octokit";
 import config from "../config";

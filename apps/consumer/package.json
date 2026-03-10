@@ -14,7 +14,7 @@
     "@pssbletrngle/workflows-docker": "workspace:*",
     "@pssbletrngle/workflows-notifications": "workspace:*",
     "@pssbletrngle/workflows-events": "workspace:*",
-    "@pssbletrngle/webhooks-configs": "workspace:*",
+    "@pssbletrngle/workflows-configs": "workspace:*",
     "@types/bun": "latest"
   },
   "peerDependencies": {

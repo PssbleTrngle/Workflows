@@ -1,5 +1,5 @@
 {
-   "name": "@pssbletrngle/webhooks-types",
+   "name": "@pssbletrngle/workflows-types",
    "type": "module",
    "module": "src/index.ts",
    "exports": {
@@ -11,7 +11,7 @@
       "lint": "eslint src",
       "format": "biome format --write src",
       "@types/bun": "latest",
-      "@pssbletrngle/webhooks-configs": "workspace:*"
+      "@pssbletrngle/workflows-configs": "workspace:*"
    },
    "peerDependencies": {
       "typescript": "^5"

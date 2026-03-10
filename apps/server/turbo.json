@@ -6,7 +6,7 @@
    "tasks": {
       "check-types": {
          "dependsOn": [
-            "@pssbletrngle/webhooks-ui#build"
+            "@pssbletrngle/workflows-ui#build"
          ]
       }
    }

@@ -1,6 +1,4 @@
-function notNull<T>(value: T | null | undefined): value is T {
-  return value !== null && value !== undefined;
-}
+import { notNull } from "@pssbletrngle/workflows-shared/util";
 
 type O = Record<string, unknown>;
 

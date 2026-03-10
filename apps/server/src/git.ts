@@ -1,4 +1,4 @@
-import type { Repository } from "@pssbletrngle/webhooks-types";
+import type { Repository } from "@pssbletrngle/workflows-types";
 import { $ } from "bun";
 import { existsSync, mkdirSync, rmSync } from "node:fs";
 import { join } from "node:path";

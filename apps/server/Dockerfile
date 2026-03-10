@@ -10,7 +10,7 @@ FROM turbo AS prepare
 
 COPY . .
 
-RUN turbo prune @pssbletrngle/webhooks-server --docker
+RUN turbo prune @pssbletrngle/workflows-server --docker
 
 # install dependencies and build project
 FROM turbo AS builder

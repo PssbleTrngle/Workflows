@@ -1,5 +1,5 @@
 {
-  "name": "@pssbletrngle/webhooks-ui",
+  "name": "@pssbletrngle/workflows-ui",
   "exports": {
     ".": "./dist/server/entry.mjs"
   },
@@ -13,13 +13,13 @@
   },
   "type": "module",
   "dependencies": {
-    "@pssbletrngle/webhooks-types": "workspace:*",
+    "@pssbletrngle/workflows-types": "workspace:*",
     "@pssbletrngle/workflows-shared": "workspace:*",
     "@astrojs/node": "9.5.4",
     "astro": "5.18.0",
     "octokit": "^5.0.4",
     "typescript": "^5.9.3",
-    "@pssbletrngle/webhooks-configs": "workspace:*"
+    "@pssbletrngle/workflows-configs": "workspace:*"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.6"

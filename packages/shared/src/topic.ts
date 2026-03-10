@@ -1,4 +1,4 @@
-import type { RepoSearchWithBranch } from "@pssbletrngle/webhooks-types";
+import type { RepoSearchWithBranch } from "@pssbletrngle/workflows-types";
 
 function createPath({ base, owner, repo }: RepoSearchWithBranch) {
   return `${owner}/${repo}/${base}`;

@@ -1,5 +1,5 @@
 {
-  "extends": "@pssbletrngle/webhooks-configs/tsconfig",
+  "extends": "@pssbletrngle/workflows-configs/tsconfig",
   "exclude": [
     "node_modules"
   ],

@@ -1,6 +1,6 @@
 import type { WebhookEventDefinition } from "@octokit/webhooks/types";
 import { configPath } from "@pssbletrngle/github-meta-generator";
-import type { RepoSearch, Repository } from "@pssbletrngle/webhooks-types";
+import type { RepoSearch, Repository } from "@pssbletrngle/workflows-types";
 import type { App } from "octokit";
 import { createAppGitUser } from "../user";
 import createApiRoutes from "./api";

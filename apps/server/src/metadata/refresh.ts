@@ -1,7 +1,7 @@
 import type {
   RepoSearch,
   RepoSearchWithBranch,
-} from "@pssbletrngle/webhooks-types";
+} from "@pssbletrngle/workflows-types";
 import { createAuthenticatedGitUser } from "../user";
 import type { AuthenticatedContext } from "./auth";
 import { fetchBranches } from "./branches";

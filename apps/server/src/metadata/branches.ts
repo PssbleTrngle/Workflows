@@ -3,9 +3,8 @@ import {
   validateConfig,
   type ConfigSchema,
 } from "@pssbletrngle/github-meta-generator";
-import type { RepoSearch } from "@pssbletrngle/webhooks-types";
+import type { RepoSearch } from "@pssbletrngle/workflows-types";
 import type { Octokit, RequestError } from "octokit";
-import { deleteStatus } from "./cache";
 
 export async function fetchBranches(octokit: Octokit, search: RepoSearch) {
   const { data } = await octokit.rest.repos.listBranches(search);
@@ -74,30 +73,4 @@ export async function createMetadataContext(
 
   if (isMainBranch(base, context)) return context;
   return null;
-}
-
-// TODO share?
-function notNull<T>(value: T | null | undefined): value is T {
-  return value !== null && value !== undefined;
-}
-
-// TODO remove
-export async function createMetadataContexts(
-  octokit: Octokit,
-  search: RepoSearch,
-) {
-  const branches = await fetchBranches(octokit, search);
-
-  const withConfigs = await Promise.all(
-    branches.map(async (branch) => {
-      const config = await fetchConfig(octokit, branch, search);
-      if (!config) await deleteStatus({ ...search, base: branch });
-      else return { branch, config };
-    }),
-  );
-
-  return withConfigs
-    .filter(notNull)
-    .map(({ config, ...rest }) => ({ ...rest, context: { config, branches } }))
-    .filter(({ branch, context }) => isMainBranch(branch, context));
 }

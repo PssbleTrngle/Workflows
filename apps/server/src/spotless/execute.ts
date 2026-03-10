@@ -1,4 +1,4 @@
-import type { Repository } from "@pssbletrngle/webhooks-types";
+import type { Repository } from "@pssbletrngle/workflows-types";
 import { $ } from "bun";
 import { cloneAndModify, type ActionResult, type GitUser } from "../git";
 
