@@ -1,3 +1,5 @@
+export * from "./topic";
+
 export type Repository = {
   id: number;
   html_url: string;

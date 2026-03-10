@@ -1,7 +1,6 @@
 ---
-import type { Repository } from "@pssbletrngle/webhooks-types";
+import type { RepoSearch, Repository } from "@pssbletrngle/webhooks-types";
 import type { RepositoryStatus } from "@pssbletrngle/webhooks-types/metadata";
-import Refresh from "./Refresh.astro";
 import Status from "./Status.astro";
 
 type Props = {
@@ -10,6 +9,11 @@ type Props = {
 };
 
 const { status = {}, repo } = Astro.props as Props;
+
+const subject: RepoSearch = {
+  owner: repo.owner.login,
+  repo: repo.name,
+};
 ---
 
 <li class="panel">
@@ -17,10 +21,8 @@ const { status = {}, repo } = Astro.props as Props;
     {repo.full_name}
   </a>
   {
-    Object.entries(status).map(([branch, status]) => (
-      <Status branch={branch} value={status}>
-        <Refresh repo={repo} />
-      </Status>
+    Object.entries(status).map(([base, status]) => (
+      <Status subject={{ ...subject, base }} value={status} />
     ))
   }
 </li>

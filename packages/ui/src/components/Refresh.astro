@@ -1,18 +1,23 @@
 ---
-import type { Repository } from "@pssbletrngle/webhooks-types";
+import type { RepoSearchWithBranch } from "@pssbletrngle/webhooks-types";
 
-const { repo } = Astro.props as { repo: Repository };
+const { repo, disabled } = Astro.props as {
+  repo: RepoSearchWithBranch;
+  disabled?: boolean;
+};
 ---
 
 <form
   hx-post="/metadata/action/refresh"
   hx-target="closest .status"
-  hx-swap="outerHTML"
+  hx-swap="none"
+  hx-disabled-elt="find button"
 >
-  <input type="hidden" name="owner" value={repo.owner.login} />
-  <input type="hidden" name="repo" value={repo.name} />
+  <input type="hidden" name="owner" value={repo.owner} />
+  <input type="hidden" name="repo" value={repo.repo} />
+  <input type="hidden" name="branch" value={repo.base} />
 
-  <button title="Refresh">🔄</button>
+  <button title="Refresh" disabled={disabled}>🔄</button>
 </form>
 
 <style scoped>
@@ -20,5 +25,9 @@ const { repo } = Astro.props as { repo: Repository };
     background: transparent;
     padding: 0;
     font-size: 1.5em;
+
+    &:disabled {
+      filter: grayscale();
+    }
   }
 </style>

@@ -1,5 +1,10 @@
 ---
+import {
+  createTopic,
+  type RepoSearchWithBranch,
+} from "@pssbletrngle/webhooks-types";
 import type { RepositoryStatus } from "@pssbletrngle/webhooks-types/metadata";
+import Refresh from "./Refresh.astro";
 
 const icons: Record<RepositoryStatus, string> = {
   failed: "🧨",
@@ -8,18 +13,26 @@ const icons: Record<RepositoryStatus, string> = {
   running: "🏃‍♂️",
 };
 
-const { branch, value } = Astro.props as {
+const { subject, value } = Astro.props as {
+  subject: RepoSearchWithBranch;
   branch: string;
   value: RepositoryStatus;
 };
 
 const icon = icons[value];
+
+const topic = createTopic(subject, "status");
 ---
 
-<span class="status">
-  <span>{branch}</span>
+<span
+  class="status"
+  hx-trigger={`sse:${topic}`}
+  hx-get={`/metadata/partial/${topic}`}
+  hx-swap="outerHTML"
+>
+  <span>{subject.base}</span>
   <span class="value">{value} {icon}</span>
-  <slot />
+  <Refresh repo={subject} disabled={value === "running"} />
 </span>
 
 <style scoped>

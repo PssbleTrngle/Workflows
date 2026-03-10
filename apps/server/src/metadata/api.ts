@@ -5,22 +5,39 @@ import z from "zod";
 import { cutoff } from "../error";
 import { createAuthenticatedGitUser } from "../user";
 import { authorize, type AuthenticatedResponse } from "./auth";
-import { getStatusesByOwner, getStatusesByRepository } from "./cache";
+import {
+  getStatus,
+  getStatusesByOwner,
+  getStatusesByRepository,
+} from "./cache";
+import { eventDispatcher } from "./events";
 import generateMetadata from "./generator";
 
 export default function createApiRoutes(_: App) {
   const router = Router();
 
   router.use(...authorize("fail"));
-
   router.use(json());
 
+  router.use("/sse", eventDispatcher.handler);
+
+  router.get("/test", (_, res) => res.json({ message: "yes" }));
+
   router.get(
-    "/status/:owner/:repo",
+    "/:owner/:repo/status",
     async (req, res: AuthenticatedResponse) => {
       // TODO authorization guard
       const status = await getStatusesByRepository(req.params);
-      res.json({ status: status });
+      res.json({ status });
+    },
+  );
+
+  router.get(
+    "/:owner/:repo/:base/status",
+    async (req, res: AuthenticatedResponse) => {
+      // TODO authorization guard
+      const status = await getStatus(req.params);
+      res.json({ status });
     },
   );
 
@@ -42,6 +59,7 @@ export default function createApiRoutes(_: App) {
   const repoParams = z.object({
     repo: z.string().nonempty(),
     owner: z.string().nonempty(),
+    base: z.string().nonempty(),
   });
 
   const reposParams = z.array(repoParams);
@@ -58,11 +76,7 @@ export default function createApiRoutes(_: App) {
     for (const entry of data) {
       const { data: repository } = await octokit.rest.repos.get(entry);
 
-      // use saved branches?
-      const branches = [repository.default_branch];
-      for (const branch of branches) {
-        await generateMetadata(repository, branch, octokit, user);
-      }
+      await generateMetadata(repository, entry.base, octokit, user);
     }
 
     res.json({ success: true, status });

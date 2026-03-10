@@ -1,0 +1,22 @@
+---
+import {
+  createTopic,
+  type RepoSearchWithBranch,
+} from "@pssbletrngle/webhooks-types";
+import type { RepositoryStatus } from "@pssbletrngle/webhooks-types/metadata";
+import StatusComponent from "../../../../../components/Status.astro";
+
+export const partial = true;
+
+const { api } = Astro.locals;
+
+const data = Astro.params as RepoSearchWithBranch;
+
+console.log(data);
+
+const { status } = await api.request<{ status: RepositoryStatus }>(
+  createTopic(data, "status"),
+);
+---
+
+<StatusComponent value={status} subject={data} />

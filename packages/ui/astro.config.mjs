@@ -15,7 +15,7 @@ export default defineConfig({
         protocol: "ws",
         clientPort: 4321,
       },
-      allowedHosts: ["webhooks.new.macarena.ceo"],
+      allowedHosts: ["workflows.somethingcatchy.net"],
       proxy: {
         "/metadata/api": {
           target: "http://localhost:8888",

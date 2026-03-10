@@ -71,7 +71,7 @@ function createHandler(strategy: AuthenticationStrategy): AuthenticatedHandler {
 
     if (strategy === "redirect") {
       console.info("starting login flow");
-      res.redirect("/metadata/api/github/oauth/login");
+      res.redirect("/api/github/oauth/login");
     } else {
       throw new ApiError("requires login", 401);
     }

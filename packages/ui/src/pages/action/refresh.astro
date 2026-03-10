@@ -1,4 +1,5 @@
 ---
+import type { RepoSearchWithBranch } from "@pssbletrngle/webhooks-types";
 import type { RepositoryStatus } from "@pssbletrngle/webhooks-types/metadata";
 import Status from "../../components/Status.astro";
 
@@ -11,10 +12,12 @@ const { api } = Astro.locals;
 const data = await Astro.request.formData();
 const owner = data.get("owner") as string;
 const repo = data.get("repo") as string;
+const base = data.get("branch") as string;
+const subject: RepoSearchWithBranch = { owner, repo, base };
 
 const { status } = await api.submit<{ status: RepositoryStatus }>("refresh", [
-  { owner, repo },
+  subject,
 ]);
 ---
 
-<Status value={status} branch="main" />
+<Status value={status} subject={subject} />

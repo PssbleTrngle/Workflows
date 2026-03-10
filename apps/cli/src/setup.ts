@@ -158,7 +158,7 @@ export default async function setup() {
   await output.write(
     JSON.stringify(
       {
-        $schema: "https://webhooks.new.macarena.ceo/schema/config.json",
+        $schema: "https://workflows.somethingcatchy.net/schema/config.json",
         ...stripped,
       },
       null,

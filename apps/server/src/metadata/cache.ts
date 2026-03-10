@@ -8,6 +8,7 @@ import type {
   StatusResult,
 } from "@pssbletrngle/webhooks-types/metadata";
 import { redis } from "@pssbletrngle/workflows-persistance";
+import { eventDispatcher } from "./events";
 
 const statusPrefix = "metadata:status:";
 const statusKey = ({ owner, repo, base }: RepoSearchWithBranch) =>
@@ -25,6 +26,7 @@ export async function saveStatus(
   status: RepositoryStatus,
 ) {
   await redis.set(statusKey(repository), status);
+  eventDispatcher.sendStatusUpdate(repository, status);
 }
 
 export function getStatus(repository: RepoSearchWithBranch) {
