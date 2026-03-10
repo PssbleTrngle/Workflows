@@ -13,7 +13,11 @@ on:
       types: [opened, synchronize]
 {{#unless sonar}}
    push:
-      branches: ["[0-9]+.[0-9]+.[0-9x]+"]
+      branches: 
+         - "[0-9]+.[0-9]+.[0-9x]+"
+         {{#each loaders as |loader|}}        
+         - "{{ loader }}/[0-9]+.[0-9]+.[0-9x]+"
+         {{/each}}
 {{/unless }}
 
 env:
@@ -40,6 +44,7 @@ jobs:
            run: ./gradlew build check
 
          - uses: actions/upload-artifact@v4
+           if: {{ var 'inputs.upload' }}
            with:
               name: build
               path: "**/build/libs/*.jar"

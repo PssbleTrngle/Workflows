@@ -12,8 +12,6 @@ const { api } = Astro.locals;
 
 const data = Astro.params as RepoSearchWithBranch;
 
-console.log(data);
-
 const { status } = await api.request<{ status: RepositoryStatus }>(
   createTopic(data, "status"),
 );
