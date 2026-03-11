@@ -8,18 +8,11 @@ import Layout from "../layout.astro";
 
 const { api, octokit } = Astro.locals;
 
-async function listRepos() {
-  const { data } = await octokit.rest.repos.listForAuthenticatedUser({
-    per_page: 20,
-    type: "owner",
-    sort: "pushed",
-  });
-
-  return data;
-}
+// TODO validate?
+const page = Number.parseInt(Astro.url.searchParams.get("page") || "1");
 
 async function listStatuses() {
-  const entries = await api.request<StatusResult[]>("status");
+  const entries = await api.request<StatusResult[]>(`status?page=${page}`);
 
   const map: Record<string, Record<string, RepositoryStatus>> = {};
 
@@ -30,6 +23,16 @@ async function listStatuses() {
   });
 
   return map;
+}
+
+async function listRepos() {
+  const { data } = await octokit.rest.repos.listForAuthenticatedUser({
+    per_page: 20,
+    page,
+    sort: "pushed",
+  });
+
+  return data;
 }
 
 const [repos, statuses] = await Promise.all([listRepos(), listStatuses()]);
@@ -51,9 +54,10 @@ const [repos, statuses] = await Promise.all([listRepos(), listStatuses()]);
     list-style: none;
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
 
     width: 90vw;
-    max-width: 1200px;
+    max-width: 1600px;
 
     gap: 20px;
     padding: 10px;

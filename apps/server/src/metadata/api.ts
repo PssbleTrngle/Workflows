@@ -4,13 +4,14 @@ import z from "zod";
 import { cutoff } from "../error";
 import validate from "../validation";
 import { authorize, type AuthenticatedResponse } from "./auth";
-import {
-  getStatus,
-  getStatusesByOwner,
-  getStatusesByRepository,
-} from "./cache";
+import { getStatus, getStatusesByRepository } from "./cache";
 import { eventDispatcher } from "./events";
 import refresh from "./refresh";
+
+const paginationQuery = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  pageSize: z.coerce.number().int().positive().default(20),
+});
 
 export default function createApiRoutes(_: App) {
   const router = Router();
@@ -19,8 +20,6 @@ export default function createApiRoutes(_: App) {
   router.use(json());
 
   router.use("/sse", eventDispatcher.handler);
-
-  router.get("/test", (_, res) => res.json({ message: "yes" }));
 
   router.get(
     "/:owner/:repo/status",
@@ -40,20 +39,25 @@ export default function createApiRoutes(_: App) {
     },
   );
 
-  router.get("/status", async (_, res: AuthenticatedResponse) => {
-    const [organizations, user] = await Promise.all([
-      res.locals.octokit.rest.orgs.listForAuthenticatedUser(),
-      res.locals.octokit.rest.users.getAuthenticated(),
-    ]);
+  router.get(
+    "/status",
+    validate({ query: paginationQuery }),
+    async (req, res: AuthenticatedResponse) => {
+      const { data } =
+        await res.locals.octokit.rest.repos.listForAuthenticatedUser({
+          per_page: req.query.pageSize,
+          sort: "pushed",
+          page: req.query.page,
+        });
 
-    const namespaces = [
-      user.data.login,
-      ...organizations.data.map((it) => it.login),
-    ];
-
-    const statuses = await Promise.all(namespaces.map(getStatusesByOwner));
-    res.json(statuses.flat());
-  });
+      const statuses = await Promise.all(
+        data.map((it) =>
+          getStatusesByRepository({ repo: it.name, owner: it.owner.login }),
+        ),
+      );
+      res.json(statuses.flat());
+    },
+  );
 
   const repoParams = z.object({
     owner: z.string().nonempty(),
@@ -63,7 +67,7 @@ export default function createApiRoutes(_: App) {
 
   router.post(
     "/refresh",
-    validate(repoParams),
+    validate({ body: repoParams }),
     async (req, res: AuthenticatedResponse) => {
       const status = await refresh(req.body, res.locals);
 

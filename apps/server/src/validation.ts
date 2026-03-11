@@ -4,14 +4,27 @@ import type { infer as inferType, ZodType } from "zod";
 
 export default function validate<
   ReqParams,
-  Schema extends ZodType,
-  ReqQuery,
+  BodySchema extends ZodType,
+  QuerySchema extends ZodType,
   LocalsObj extends Dictionary,
->(
-  schema: Schema,
-): RequestHandler<ReqParams, unknown, inferType<Schema>, ReqQuery, LocalsObj> {
+>(schemas: {
+  query?: QuerySchema;
+  body?: BodySchema;
+}): RequestHandler<
+  ReqParams,
+  unknown,
+  inferType<BodySchema>,
+  inferType<QuerySchema>,
+  LocalsObj
+> {
   return (req, _, next) => {
-    req.body = schema.parse(req.body);
+    if (schemas.body) req.body = schemas.body.parse(req.body);
+    if (schemas.query) {
+      const value = schemas.query.parse(req.query, {});
+      delete (req as Dictionary).query;
+      Object.defineProperty(req, "query", { value, writable: false });
+    }
+
     return next();
   };
 }
