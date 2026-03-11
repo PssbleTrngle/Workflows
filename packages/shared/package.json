@@ -3,7 +3,7 @@
   "type": "module",
   "exports": {
     "./config": "./src/config.ts",
-    "./topic": "./src/index.ts",
+    "./topic": "./src/topic.ts",
     "./util": "./src/util.ts"
   },
   "scripts": {
