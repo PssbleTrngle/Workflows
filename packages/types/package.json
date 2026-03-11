@@ -9,7 +9,9 @@
    "scripts": {
       "check-types": "tsc --noEmit",
       "lint": "eslint src",
-      "format": "biome format --write src",
+      "format": "biome format --write src"
+   },
+   "dependencies": {
       "@types/bun": "latest",
       "@pssbletrngle/workflows-configs": "workspace:*"
    },

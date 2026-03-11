@@ -8,43 +8,63 @@ on:
         default: false
         required: true
         type: boolean
-
+   
    pull_request:
       types: [opened, synchronize]
-{{#unless sonar}}
+
    push:
       branches: 
          - "[0-9]+.[0-9]+.[0-9x]+"
          {{#each loaders as |loader|}}        
          - "{{ loader }}/[0-9]+.[0-9]+.[0-9x]+"
          {{/each}}
-{{/unless }}
 
 env:
-   CI: true
+  CI: true
 
 concurrency:
-   group: {{ var 'github.workflow' }}-{{ var 'github.ref' }}
-   cancel-in-progress: true
+  group: {{ var 'github.workflow' }}-{{ var 'github.ref' }}
+  cancel-in-progress: true
 
 jobs:
-   test:
-      runs-on: ubuntu-latest
-      timeout-minutes: 20
-      permissions:
-         contents: read
-      steps:
-         - name: Checkout
-           uses: actions/checkout@v4
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
               
-         {{> java }}
+      {{> java }}
 
 
-         - name: Build
-           run: ./gradlew build check
+      {{#if sonar}}
+      - name: Cache SonarQube packages
+        if: {{ var 'github.event_name == \'push\'' }}
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: {{ var 'runner.os' }}-sonar
+          restore-keys: {{ var 'runner.os' }}-sonar
+      {{/if}}
 
-         - uses: actions/upload-artifact@v4
-           if: {{ var 'inputs.upload' }}
-           with:
-              name: build
-              path: "**/build/libs/*.jar"
+      - name: Test
+        run: ./gradlew build check
+
+      {{#if sonar}}
+      - name: Analyze
+        if: {{ var 'github.event_name == \'push\'' }}
+        run: ./gradlew sonar
+        env:
+          SONAR_TOKEN: {{ var 'secrets.SONAR_TOKEN' }}
+          SONAR_HOST_URL: {{ var 'secrets.SONAR_HOST_URL' }}
+      {{/if}}
+
+      - uses: actions/upload-artifact@v4
+        if: {{ var 'inputs.upload' }}
+        with:
+          name: build
+          path: "**/build/libs/*.jar"

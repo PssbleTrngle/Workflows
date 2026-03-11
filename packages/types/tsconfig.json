@@ -4,7 +4,6 @@
     "node_modules"
   ],
   "include": [
-    "src",
-    "../shared/src/topic.ts"
+    "src"
   ]
 }

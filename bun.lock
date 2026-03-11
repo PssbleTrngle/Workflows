@@ -168,6 +168,10 @@
     },
     "packages/types": {
       "name": "@pssbletrngle/workflows-types",
+      "dependencies": {
+        "@pssbletrngle/workflows-configs": "workspace:*",
+        "@types/bun": "latest",
+      },
       "peerDependencies": {
         "typescript": "^5",
       },

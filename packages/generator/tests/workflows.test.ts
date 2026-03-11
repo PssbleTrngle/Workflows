@@ -4,23 +4,21 @@ import { generateWorkflow } from "../src";
 describe("minecraft test workflows", () => {
   it("generates test workflow without sonar", async () => {
     const generated = await generateWorkflow(["minecraft", "test.yml"]);
-    expect(generated).toMatchSnapshot(
-      "test workflow with push and pull_request",
-    );
+    expect(generated).toMatchSnapshot("test workflow without sonar");
   });
 
   it("generates test workflow with sonar", async () => {
     const generated = await generateWorkflow(["minecraft", "test.yml"], {
       sonar: true,
     });
-    expect(generated).toMatchSnapshot("test workflow with only pull_request");
+    expect(generated).toMatchSnapshot("test workflow with sonar");
   });
 
-  it("generates sonar workflow", async () => {
-    const generated = await generateWorkflow(["minecraft", "sonar.yml"], {
-      sonar: true,
+  it("generates test workflow with loader branches", async () => {
+    const generated = await generateWorkflow(["minecraft", "test.yml"], {
+      loaders: ["neoforge", "fabric"],
     });
-    expect(generated).toMatchSnapshot("sonar workflow");
+    expect(generated).toMatchSnapshot("test workflow with loaders");
   });
 });
 

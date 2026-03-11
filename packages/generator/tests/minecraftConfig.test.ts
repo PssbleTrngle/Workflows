@@ -16,7 +16,6 @@ describe("minecraft workflow generation", () => {
 
     expect(acceptor.count()).toBe(7);
     acceptor.expect(".github/labeler.yml").not.toBeUndefined();
-    acceptor.expect(".github/workflows/sonar.yml").toBeUndefined();
     acceptor.expect(".github/workflows/release.yml").not.toBeUndefined();
     acceptor.expect(".github/workflows/test.yml").not.toBeUndefined();
     acceptor.expect(".github/workflows/labeler.yml").not.toBeUndefined();
@@ -38,9 +37,8 @@ describe("minecraft workflow generation", () => {
 
     await generateWithConfig(config, acceptor);
 
-    expect(acceptor.count()).toBe(5);
+    expect(acceptor.count()).toBe(4);
     acceptor.expect(".github/labeler.yml").not.toBeUndefined();
-    acceptor.expect(".github/workflows/sonar.yml").not.toBeUndefined();
     acceptor.expect(".github/workflows/release.yml").not.toBeUndefined();
     acceptor.expect(".github/workflows/test.yml").not.toBeUndefined();
     acceptor.expect(".github/workflows/labeler.yml").not.toBeUndefined();
