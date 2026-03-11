@@ -5,9 +5,10 @@ import createApiClient from "./lib/api";
 const COOKIE = "webhooks-session";
 
 const initializeContext = defineMiddleware(({ locals, request }, next) => {
-  const origin = request.headers.get("host");
-  if (!origin)
-    throw new Error("origin header missing, cannot create api client");
+  const { protocol } = new URL(request.url);
+  const host = request.headers.get("host");
+  if (!host) throw new Error("host header missing, cannot create api client");
+  const origin = `${protocol}//${host}`;
   locals.origin = origin;
   return next();
 });
