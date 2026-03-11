@@ -25,7 +25,7 @@ const enum Field {
 
 const PROJECT = {
   project_number: 11,
-  user_id: "PssbleTrngle",
+  username: "PssbleTrngle",
 };
 
 export function registerIssuesHooks(hooks: App["webhooks"]) {
@@ -40,7 +40,7 @@ export function registerIssuesHooks(hooks: App["webhooks"]) {
     const status = ItemStatus.BACKLOG;
     const priority = isBug ? Priority.HIGH : Priority.LOW;
     const stakeholder =
-      PROJECT.user_id === issue.user?.login
+      PROJECT.username === issue.user?.login
         ? Stakeholder.SELF
         : Stakeholder.USER;
 
