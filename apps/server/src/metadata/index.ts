@@ -77,7 +77,7 @@ export function registerMetadataHooks(hooks: App["webhooks"]) {
       ref: `heads/${pull_request.head.ref}`,
     });
 
-    saveStatus({ ...search, base: pull_request.base.ref }, "up-to-date");
+    saveStatus({ ...search, branch: pull_request.base.ref }, "up-to-date");
   });
 }
 

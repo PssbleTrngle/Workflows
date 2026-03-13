@@ -11,14 +11,14 @@ import type {
 import { eventDispatcher } from "./events";
 
 const statusPrefix = "metadata:status:";
-const statusKey = ({ owner, repo, base }: RepoSearchWithBranch) =>
-  statusPrefix + `${owner}:${repo}:${base}`;
+const statusKey = ({ owner, repo, branch }: RepoSearchWithBranch) =>
+  statusPrefix + `${owner}:${repo}:${branch}`;
 
 function parseKey(key: string): RepoSearchWithBranch {
   const parts = key.substring(statusPrefix.length);
-  const [owner, repo, base] = parts.split(":");
-  if (!owner || !repo || !base) throw new Error("received invalid key");
-  return { owner, repo, base };
+  const [owner, repo, branch] = parts.split(":");
+  if (!owner || !repo || !branch) throw new Error("received invalid key");
+  return { owner, repo, branch };
 }
 
 export async function saveStatus(
@@ -50,16 +50,16 @@ async function getStatuses(
 }
 
 export function getStatusesByRepository({ owner, repo }: RepoSearch) {
-  return getStatuses({ owner, repo, base: "*" });
+  return getStatuses({ owner, repo, branch: "*" });
 }
 
 export async function getStatusesByOwner(owner: string) {
-  return getStatuses({ owner, repo: "*", base: "*" });
+  return getStatuses({ owner, repo: "*", branch: "*" });
 }
 
 const metaPrefix = "metadata:meta:";
-const metaKey = ({ owner, repo, base }: RepoSearchWithBranch) =>
-  metaPrefix + `${owner}:${repo}:${base}`;
+const metaKey = ({ owner, repo, branch }: RepoSearchWithBranch) =>
+  metaPrefix + `${owner}:${repo}:${branch}`;
 
 export async function saveMetadata(
   repository: RepoSearchWithBranch,

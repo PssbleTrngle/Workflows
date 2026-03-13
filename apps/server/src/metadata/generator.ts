@@ -2,7 +2,10 @@ import {
   generateInFolder,
   type Meta,
 } from "@pssbletrngle/github-meta-generator";
-import type { Repository } from "@pssbletrngle/workflows-types";
+import type {
+  RepoSearchWithBranch,
+  Repository,
+} from "@pssbletrngle/workflows-types";
 import type { RepositoryStatus } from "@pssbletrngle/workflows-types/metadata";
 import type { Octokit } from "octokit";
 import type { ActionResult } from "../git";
@@ -40,14 +43,14 @@ export default async function generateMetadata(
   octokit: Octokit,
   user: GitUser,
 ) {
-  const repo = {
+  const repo: RepoSearchWithBranch = {
     owner: repository.owner.login,
     repo: repository.name,
-    base: branch,
+    branch,
   };
 
   try {
-    const context = await createMetadataContext(octokit, repo, branch);
+    const context = await createMetadataContext(octokit, repo);
 
     if (!context) {
       deleteStatus(repo);
@@ -90,6 +93,7 @@ export default async function generateMetadata(
 
       await octokit.rest.pulls.create({
         ...search,
+        base: search.branch,
         title: "Generate Metadata Files",
       });
 

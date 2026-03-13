@@ -28,7 +28,7 @@ const topic = createTopic(subject, "status");
   hx-get={`/metadata/partial/${topic}`}
   hx-swap="outerHTML"
 >
-  <span>{subject.base}</span>
+  <span>{subject.branch}</span>
   <span class="value">{value} {icon}</span>
   <Refresh repo={subject} disabled={value === "running"} />
 </span>

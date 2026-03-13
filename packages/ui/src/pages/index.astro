@@ -19,7 +19,7 @@ async function listStatuses() {
   entries.forEach(({ search, status }) => {
     const repository = `${search.owner}/${search.repo}`;
     if (!(repository in map)) map[repository] = {};
-    map[repository][search.base] = status;
+    map[repository][search.branch] = status;
   });
 
   return map;

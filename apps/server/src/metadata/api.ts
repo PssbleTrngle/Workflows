@@ -31,7 +31,7 @@ export default function createApiRoutes(_: App) {
   );
 
   router.get(
-    "/:owner/:repo/:base/status",
+    "/:owner/:repo/:branch/status",
     async (req, res: AuthenticatedResponse) => {
       // TODO authorization guard
       const status = await getStatus(req.params);
@@ -62,7 +62,7 @@ export default function createApiRoutes(_: App) {
   const repoParams = z.object({
     owner: z.string().nonempty(),
     repo: z.string().nonempty(),
-    base: z.string().nonempty().optional(),
+    branch: z.string().nonempty().optional(),
   });
 
   router.post(

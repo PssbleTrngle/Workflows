@@ -3,7 +3,10 @@ import {
   validateConfig,
   type ConfigSchema,
 } from "@pssbletrngle/github-meta-generator";
-import type { RepoSearch } from "@pssbletrngle/workflows-types";
+import type {
+  RepoSearch,
+  RepoSearchWithBranch,
+} from "@pssbletrngle/workflows-types";
 import type { Octokit, RequestError } from "octokit";
 
 export async function fetchBranches(octokit: Octokit, search: RepoSearch) {
@@ -13,8 +16,7 @@ export async function fetchBranches(octokit: Octokit, search: RepoSearch) {
 
 async function fetchConfig(
   octokit: Octokit,
-  branch: string,
-  search: RepoSearch,
+  { branch, ...search }: RepoSearchWithBranch,
 ) {
   try {
     const { data } = await octokit.rest.repos.getContent({
@@ -59,11 +61,10 @@ function isMainBranch(branch: string, { branches, config }: MetadataContext) {
 
 export async function createMetadataContext(
   octokit: Octokit,
-  search: RepoSearch,
-  base: string,
+  search: RepoSearchWithBranch,
 ) {
   const [config, branches] = await Promise.all([
-    fetchConfig(octokit, base, search),
+    fetchConfig(octokit, search),
     fetchBranches(octokit, search),
   ]);
 
@@ -71,6 +72,6 @@ export async function createMetadataContext(
 
   const context: MetadataContext = { branches, config };
 
-  if (isMainBranch(base, context)) return context;
+  if (isMainBranch(search.branch, context)) return context;
   return null;
 }

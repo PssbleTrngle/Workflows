@@ -24,9 +24,9 @@ const subject: RepoSearch = {
   <Refresh repo={subject} />
   <ul class="branches">
     {
-      Object.entries(status).map(([base, status]) => (
+      Object.entries(status).map(([branch, status]) => (
         <li>
-          <Status subject={{ ...subject, base }} value={status} />
+          <Status subject={{ ...subject, branch }} value={status} />
         </li>
       ))
     }
