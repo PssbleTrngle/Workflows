@@ -19,21 +19,22 @@
   },
   "dependencies": {
     "@pssbletrngle/github-meta-generator": "workspace:*",
-    "@pssbletrngle/workflows-ui": "workspace:*",
-    "@pssbletrngle/workflows-types": "workspace:*",
-    "@pssbletrngle/workflows-persistance": "workspace:*",
+    "@pssbletrngle/workflows-configs": "workspace:*",
     "@pssbletrngle/workflows-events": "workspace:*",
     "@pssbletrngle/workflows-notifications": "workspace:*",
+    "@pssbletrngle/workflows-persistance": "workspace:*",
     "@pssbletrngle/workflows-shared": "workspace:*",
-    "@pssbletrngle/workflows-configs": "workspace:*",
-    "cookie-parser": "^1.4.7",
-    "express": "^5.1.0",
-    "octokit": "^5.0.4",
-    "zod": "^4.1.12",
+    "@pssbletrngle/workflows-types": "workspace:*",
+    "@pssbletrngle/workflows-ui": "workspace:*",
     "@types/bun": "latest",
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.4",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
     "http-proxy-middleware": "^3.0.5",
-    "dotenv": "^17.2.3"
+    "octokit": "^5.0.4",
+    "winston": "^3.19.0",
+    "zod": "^4.1.12"
   }
 }

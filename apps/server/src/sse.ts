@@ -1,3 +1,4 @@
+import logger from "./logger";
 import type { AuthenticatedHandler } from "./metadata/auth";
 
 type Connection = {
@@ -28,16 +29,17 @@ export default function createEventDispatcher(): EventDispatcher {
     };
 
     connections.add(connection);
+    logger.debug("sse connection opened");
 
     req.on("close", () => {
-      console.log("client dropped me");
+      logger.debug("sse connection closed by client");
       connections.delete(connection);
       res.end();
     });
   };
 
   const send: Connection["send"] = (key, payload) => {
-    console.log(`sending '${key}' to ${connections.size} connections`);
+    logger.debug(`sending '${key}' to ${connections.size} connections`);
     connections.forEach((it) => it.send(key, payload));
   };
 

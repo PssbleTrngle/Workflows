@@ -54,6 +54,7 @@ export default {
     host: env("REDIS_HOST") ?? "localhost",
     port: intEnv("REDIS_PORT") ?? 6379,
   },
+  log: {
+    level: env("LOG_LEVEL") ?? "info",
+  },
 };
-
-console.debug("loaded config");

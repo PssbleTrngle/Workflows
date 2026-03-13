@@ -1,6 +1,7 @@
 import type { Repository } from "@pssbletrngle/workflows-types";
 import { $ } from "bun";
 import { cloneAndModify, type ActionResult, type GitUser } from "../git";
+import logger from "../logger";
 
 async function executeGradle(
   repositoryPath: string,
@@ -16,7 +17,7 @@ export default async function runSpotless(
   branch: string,
   user: GitUser,
 ) {
-  console.info("-> running spotless apply");
+  logger.info("-> running spotless apply");
   const result = await cloneAndModify(
     repository,
     user,

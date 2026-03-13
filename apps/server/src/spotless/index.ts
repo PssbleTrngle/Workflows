@@ -2,6 +2,7 @@ import type { components } from "@octokit/openapi-types";
 import type { WebhookEventDefinition } from "@octokit/webhooks/types";
 import type { App, Octokit } from "octokit";
 import type { GitUser } from "../git";
+import logger from "../logger";
 import { createAppGitUser } from "../user";
 import runSpotless from "./execute";
 
@@ -93,13 +94,13 @@ async function handleEvent(
 
     if (commited) {
       await react(octokit, user, { comment, repository }, Reaction.THUMBS_UP);
-      console.info("<- fixed code with spotless apply");
+      logger.info("<- fixed code with spotless apply");
     } else {
       await react(octokit, user, { comment, repository }, Reaction.THUMBS_DOWN);
-      console.info("<- no changes to be fixed by spotless");
+      logger.info("<- no changes to be fixed by spotless");
     }
   } catch (e) {
-    console.error("<- error occured when running spotless");
+    logger.error("<- error occured when running spotless");
     await react(octokit, user, { comment, repository }, Reaction.CONFUSED);
     throw e;
   }

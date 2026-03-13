@@ -13,7 +13,7 @@ async function createError(response: Response) {
       const { error } = await response.json();
       return new ApiError(error, response.status);
     } catch {
-      console.warn("unable to decode json response of error");
+      // return default below
     }
   }
 

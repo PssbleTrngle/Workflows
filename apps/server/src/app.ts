@@ -2,6 +2,7 @@ import { App } from "octokit";
 import { registerActionsHooks } from "./actions";
 import config from "./config";
 import { registerIssuesHooks } from "./issues";
+import logger from "./logger";
 import { registerMetadataHooks } from "./metadata";
 import { registerReleasesHooks } from "./releases";
 import { registerSpotlessHooks } from "./spotless";
@@ -11,7 +12,7 @@ const app = new App({
   privateKey: config.app.privateKey,
   oauth: config.app.oauth,
   webhooks: { secret: config.webhooks.secret },
-  log: console,
+  log: logger,
 });
 
 registerMetadataHooks(app.webhooks);

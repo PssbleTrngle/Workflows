@@ -2,6 +2,7 @@ import type { WebhookEventDefinition } from "@octokit/webhooks/types";
 import { configPath } from "@pssbletrngle/github-meta-generator";
 import type { RepoSearch, Repository } from "@pssbletrngle/workflows-types";
 import type { App } from "octokit";
+import logger from "../logger";
 import { createAppGitUser } from "../user";
 import createApiRoutes from "./api";
 import { saveStatus } from "./cache";
@@ -18,7 +19,7 @@ function shouldTriggerUpdate({
 
 export function registerMetadataHooks(hooks: App["webhooks"]) {
   hooks.onError((error) => {
-    console.error(error);
+    logger.error(error);
   });
 
   hooks.on("push", async ({ payload, octokit }) => {

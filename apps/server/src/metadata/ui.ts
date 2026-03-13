@@ -3,6 +3,7 @@ import { Router, type RequestHandler } from "express";
 import type { App } from "octokit";
 import config from "../config";
 import { ApiError } from "../error";
+import logger from "../logger";
 import { authorize, login } from "./auth";
 
 function createCallback(app: App): RequestHandler {
@@ -34,7 +35,7 @@ export async function proxyUI() {
 
 async function astroOrProxy(): Promise<RequestHandler> {
   if (config.dev) {
-    console.info("Proxing UI requests to local dev server");
+    logger.info("Proxing UI requests to local dev server");
     return proxyUI();
   }
 

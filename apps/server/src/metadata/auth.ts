@@ -4,6 +4,7 @@ import type { Request, RequestHandler, Response } from "express";
 import type { ParamsDictionary, Query } from "express-serve-static-core";
 import { Octokit } from "octokit";
 import { ApiError } from "../error";
+import logger from "../logger";
 
 const COOKIE_NAME = "webhooks-session";
 
@@ -65,12 +66,12 @@ function createHandler(strategy: AuthenticationStrategy): AuthenticatedHandler {
 
     if (token) {
       res.locals.token = token;
-      res.locals.octokit = new Octokit({ auth: token });
+      res.locals.octokit = new Octokit({ auth: token, log: logger });
       return next();
     }
 
     if (strategy === "redirect") {
-      console.info("starting login flow");
+      logger.debug("starting login flow");
       res.redirect("/api/github/oauth/login");
     } else {
       throw new ApiError("requires login", 401);

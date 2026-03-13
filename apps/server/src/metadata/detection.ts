@@ -2,6 +2,7 @@ import {
   packageManagerSchema,
   validateConfig,
 } from "@pssbletrngle/github-meta-generator";
+import logger from "../logger";
 import type { MetadataContext } from "./branches";
 
 function uniq<T>(values: T[]): T[] {
@@ -37,7 +38,7 @@ export default async function detectProperties(
       const { packageManager } = await Bun.file("package.json").json();
       const [, match] = /^(\w+)@/.exec(packageManager) ?? [];
       config.manager = packageManagerSchema.parse(match);
-      console.info(`  -> detected package manager ${config.manager}`);
+      logger.info(`  -> detected package manager ${config.manager}`);
     }
   }
 
@@ -46,9 +47,7 @@ export default async function detectProperties(
       const detected = detectVersionsFrom(branches);
       if (detected.length) {
         config.versions = detected;
-        console.info(
-          `  -> detected minecraft versions: ${detected.join(", ")}`,
-        );
+        logger.info(`  -> detected minecraft versions: ${detected.join(", ")}`);
       }
     }
 
@@ -56,7 +55,7 @@ export default async function detectProperties(
       const detected = detectLoadersFrom(branches);
       if (detected.length) {
         config.loaders = detected;
-        console.info(`  -> detected minecraft loaders: ${detected.join(", ")}`);
+        logger.info(`  -> detected minecraft loaders: ${detected.join(", ")}`);
       }
     }
   }
