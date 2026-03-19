@@ -1,4 +1,5 @@
 import {
+  DETECT_KEY,
   packageManagerSchema,
   validateConfig,
 } from "@pssbletrngle/github-meta-generator";
@@ -31,10 +32,10 @@ function detectVersionsFrom(branches: string[]) {
 
 export default async function detectProperties(
   repositoryPath: string,
-  { config, branches }: MetadataContext,
+  { config, branches, target }: MetadataContext,
 ) {
   if (config.type === "web") {
-    if (config.manager === "detect") {
+    if (config.manager === DETECT_KEY) {
       const { packageManager } = await Bun.file("package.json").json();
       const [, match] = /^(\w+)@/.exec(packageManager) ?? [];
       config.manager = packageManagerSchema.parse(match);
@@ -43,7 +44,7 @@ export default async function detectProperties(
   }
 
   if (config.type === "minecraft") {
-    if (config.versions === "detect") {
+    if (config.versions === DETECT_KEY) {
       const detected = detectVersionsFrom(branches);
       if (detected.length) {
         config.versions = detected;
@@ -51,13 +52,21 @@ export default async function detectProperties(
       }
     }
 
-    if (config.loaders === "detect") {
+    if (config.loaders === DETECT_KEY) {
       const detected = detectLoadersFrom(branches);
       if (detected.length) {
         config.loaders = detected;
         logger.info(`  -> detected minecraft loaders: ${detected.join(", ")}`);
       }
     }
+  }
+
+  if (config.owner === DETECT_KEY) {
+    config.owner = target.owner;
+  }
+
+  if (config.assignee === "@owner") {
+    config.assignee = config.owner;
   }
 
   return validateConfig(config, false);

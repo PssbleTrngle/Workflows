@@ -45,6 +45,7 @@ const MC_VERSION_PATTERN =
 export type MetadataContext = {
   branches: string[];
   config: ConfigSchema;
+  target: RepoSearchWithBranch;
 };
 
 function isMainBranch(branch: string, { branches, config }: MetadataContext) {
@@ -61,17 +62,17 @@ function isMainBranch(branch: string, { branches, config }: MetadataContext) {
 
 export async function createMetadataContext(
   octokit: Octokit,
-  search: RepoSearchWithBranch,
+  target: RepoSearchWithBranch,
 ) {
   const [config, branches] = await Promise.all([
-    fetchConfig(octokit, search),
-    fetchBranches(octokit, search),
+    fetchConfig(octokit, target),
+    fetchBranches(octokit, target),
   ]);
 
   if (!config) return null;
 
-  const context: MetadataContext = { branches, config };
+  const context: MetadataContext = { branches, config, target };
 
-  if (isMainBranch(search.branch, context)) return context;
+  if (isMainBranch(target.branch, context)) return context;
   return null;
 }
