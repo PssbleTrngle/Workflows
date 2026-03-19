@@ -5,16 +5,19 @@ import type { Generator, TemplateData } from "./generator";
 import helpers from "./helpers";
 import { withHeader } from "./meta";
 
-export default function createYamlGenerator(
+export default function createGenerator(
   folder: string,
   {
     defaultData = {},
     header = true,
     ...options
-  }: { defaultData?: TemplateData; header?: boolean } & RuntimeOptions = {},
+  }: {
+    defaultData?: TemplateData;
+    header?: boolean;
+  } & RuntimeOptions = {},
 ): Generator {
   return async (key: string[], data: TemplateData = {}) => {
-    const template = await loadTemplate(folder, ...key);
+    const { template, parser } = await loadTemplate(folder, ...key);
     let generated = template(
       { ...defaultData, ...data },
       {
@@ -26,6 +29,7 @@ export default function createYamlGenerator(
       },
     );
     if (header) generated = await withHeader(generated);
-    return format(generated, { parser: "yaml" });
+    if (parser) return format(generated, { parser });
+    return generated;
   };
 }

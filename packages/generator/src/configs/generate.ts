@@ -1,3 +1,3 @@
-import createYamlGenerator from "../yaml";
+import createGenerator from "../factory";
 
-export const generateConfig = createYamlGenerator("configs");
+export const generateConfig = createGenerator("configs");

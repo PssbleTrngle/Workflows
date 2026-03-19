@@ -46,6 +46,7 @@ const commonSchema = z.object({
     .default(true)
     .describe("generate issue templates"),
   configs: z.boolean().default(true).describe("generate config files"),
+  license: z.boolean().default(true).describe("generate a license"),
   assignee: z
     .string()
     .optional()

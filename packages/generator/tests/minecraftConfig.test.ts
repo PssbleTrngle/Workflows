@@ -1,4 +1,4 @@
-import { describe, expect, it } from "bun:test";
+import { describe, it } from "bun:test";
 import { generateWithConfig } from "../src";
 import { loadConfigFixture } from "./fixtures";
 import createTestAcceptor from "./testAcceptor";
@@ -14,7 +14,6 @@ describe("minecraft workflow generation", () => {
 
     await generateWithConfig(config, acceptor);
 
-    expect(acceptor.count()).toBe(7);
     acceptor.expect(".github/labeler.yml").not.toBeUndefined();
     acceptor.expect(".github/workflows/release.yml").not.toBeUndefined();
     acceptor.expect(".github/workflows/test.yml").not.toBeUndefined();
@@ -28,6 +27,9 @@ describe("minecraft workflow generation", () => {
       .not.toBeUndefined();
 
     acceptor.expect(".github/ISSUE_TEMPLATE/config.yml").not.toBeUndefined();
+    acceptor.expect("LICENSE.md").not.toBeUndefined();
+
+    acceptor.expectNothingElse();
   });
 
   it("generates workflows with sonar", async () => {
@@ -37,11 +39,13 @@ describe("minecraft workflow generation", () => {
 
     await generateWithConfig(config, acceptor);
 
-    expect(acceptor.count()).toBe(4);
     acceptor.expect(".github/labeler.yml").not.toBeUndefined();
     acceptor.expect(".github/workflows/release.yml").not.toBeUndefined();
     acceptor.expect(".github/workflows/test.yml").not.toBeUndefined();
     acceptor.expect(".github/workflows/labeler.yml").not.toBeUndefined();
+    acceptor.expect("LICENSE.md").not.toBeUndefined();
+
+    acceptor.expectNothingElse();
   });
 
   it("generates workflows with uploads", async () => {

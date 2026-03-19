@@ -8,7 +8,7 @@ export type Meta = {
 };
 
 export async function createHeader() {
-  const template = await loadTemplate("meta.xml");
+  const { template } = await loadTemplate("meta.xml");
 
   const generated = template({
     source,

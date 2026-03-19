@@ -1,8 +1,9 @@
 import type { BunFile } from "bun";
 import handlebars from "handlebars";
 import { readdirSync, statSync } from "node:fs";
+import { extname } from "node:path";
 import { join } from "node:path/posix";
-import { format } from "prettier";
+import { format, type BuiltInParserName } from "prettier";
 import getOutput from "./output";
 
 const lines = [
@@ -30,11 +31,26 @@ const lines = [
     }`,
 ];
 
+function parserOf(file: string): BuiltInParserName | null {
+  const extension = extname(file);
+  switch (extension) {
+    case ".yml":
+    case ".yaml":
+      return "yaml";
+    default:
+      return null;
+  }
+}
+
 async function compile(path: string, key: string[]) {
   const content = await Bun.file(path).text();
   const specification = handlebars.precompile(content) as string;
   const parts = key.map((it) => `"${it}"`).join(", ");
-  lines.push(`registry.set(createKey(${parts}), template(${specification}));`);
+  const parser = parserOf(path);
+  const entry = parser
+    ? `{ template: template(${specification}), parser: '${parser}' }`
+    : `{ template: template(${specification}) }`;
+  lines.push(`registry.set(createKey(${parts}), ${entry});`);
 }
 
 async function compileIn(dir: string, key: string[]): Promise<void> {
@@ -47,7 +63,7 @@ async function compileIn(dir: string, key: string[]): Promise<void> {
     children.map(({ path, key, info }) => {
       if (info.isDirectory()) return compileIn(path, key);
       return compile(path, key);
-    })
+    }),
   );
 }
 
@@ -64,8 +80,10 @@ await write(out, lines);
 
 const types = getOutput("templates.d.ts");
 await write(types, [
+  `import type { BuiltInParserName } from "prettier";`,
   "export type TemplateKey = string[]",
-  "export function loadTemplate(...key: TemplateKey): Promise<HandlebarsTemplateDelegate>",
+  "export type RegisteredTemplate = { template: HandlebarsTemplateDelegate, parser?: BuiltInParserName }",
+  "export function loadTemplate(...key: TemplateKey): Promise<RegisteredTemplate>",
   "export type TemplateEntry = { name: string, key: TemplateKey }",
   "export function listTemplates(...prefix: TemplateKey): Promise<TemplateEntry[]>",
 ]);

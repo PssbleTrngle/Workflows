@@ -3,6 +3,7 @@ import { listTemplates } from "../dist/templates";
 import type { ConfigSchema } from "./config";
 import { generateConfig } from "./configs/generate";
 import { generateIssueTemplate } from "./issueTemplates/generate";
+import { generateLicenses } from "./licenses/generate";
 import { generateWorkflow } from "./workflows/generate";
 
 export type Acceptor = (path: string, content: string) => Promise<void>;
@@ -25,6 +26,7 @@ const schemaTypes: SchemaType[] = [
   },
   { key: "workflows", path: ".github/workflows", generate: generateWorkflow },
   { key: "configs", path: ".github", generate: generateConfig },
+  { key: "license", path: ".", generate: generateLicenses },
 ];
 
 function check(config: ConfigSchema, key: string) {

@@ -8,5 +8,6 @@ export { generateConfig } from "./configs/generate";
 export { configPath, generateInFolder } from "./files";
 export { generateWithConfig, type TemplateData } from "./generator";
 export { generateIssueTemplate } from "./issueTemplates/generate";
+export { generateLicenses } from "./licenses/generate";
 export { isGenerated, type Meta } from "./meta";
 export { generateWorkflow } from "./workflows/generate";

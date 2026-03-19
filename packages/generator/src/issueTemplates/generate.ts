@@ -1,10 +1,10 @@
-import createYamlGenerator from "../yaml";
+import createGenerator from "../factory";
 
 const defaultData = {
   loaders: [],
   versions: [],
 };
 
-export const generateIssueTemplate = createYamlGenerator("issueTemplates", {
+export const generateIssueTemplate = createGenerator("issueTemplates", {
   defaultData,
 });
