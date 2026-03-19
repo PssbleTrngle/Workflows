@@ -37,6 +37,8 @@ function parserOf(file: string): BuiltInParserName | null {
     case ".yml":
     case ".yaml":
       return "yaml";
+    case ".md":
+      return "markdown";
     default:
       return null;
   }

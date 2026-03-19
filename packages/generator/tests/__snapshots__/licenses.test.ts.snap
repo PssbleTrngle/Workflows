@@ -1,11 +1,13 @@
 // Bun Snapshot v1, https://bun.sh/docs/test/snapshots
 
 exports[`minecraft licenses generates LICENSE.md: minecraft license 1`] = `
-"# <meta>
-#    <source>@pssbletrngle/github-meta-generator</source>
-#    <version>0.0.0-dev</version>
-#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
-# </meta>
+"<!---
+<meta>
+   <source>@pssbletrngle/github-meta-generator</source>
+   <version>0.0.0-dev</version>
+   <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+</meta>
+-->
 
 ### Code: [MIT](https://opensource.org/license/mit)
 
