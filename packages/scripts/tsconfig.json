@@ -1,0 +1,9 @@
+{
+  "extends": "@pssbletrngle/workflows-configs/tsconfig",
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "."
+  ]
+}
