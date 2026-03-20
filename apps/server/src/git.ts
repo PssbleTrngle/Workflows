@@ -56,7 +56,7 @@ async function clone(
 
 async function detectChanges(path: string) {
   const output =
-    await $`git diff --cached --quiet --ignore-matching-lines="#\\s+<"`
+    await $`git diff --quiet --cached --ignore-matching-lines="\\s+<.+>"`
       .nothrow()
       .cwd(path);
 

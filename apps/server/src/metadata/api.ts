@@ -13,7 +13,7 @@ const paginationQuery = z.object({
   pageSize: z.coerce.number().int().positive().default(20),
 });
 
-export default function createApiRoutes(_: App) {
+export default function createApiRoutes(app: App) {
   const router = Router();
 
   router.use(...authorize("fail"));
@@ -69,7 +69,7 @@ export default function createApiRoutes(_: App) {
     "/refresh",
     validate({ body: repoParams }),
     async (req, res: AuthenticatedResponse) => {
-      const status = await refresh(req.body, res.locals);
+      const status = await refresh(req.body, app);
 
       res.json({ success: true, status });
     },

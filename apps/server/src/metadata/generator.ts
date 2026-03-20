@@ -12,7 +12,7 @@ import type { ActionResult } from "../git";
 import { cloneAndModify, type GitUser } from "../git";
 import type { MetadataContext } from "./branches";
 import { createMetadataContext } from "./branches";
-import { deleteStatus, saveMetadata, saveStatus } from "./cache";
+import { deleteCache, saveMetadata, saveStatus } from "./cache";
 import detectProperties from "./detection";
 
 type GenerationResult = ActionResult & {
@@ -53,7 +53,7 @@ export default async function generateMetadata(
     const context = await createMetadataContext(octokit, repo);
 
     if (!context) {
-      deleteStatus(repo);
+      deleteCache(repo);
       return;
     }
 

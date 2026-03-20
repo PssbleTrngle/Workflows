@@ -1,5 +1,11 @@
-import { createLogger, format, transports } from "winston";
+import { addColors, createLogger, format, transports } from "winston";
 import config from "./config";
+
+addColors({
+  error: "red",
+  warn: "yellow",
+  debug: "blue",
+});
 
 const logger = createLogger({
   level: config.log.level,
@@ -7,7 +13,7 @@ const logger = createLogger({
   defaultMeta: { service: "workflows" },
   transports: [
     new transports.Console({
-      format: format.simple(),
+      format: format.combine(format.colorize({ all: true }), format.simple()),
     }),
   ],
 });

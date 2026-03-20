@@ -3,7 +3,8 @@
   "type": "module",
   "module": "src/index.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./meta": "./dist/meta.json"
   },
   "scripts": {
     "check-types": "tsc --noEmit",

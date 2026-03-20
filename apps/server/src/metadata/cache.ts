@@ -8,14 +8,15 @@ import type {
   RepositoryStatus,
   StatusResult,
 } from "@pssbletrngle/workflows-types/metadata";
+import logger from "../logger";
 import { eventDispatcher } from "./events";
 
 const statusPrefix = "metadata:status:";
 const statusKey = ({ owner, repo, branch }: RepoSearchWithBranch) =>
   statusPrefix + `${owner}:${repo}:${branch}`;
 
-function parseKey(key: string): RepoSearchWithBranch {
-  const parts = key.substring(statusPrefix.length);
+function parseKey(prefix: string, key: string): RepoSearchWithBranch {
+  const parts = key.substring(prefix.length);
   const [owner, repo, branch] = parts.split(":");
   if (!owner || !repo || !branch) throw new Error("received invalid key");
   return { owner, repo, branch };
@@ -29,8 +30,21 @@ export async function saveStatus(
   eventDispatcher.sendStatusUpdate(repository, status);
 }
 
-export async function deleteStatus(repository: RepoSearchWithBranch) {
+export async function deleteCache(repository: RepoSearchWithBranch) {
+  logger.debug("deleting cache for branch", repository);
   await redis.del(statusKey(repository));
+  await redis.del(metaKey(repository));
+}
+
+export async function deleteCacheForRepository(repository: RepoSearch) {
+  logger.debug("deleting cache for repository", repository);
+  const statuses = await getStatusesByRepository(repository);
+
+  await Promise.all(
+    statuses.map(async ({ search }) => {
+      await deleteCache(search);
+    }),
+  );
 }
 
 export function getStatus(repository: RepoSearchWithBranch) {
@@ -43,7 +57,7 @@ async function getStatuses(
   const keys = await redis.keys(statusKey(search));
   return Promise.all(
     keys.map(async (it) => ({
-      search: parseKey(it),
+      search: parseKey(statusPrefix, it),
       status: (await redis.get(it)) as RepositoryStatus,
     })),
   );
@@ -72,4 +86,29 @@ export async function getMeta(repository: RepoSearchWithBranch) {
   const json = await redis.get(metaKey(repository));
   if (!json) return null;
   return JSON.parse(json) as Meta;
+}
+
+export async function getMetas() {
+  const keys = await redis.keys(
+    metaKey({ owner: "*", repo: "*", branch: "*" }),
+  );
+  return Promise.all(
+    keys.map(async (it) => ({
+      search: parseKey(metaPrefix, it),
+      meta: JSON.parse((await redis.get(it)) as string) as Meta,
+    })),
+  );
+}
+
+export async function updateCache(from: RepoSearch, to: RepoSearch) {
+  const statuses = await getStatusesByRepository(from);
+
+  await Promise.all(
+    statuses.map(async ({ search, status }) => {
+      const meta = await getMeta(search);
+      await saveStatus({ ...to, branch: search.branch }, status);
+      if (meta) await saveMetadata({ ...to, branch: search.branch }, meta);
+      await deleteCache(search);
+    }),
+  );
 }

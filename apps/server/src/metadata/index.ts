@@ -5,7 +5,7 @@ import type { App } from "octokit";
 import logger from "../logger";
 import { createAppGitUser } from "../user";
 import createApiRoutes from "./api";
-import { saveStatus } from "./cache";
+import { deleteCacheForRepository, saveStatus, updateCache } from "./cache";
 import generateMetadata, { metadataBranch } from "./generator";
 import createUIMiddlware from "./ui";
 
@@ -78,6 +78,55 @@ export function registerMetadataHooks(hooks: App["webhooks"]) {
     });
 
     saveStatus({ ...search, branch: pull_request.base.ref }, "up-to-date");
+  });
+
+  hooks.on("repository.renamed", async ({ payload }) => {
+    const to: RepoSearch = {
+      owner: payload.repository.owner.login,
+      repo: payload.repository.name,
+    };
+
+    const from = {
+      owner: payload.repository.owner.login,
+      repo: payload.changes.repository.name.from,
+    };
+
+    logger.info("repository got renamed", { from, to });
+
+    await updateCache(from, to);
+  });
+
+  hooks.on("repository.transferred", async ({ payload }) => {
+    const to: RepoSearch = {
+      owner: payload.repository.owner.login,
+      repo: payload.repository.name,
+    };
+
+    const fromOwner =
+      payload.changes.owner.from.organization ??
+      payload.changes.owner.from.user;
+
+    if (!fromOwner) return;
+
+    const from = {
+      owner: fromOwner.login,
+      repo: payload.repository.name,
+    };
+
+    logger.info("repository got transferred", { from, to });
+
+    await updateCache(from, to);
+  });
+
+  hooks.on("repository.deleted", async ({ payload }) => {
+    const repo: RepoSearch = {
+      owner: payload.repository.owner.login,
+      repo: payload.repository.name,
+    };
+
+    logger.info("repository got deleted", { repo });
+
+    await deleteCacheForRepository(repo);
   });
 }
 
