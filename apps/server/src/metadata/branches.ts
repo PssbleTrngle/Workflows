@@ -39,22 +39,20 @@ async function fetchConfig(
   }
 }
 
-const MC_VERSION_PATTERN =
-  /^((forge|fabric|neoforge|quilt)\/)?\d+\.\d+(\.(\d+|x))?$/;
-
 export type MetadataContext = {
   branches: string[];
   config: ConfigSchema;
   target: RepoSearchWithBranch;
 };
 
-function isMainBranch(branch: string, { branches, config }: MetadataContext) {
+function isMainBranch(branch: string, { branches }: MetadataContext) {
   if (branch === "main" && !branches.includes("develop")) {
     return true;
   }
 
-  if (config.type === "minecraft" && MC_VERSION_PATTERN.test(branch)) {
-    return true;
+  if (branch.startsWith("main/")) {
+    const suffix = branch.substring("main/".length);
+    return !branches.includes(`develop/${suffix}`);
   }
 
   return false;

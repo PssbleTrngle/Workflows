@@ -21,11 +21,11 @@ function detect(branches: string[], pattern: RegExp): string[] {
 }
 
 function detectLoadersFrom(branches: string[]) {
-  return detect(branches, /^(forge|fabric|quilt|neoforge)(?:\/.+)?$/);
+  return detect(branches, /^main\/(forge|fabric|quilt|neoforge)(?:\/.+)?$/);
 }
 
 function detectVersionsFrom(branches: string[]) {
-  return detect(branches, /^(?:.+\/)?(\d+\.\d+(?:\.(?:\d+))?)(?:\.x)?$/)
+  return detect(branches, /^main\/(?:.+\/)?(\d+\.\d+(?:\.(?:\d+))?)(?:\.x)?$/)
     .toSorted()
     .toReversed();
 }
