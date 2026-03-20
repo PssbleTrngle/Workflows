@@ -8,7 +8,12 @@ async function updatePackageJson(path: string) {
   if (!(await file.exists())) return;
 
   const json = await file.json();
-  console.log(json.name);
+
+  console.log("updating version for", json.name);
+
+  json.version = version;
+
+  await file.write(JSON.stringify(json, null, 2));
 }
 
 await updatePackageJson(".");
