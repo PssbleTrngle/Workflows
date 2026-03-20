@@ -3,7 +3,7 @@ import type { WebhookEventDefinition } from "@octokit/webhooks/types";
 import type { App, Octokit } from "octokit";
 import type { GitUser } from "../git";
 import logger from "../logger";
-import { createAppGitUser } from "../user";
+import { createGitUser } from "../user";
 import runSpotless from "./execute";
 
 function matchesCommand(content: string) {
@@ -73,7 +73,7 @@ async function handleEvent(
   if (!matchesCommand(comment.body)) return;
   if (!CAN_RUN_COMMAND.includes(comment.author_association)) return;
 
-  const user = await createAppGitUser({ repository, installation }, octokit);
+  const user = await createGitUser({ repository, installation, octokit });
 
   const { data: pullRequest } = (await octokit.request(
     `GET ${issue.pull_request.url}`,

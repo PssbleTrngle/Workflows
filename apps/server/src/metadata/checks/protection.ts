@@ -1,23 +1,21 @@
 import { notNull } from "@pssbletrngle/workflows-shared/util";
 import type { RepoSearchWithBranch } from "@pssbletrngle/workflows-types";
+import { Check } from "@pssbletrngle/workflows-types/metadata";
 import type { Octokit } from "octokit";
-import logger from "../logger";
+import logger from "../../logger";
+import { saveChecks } from "../cache";
 
 const BLOCKING_RULE_TYPES = ["pull_request", "required_status_checks"];
 
 export default async function checkProtection(
-  search: RepoSearchWithBranch,
+  repo: RepoSearchWithBranch,
   octokit: Octokit,
 ) {
-  const { data: app } = await octokit.rest.apps.getAuthenticated();
-  if (!app) {
-    logger.warn("not authenticated as app");
-    return;
-  }
+  logger.debug("checking branch protections", { repo });
 
   const { data: protections } = await octokit.request(
     "GET /repos/{owner}/{repo}/rules/branches/{branch}",
-    search,
+    repo,
   );
 
   const ruleSets = await Promise.all(
@@ -26,7 +24,7 @@ export default async function checkProtection(
       .filter(notNull)
       .map(async (id) => {
         const { data } = await octokit.rest.repos.getRepoRuleset({
-          ...search,
+          ...repo,
           ruleset_id: id,
         });
 
@@ -34,14 +32,16 @@ export default async function checkProtection(
       }),
   );
 
-  const blocking = ruleSets.filter(
-    ({ rules, bypass_actors }) =>
+  const enabled = ruleSets.filter((it) => it.enforcement === "active");
+
+  const blocking = enabled.filter(
+    ({ rules, current_user_can_bypass }) =>
       rules?.some((it) => BLOCKING_RULE_TYPES.includes(it.type)) &&
-      !bypass_actors?.some(
-        (actor) =>
-          actor.actor_type === "Integration" && actor.actor_id === app.id,
-      ),
+      !current_user_can_bypass,
   );
 
-  return blocking;
+  await saveChecks(repo, {
+    [Check.BRANCH_PROTECTED]: enabled.length > 0,
+    [Check.APP_NOT_BLOCKED]: blocking.length === 0,
+  });
 }

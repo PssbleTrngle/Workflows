@@ -1,6 +1,7 @@
 import type { Repository } from "@pssbletrngle/workflows-types";
 import { $ } from "bun";
 import { existsSync, mkdirSync, rmSync } from "node:fs";
+import { rm } from "node:fs/promises";
 import { join } from "node:path";
 import config from "./config";
 import logger from "./logger";
@@ -13,7 +14,14 @@ export type GitUser = {
 
 const basePath = config.git.cloneDir;
 
-if (!existsSync(basePath)) {
+export async function setupGitCloneDir() {
+  if (existsSync(basePath)) {
+    logger.debug(`clearing tmp dir at ${basePath}`);
+    await rm(basePath, { recursive: true });
+  } else {
+    logger.debug(`creating tmp dir at ${basePath}`);
+  }
+
   mkdirSync(basePath, { recursive: true });
 }
 

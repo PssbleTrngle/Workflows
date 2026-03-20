@@ -1,7 +1,11 @@
 ---
 import { createTopic } from "@pssbletrngle/workflows-shared/topic";
 import type { RepoSearchWithBranch } from "@pssbletrngle/workflows-types";
-import type { RepositoryStatus } from "@pssbletrngle/workflows-types/metadata";
+import type {
+  Check,
+  Checks,
+  RepositoryStatus,
+} from "@pssbletrngle/workflows-types/metadata";
 import Refresh from "./Refresh.astro";
 
 const icons: Record<RepositoryStatus, string> = {
@@ -11,15 +15,30 @@ const icons: Record<RepositoryStatus, string> = {
   running: "🏃‍♂️",
 };
 
-const { subject, value } = Astro.props as {
-  subject: RepoSearchWithBranch;
-  branch: string;
-  value: RepositoryStatus;
+const messages: Record<RepositoryStatus | Check, string> = {
+  failed: "Failed",
+  "opened-pr": "Pull Request opened",
+  "up-to-date": "Up to date",
+  running: "Running...",
+  not_blocked: "a ruleset is blocking the app",
+  protected: "the branch is not protected",
 };
 
-const icon = icons[value];
+type Props = {
+  subject: RepoSearchWithBranch;
+  status: RepositoryStatus;
+  checks?: Checks;
+};
+
+const { subject, status, checks = {} } = Astro.props;
+
+const icon = icons[status];
 
 const topic = createTopic(subject, "status");
+
+const warnings = Object.entries(checks)
+  .filter(([_, value]) => value === false)
+  .map(([key]) => messages[key as Check]);
 ---
 
 <span
@@ -29,8 +48,11 @@ const topic = createTopic(subject, "status");
   hx-swap="outerHTML"
 >
   <span>{subject.branch}</span>
-  <span class="value">{value} {icon}</span>
-  <Refresh repo={subject} disabled={value === "running"} />
+  <span class="value">
+    <span title={messages[status]}>{icon}</span>
+    {warnings.length > 0 && <span title={warnings.join(", ")}>⚠️</span>}
+  </span>
+  <Refresh repo={subject} disabled={status === "running"} />
 </span>
 
 <style scoped>
@@ -46,5 +68,7 @@ const topic = createTopic(subject, "status");
     padding: 0.5em;
     border-radius: 9999px;
     text-align: center;
+
+    cursor: help;
   }
 </style>

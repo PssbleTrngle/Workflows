@@ -5,6 +5,7 @@ import type {
   RepoSearchWithBranch,
 } from "@pssbletrngle/workflows-types";
 import type {
+  Checks,
   RepositoryStatus,
   StatusResult,
 } from "@pssbletrngle/workflows-types/metadata";
@@ -55,10 +56,12 @@ async function getStatuses(
   search: RepoSearchWithBranch,
 ): Promise<StatusResult[]> {
   const keys = await redis.keys(statusKey(search));
+  const searches = keys.map((it) => parseKey(statusPrefix, it));
   return Promise.all(
-    keys.map(async (it) => ({
-      search: parseKey(statusPrefix, it),
-      status: (await redis.get(it)) as RepositoryStatus,
+    searches.map(async (search) => ({
+      search,
+      status: (await getStatus(search))!,
+      checks: await getChecks(search),
     })),
   );
 }
@@ -111,4 +114,18 @@ export async function updateCache(from: RepoSearch, to: RepoSearch) {
       await deleteCache(search);
     }),
   );
+}
+
+const checksPrefix = "metadata:checks:";
+const checksKey = ({ owner, repo, branch }: RepoSearchWithBranch) =>
+  checksPrefix + `${owner}:${repo}:${branch}`;
+
+export async function saveChecks(repo: RepoSearchWithBranch, checks: Checks) {
+  await redis.call("JSON.MERGE", checksKey(repo), `$`, JSON.stringify(checks));
+}
+
+async function getChecks(repo: RepoSearchWithBranch): Promise<Checks> {
+  const raw = await redis.call("JSON.GET", checksKey(repo), "$");
+  const saved = JSON.parse(raw as string) as Checks[];
+  return saved?.[0] ?? {};
 }

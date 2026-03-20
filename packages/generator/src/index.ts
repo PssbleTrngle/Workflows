@@ -15,4 +15,5 @@ export { generateWithConfig, type TemplateData } from "./generator";
 export { generateIssueTemplate } from "./issueTemplates/generate";
 export { generateLicenses } from "./licenses/generate";
 export { isGenerated, type Meta } from "./meta";
+export type { Options } from "./options";
 export { generateWorkflow } from "./workflows/generate";

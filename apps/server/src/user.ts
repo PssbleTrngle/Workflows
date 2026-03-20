@@ -1,5 +1,6 @@
-import type { Octokit } from "octokit";
+import { Octokit } from "octokit";
 import type { GitUser } from "./git";
+import type { AuthenticatedContext } from "./metadata/auth";
 
 export async function createUserInfo(octokit: Octokit) {
   const { data } = await octokit.rest.apps.getAuthenticated();
@@ -12,34 +13,29 @@ export async function createUserInfo(octokit: Octokit) {
   return { name, email };
 }
 
-export type Installation = { id: number } | { token: string };
-
-type RequiredPayload = {
-  repository: { id: number };
-  installation: Installation;
-};
-
-async function extractToken(
-  { repository, installation }: RequiredPayload,
-  octokit: Octokit,
-) {
-  if ("token" in installation) return installation.token;
+async function extractToken({ octokit, ...context }: AuthenticatedContext) {
+  if ("token" in context) return context.token;
 
   const tokenResponse = await octokit.rest.apps.createInstallationAccessToken({
-    installation_id: installation.id,
-    repository_ids: [repository.id],
+    installation_id: context.installation.id,
+    repository_ids: [context.repository.id],
   });
 
   return tokenResponse.data.token;
 }
 
-export async function createAppGitUser(
-  payload: RequiredPayload,
-  octokit: Octokit,
+export async function createGitUser(context: AuthenticatedContext) {
+  if ("token" in context)
+    return createAuthenticatedGitUser(context.token, context.octokit);
+  return createAppGitUser(context);
+}
+
+async function createAppGitUser(
+  context: AuthenticatedContext,
 ): Promise<GitUser> {
   const [token, userData] = await Promise.all([
-    extractToken(payload, octokit),
-    createUserInfo(octokit),
+    extractToken(context),
+    createUserInfo(context.octokit),
   ]);
 
   return {
@@ -48,7 +44,7 @@ export async function createAppGitUser(
   };
 }
 
-export async function createAuthenticatedGitUser(
+async function createAuthenticatedGitUser(
   token: string,
   octokit: Octokit,
 ): Promise<GitUser> {

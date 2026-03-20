@@ -1,16 +1,11 @@
-import { addColors, createLogger, format, transports } from "winston";
+import { version } from "@pssbletrngle/github-meta-generator/meta";
+import { createLogger, format, transports } from "winston";
 import config from "./config";
-
-addColors({
-  error: "red",
-  warn: "yellow",
-  debug: "blue",
-});
 
 const logger = createLogger({
   level: config.log.level,
   format: format.json(),
-  defaultMeta: { service: "workflows" },
+  defaultMeta: { service: "workflows", version },
   transports: [
     new transports.Console({
       format: format.combine(format.colorize({ all: true }), format.simple()),

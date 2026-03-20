@@ -4,10 +4,12 @@ import type {
   RepoSearchWithBranch,
 } from "@pssbletrngle/workflows-types";
 
-const { repo, disabled } = Astro.props as {
+type Props = {
   repo: RepoSearchWithBranch | RepoSearch;
   disabled?: boolean;
 };
+
+const { repo, disabled } = Astro.props;
 ---
 
 <form

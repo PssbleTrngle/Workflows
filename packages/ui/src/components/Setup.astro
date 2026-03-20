@@ -1,7 +1,9 @@
 ---
 import type { Repository } from "@pssbletrngle/workflows-types";
 
-const { repo } = Astro.props as { repo: Repository };
+type Props = { repo: Repository };
+
+const { repo } = Astro.props;
 ---
 
 <form hx-post="/metadata/action/setup" hx-swap="outerHTML">

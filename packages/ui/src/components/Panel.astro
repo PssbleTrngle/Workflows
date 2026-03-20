@@ -1,15 +1,15 @@
 ---
 import type { RepoSearch, Repository } from "@pssbletrngle/workflows-types";
-import type { RepositoryStatus } from "@pssbletrngle/workflows-types/metadata";
+import type { StatusResult } from "@pssbletrngle/workflows-types/metadata";
 import Refresh from "./Refresh.astro";
 import Status from "./Status.astro";
 
 type Props = {
   repo: Repository;
-  status?: Record<string, RepositoryStatus>;
+  status?: Record<string, Omit<StatusResult, "search">>;
 };
 
-const { status = {}, repo } = Astro.props as Props;
+const { status = {}, repo } = Astro.props;
 
 const subject: RepoSearch = {
   owner: repo.owner.login,
@@ -24,9 +24,9 @@ const subject: RepoSearch = {
   <Refresh repo={subject} />
   <ul class="branches">
     {
-      Object.entries(status).map(([branch, status]) => (
+      Object.entries(status).map(([branch, props]) => (
         <li>
-          <Status subject={{ ...subject, branch }} value={status} />
+          <Status subject={{ ...subject, branch }} {...props} />
         </li>
       ))
     }

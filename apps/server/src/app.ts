@@ -4,7 +4,7 @@ import config from "./config";
 import { registerIssuesHooks } from "./issues";
 import logger from "./logger";
 import { registerMetadataHooks } from "./metadata";
-import onStartup from "./metadata/startup";
+import onStartup from "./metadata/checks/startup";
 import { registerReleasesHooks } from "./releases";
 import { registerSpotlessHooks } from "./spotless";
 

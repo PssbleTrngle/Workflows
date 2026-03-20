@@ -1,4 +1,5 @@
 import type { CreateTokenInterface } from "@octokit/oauth-app";
+import type { Repository } from "@pssbletrngle/workflows-types";
 import cookieParser from "cookie-parser";
 import type { Request, RequestHandler, Response } from "express";
 import type { ParamsDictionary, Query } from "express-serve-static-core";
@@ -33,20 +34,30 @@ export async function logout(response: Response) {
 
 type AuthenticationStrategy = "redirect" | "fail";
 
-export type AuthenticatedContext = {
+type CommonContext = {
   octokit: Octokit;
+};
+
+export type OAuthContext = CommonContext & {
   token: string;
 };
+
+export type InstallationContext = CommonContext & {
+  installation: { id: number };
+  repository: Repository;
+};
+
+export type AuthenticatedContext = OAuthContext | InstallationContext;
 
 export type AuthenticatedHandler = RequestHandler<
   ParamsDictionary,
   unknown,
   unknown,
   Query,
-  AuthenticatedContext
+  OAuthContext
 >;
 
-export type AuthenticatedResponse = Response<unknown, AuthenticatedContext>;
+export type AuthenticatedResponse = Response<unknown, OAuthContext>;
 
 function extractToken(req: Request) {
   const cookie: string = req.cookies[COOKIE_NAME];

@@ -3,7 +3,7 @@ import { configPath } from "@pssbletrngle/github-meta-generator";
 import type { RepoSearch, Repository } from "@pssbletrngle/workflows-types";
 import type { App } from "octokit";
 import logger from "../logger";
-import { createAppGitUser } from "../user";
+import { createGitUser } from "../user";
 import createApiRoutes from "./api";
 import { deleteCacheForRepository, saveStatus, updateCache } from "./cache";
 import generateMetadata, { metadataBranch } from "./generator";
@@ -17,7 +17,7 @@ function shouldTriggerUpdate({
   return [added, removed, modified].flat().includes(configPath);
 }
 
-export function registerMetadataHooks(hooks: App["webhooks"]) {
+export async function registerMetadataHooks(hooks: App["webhooks"]) {
   hooks.onError((error) => {
     logger.error(error);
   });
@@ -46,10 +46,7 @@ export function registerMetadataHooks(hooks: App["webhooks"]) {
       if (!branch)
         throw new Error(`unable to decode branch name from ref '${ref}'`);
 
-      const user = await createAppGitUser(
-        { repository, installation },
-        octokit,
-      );
+      const user = await createGitUser({ repository, installation, octokit });
       await generateMetadata(repository, branch, octokit, user);
     }
   });

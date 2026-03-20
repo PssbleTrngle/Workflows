@@ -15,4 +15,4 @@ const { status } = await api.request<{ status: RepositoryStatus }>(
 );
 ---
 
-<StatusComponent value={status} subject={data} />
+<StatusComponent status={status} subject={data} />

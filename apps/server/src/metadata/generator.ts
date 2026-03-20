@@ -1,7 +1,5 @@
-import {
-  generateInFolder,
-  type Meta,
-} from "@pssbletrngle/github-meta-generator";
+import { generateInFolder } from "@pssbletrngle/github-meta-generator";
+import meta from "@pssbletrngle/github-meta-generator/meta";
 import type {
   RepoSearchWithBranch,
   Repository,
@@ -10,26 +8,22 @@ import type { RepositoryStatus } from "@pssbletrngle/workflows-types/metadata";
 import type { Octokit } from "octokit";
 import type { ActionResult } from "../git";
 import { cloneAndModify, type GitUser } from "../git";
+import logger from "../logger";
 import type { MetadataContext } from "./branches";
 import { createMetadataContext } from "./branches";
 import { deleteCache, saveMetadata, saveStatus } from "./cache";
 import detectProperties from "./detection";
 
-type GenerationResult = ActionResult & {
-  meta: Meta;
-};
-
 export async function updateMetadataFiles(
   repositoryPath: string,
   context: MetadataContext,
-): Promise<GenerationResult> {
+): Promise<ActionResult> {
   const config = await detectProperties(repositoryPath, context);
 
-  const meta = await generateInFolder(repositoryPath, config);
+  await generateInFolder(repositoryPath, config, { logger });
 
   return {
     message: "regenerated metadata files",
-    meta,
   };
 }
 
@@ -74,6 +68,8 @@ export default async function generateMetadata(
 
     const doneState: RepositoryStatus = checkout ? "opened-pr" : "up-to-date";
 
+    await saveMetadata(repo, meta);
+
     if (!result) {
       await saveStatus(repo, doneState);
       return;
@@ -101,7 +97,6 @@ export default async function generateMetadata(
     }
 
     await saveStatus(repo, doneState);
-    await saveMetadata(repo, result.meta);
 
     octokit.log.info(`<- finished metafile update for ${repository.full_name}`);
 

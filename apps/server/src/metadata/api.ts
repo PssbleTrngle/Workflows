@@ -2,11 +2,12 @@ import { json, Router } from "express";
 import { type App } from "octokit";
 import z from "zod";
 import { cutoff } from "../error";
+import { installationContext } from "../installation";
 import validate from "../validation";
 import { authorize, type AuthenticatedResponse } from "./auth";
 import { getStatus, getStatusesByRepository } from "./cache";
+import refresh from "./checks/refresh";
 import { eventDispatcher } from "./events";
-import refresh from "./refresh";
 
 const paginationQuery = z.object({
   page: z.coerce.number().int().positive().default(1),
@@ -69,7 +70,8 @@ export default function createApiRoutes(app: App) {
     "/refresh",
     validate({ body: repoParams }),
     async (req, res: AuthenticatedResponse) => {
-      const status = await refresh(req.body, app);
+      const context = await installationContext(app, req.body);
+      const status = await refresh(req.body, context);
 
       res.json({ success: true, status });
     },
