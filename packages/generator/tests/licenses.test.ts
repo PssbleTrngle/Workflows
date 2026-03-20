@@ -8,4 +8,12 @@ describe("minecraft licenses", () => {
     });
     expect(generated).toMatchSnapshot("minecraft license");
   });
+
+  it(`generates LICENSE.md with loader subdirectories`, async () => {
+    const generated = await generateLicenses(["minecraft", "LICENSE.md"], {
+      owner: "Username",
+      loaders: ["neoforge", "fabric"],
+    });
+    expect(generated).toMatchSnapshot("minecraft multiloader license");
+  });
 });

@@ -1,25 +1,46 @@
-### Code: [MIT](https://opensource.org/license/mit)
+# License Overview
 
-Copyright {{ year }} {{ owner }}
+## Assets License (All Rights Reserved)
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+All Rights Reserved
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+Copyright (c) {{ year }} {{ owner }}
 
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+This license applies to any files under the following directories:
 
-### Assets: All Rights Reserved
+{{#if (multiple loaders.length)}}
+- ./common/src/main/resources/assets/
+{{#each loaders as |loader|}}
+- ./{{ loader }}/src/main/resources/assets/
+{{/each}}
+{{else}}
+- ./src/main/resources/assets/
+{{/if}}
 
-Assets includes all original textures and/or models made for the project. If the project includes assets or derivatives of assets created by someone unaffiliated with the project,
-those assets should be licensed under the original author's copyright.
-You may not use original assets anywhere without permission unless otherwise stated.
+---
 
-### Branding: All Rights Reserved
+## Code License (MIT)
 
-Branding includes project titles, project descriptions, logos, thumbnails, and promotional material.
-You may not use this project’s branding anywhere, including in forks, reuploads, add-ons or description pages without permission unless otherwise stated.
+All other files are licensed under the MIT License:
 
-### Purpose of License:
+MIT License
 
-I want to have my work be usable and adaptable by anyone, but I do not want to be associated with entire forks/reuploads that may be published.
-You are free to use my work as long as I am credited, but if you are to fork/reupload projects in their entirety, I ask that you differentiate the branding of the derivative from the original work, as well as remove all original assets.
+Copyright (c) {{ year }} {{ owner }}
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
