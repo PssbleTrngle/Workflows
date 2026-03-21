@@ -10,14 +10,15 @@ export async function subscribeEvent<T extends EventType>(
   await channel.bindQueue(queue, exchange, topic);
 
   await channel.consume(queue, async (message) => {
-    try {
-      if (message) {
+    if (message) {
+      try {
         const json = JSON.parse(message.content.toString());
         await handler(json);
         channel.ack(message);
+      } catch (e) {
+        console.error(e);
+        channel.nack(message);
       }
-    } catch (e) {
-      console.error(e);
     }
   });
 }
