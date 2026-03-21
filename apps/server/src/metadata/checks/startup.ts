@@ -17,6 +17,8 @@ function isOutdated(saved: Meta, current: Meta) {
 export default async function onStartup(app: App) {
   await setupGitCloneDir();
 
+  if (!config.startupCheck) return;
+
   const metas = await getMetas();
   const outdated = metas.filter((it) => isOutdated(it.meta, currentMeta));
 
