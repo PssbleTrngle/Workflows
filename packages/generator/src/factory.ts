@@ -1,9 +1,29 @@
-import type { RuntimeOptions } from "handlebars";
+import type { HelperDeclareSpec, RuntimeOptions } from "handlebars";
+import { sep as posixSep } from "node:path/posix";
+import { sep as winSep } from "node:path/win32";
 import { format } from "prettier";
 import { loadTemplate } from "../dist/templates";
-import type { Generator, TemplateData } from "./generator";
+import type { Context, Generator, TemplateData } from "./generator";
 import helpers from "./helpers";
 import { withHeader } from "./meta";
+
+function normalizePath(path: string) {
+  if (process.platform === "win32") {
+    return path.replaceAll(winSep, posixSep);
+  }
+  return path;
+}
+
+function createHelpers({ glob }: Context): HelperDeclareSpec {
+  return {
+    glob: (context, options) => {
+      if (typeof context !== "string")
+        throw new Error("pattern must be string");
+      const paths = glob(context).map(normalizePath).toSorted();
+      return paths.map((path) => options.fn({ path })).join("");
+    },
+  };
+}
 
 export default function createGenerator(
   folder: string,
@@ -16,7 +36,7 @@ export default function createGenerator(
     header?: boolean;
   } & RuntimeOptions = {},
 ): Generator {
-  return async (key: string[], data: TemplateData = {}) => {
+  return async (key, { glob, ...data }) => {
     const { template, parser } = await loadTemplate(folder, ...key);
     let generated = template(
       { ...defaultData, ...data },
@@ -25,6 +45,7 @@ export default function createGenerator(
         helpers: {
           ...helpers,
           ...options.helpers,
+          ...createHelpers({ glob }),
         },
       },
     );

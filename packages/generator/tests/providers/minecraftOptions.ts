@@ -1,23 +1,36 @@
 import type { TemplateData } from "../../src";
+import { Context } from "../../src/generator";
+import mockContext from "./context";
 
-export default function* optionsProvider(): Generator<[string, TemplateData]> {
-  yield ["without loader and versions", {}];
-  yield ["without loader and single version", { versions: ["1.21.1"] }];
+export default function* optionsProvider(): Generator<
+  [string, TemplateData & Context]
+> {
+  yield ["without loader and versions", mockContext()];
+  yield [
+    "without loader and single version",
+    mockContext({ versions: ["1.21.1"] }),
+  ];
   yield [
     "without loader and multiple versions",
-    { versions: ["1.20.1", "1.21.1"] },
+    mockContext({ versions: ["1.20.1", "1.21.1"] }),
   ];
-  yield ["single loader and no versions", { loaders: ["neoforge"] }];
+  yield [
+    "single loader and no versions",
+    mockContext({ loaders: ["neoforge"] }),
+  ];
   yield [
     "multiple loaders and no versions",
-    { loaders: ["neoforge", "fabric"] },
+    mockContext({ loaders: ["neoforge", "fabric"] }),
   ];
   yield [
     "multiple loaders and single version",
-    { loaders: ["neoforge", "fabric"], versions: ["1.21.1"] },
+    mockContext({ loaders: ["neoforge", "fabric"], versions: ["1.21.1"] }),
   ];
   yield [
     "multiple loaders and multiple versions",
-    { loaders: ["neoforge", "fabric"], versions: ["1.20.1", "1.21.1"] },
+    mockContext({
+      loaders: ["neoforge", "fabric"],
+      versions: ["1.20.1", "1.21.1"],
+    }),
   ];
 }

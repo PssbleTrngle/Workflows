@@ -1,8 +1,8 @@
 import type { BunFile } from "bun";
-import { readdirSync, statSync } from "node:fs";
+import { globSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import type { ConfigSchema } from "./config";
-import { generateWithConfig } from "./generator";
+import { generateWithConfig, type Context } from "./generator";
 import { isGenerated } from "./meta";
 import { defaultOptions, type Options } from "./options";
 
@@ -47,8 +47,13 @@ export async function generateInFolder(
 
   await cleanupMetafiles(join(repositoryPath, ".github"), options);
 
+  const context: Context & ConfigSchema = {
+    ...config,
+    glob: (pattern) => globSync(pattern, { cwd: repositoryPath }),
+  };
+
   options.logger.info(`-> generating files...`);
-  await generateWithConfig(config, async (path, content) => {
+  await generateWithConfig(context, async (path, content) => {
     const file = Bun.file(join(repositoryPath, path));
 
     if (await shouldModify(file, config)) {

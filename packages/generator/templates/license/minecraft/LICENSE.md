@@ -8,14 +8,9 @@ Copyright (c) {{ year }} {{ owner }}
 
 This license applies to any files under the following directories:
 
-{{#if (multiple loaders.length)}}
-- ./common/src/main/resources/assets/
-{{#each loaders as |loader|}}
-- ./{{ loader }}/src/main/resources/assets/
-{{/each}}
-{{else}}
-- ./src/main/resources/assets/
-{{/if}}
+{{#glob "**/src/main/resources/assets" }}
+- ./{{ path }}/
+{{/glob}}
 
 ---
 

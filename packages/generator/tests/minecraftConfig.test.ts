@@ -1,6 +1,7 @@
 import { describe, it } from "bun:test";
 import { generateWithConfig } from "../src";
 import { loadConfigFixture } from "./fixtures";
+import mockContext from "./providers/context";
 import createTestAcceptor from "./testAcceptor";
 
 describe("minecraft workflow generation", () => {
@@ -12,7 +13,7 @@ describe("minecraft workflow generation", () => {
 
     const acceptor = createTestAcceptor();
 
-    await generateWithConfig(config, acceptor);
+    await generateWithConfig(mockContext(config), acceptor);
 
     acceptor.expect(".github/labeler.yml").not.toBeUndefined();
     acceptor.expect(".github/workflows/release.yml").not.toBeUndefined();
@@ -37,7 +38,7 @@ describe("minecraft workflow generation", () => {
 
     const acceptor = createTestAcceptor();
 
-    await generateWithConfig(config, acceptor);
+    await generateWithConfig(mockContext(config), acceptor);
 
     acceptor.expect(".github/labeler.yml").not.toBeUndefined();
     acceptor.expect(".github/workflows/release.yml").not.toBeUndefined();
@@ -56,7 +57,7 @@ describe("minecraft workflow generation", () => {
 
     const acceptor = createTestAcceptor();
 
-    await generateWithConfig(config, acceptor);
+    await generateWithConfig(mockContext(config), acceptor);
 
     acceptor
       .expect(".github/workflows/release.yml")

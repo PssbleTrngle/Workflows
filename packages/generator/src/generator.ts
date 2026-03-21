@@ -10,7 +10,14 @@ export type Acceptor = (path: string, content: string) => Promise<void>;
 
 export type TemplateData = Record<string, unknown>;
 
-export type Generator = (key: string[], data?: TemplateData) => Promise<string>;
+export type Context = {
+  glob: (path: string) => string[];
+};
+
+export type Generator = (
+  key: string[],
+  data: TemplateData & Context,
+) => Promise<string>;
 
 type SchemaType = {
   key: keyof ConfigSchema;
@@ -34,7 +41,7 @@ function check(config: ConfigSchema, key: string) {
 }
 
 export async function generateWithConfig(
-  config: ConfigSchema,
+  config: ConfigSchema & Context,
   acceptor: Acceptor,
 ) {
   await Promise.all(
