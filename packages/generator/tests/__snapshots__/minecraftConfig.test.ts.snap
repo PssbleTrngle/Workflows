@@ -5,6 +5,7 @@ exports[`minecraft workflow generation generates workflows with uploads: release
 #    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>f5af7cce0c537ed9</hash>
 # </meta>
 
 name: Release

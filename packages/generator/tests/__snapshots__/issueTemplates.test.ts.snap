@@ -5,6 +5,7 @@ exports[`minecraft bug templates generates bug template without loader and versi
 #    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>bc2fa16791dcc0bc</hash>
 # </meta>
 
 name: Bug Report
@@ -41,6 +42,7 @@ exports[`minecraft bug templates generates bug template without loader and singl
 #    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>bc2fa16791dcc0bc</hash>
 # </meta>
 
 name: Bug Report
@@ -77,6 +79,7 @@ exports[`minecraft bug templates generates bug template without loader and multi
 #    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>984c27028ddfc37b</hash>
 # </meta>
 
 name: Bug Report
@@ -124,6 +127,7 @@ exports[`minecraft bug templates generates bug template single loader and no ver
 #    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>bc2fa16791dcc0bc</hash>
 # </meta>
 
 name: Bug Report
@@ -160,6 +164,7 @@ exports[`minecraft bug templates generates bug template multiple loaders and no 
 #    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>cb02fb3fd4233345</hash>
 # </meta>
 
 name: Bug Report
@@ -207,6 +212,7 @@ exports[`minecraft bug templates generates bug template multiple loaders and sin
 #    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>cb02fb3fd4233345</hash>
 # </meta>
 
 name: Bug Report
@@ -254,6 +260,7 @@ exports[`minecraft bug templates generates bug template multiple loaders and mul
 #    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>119573549cecf68d</hash>
 # </meta>
 
 name: Bug Report

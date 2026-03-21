@@ -20,20 +20,22 @@ function commentOut(lines: string[], style?: BuiltInParserName): string[] {
   return lines;
 }
 
-export async function createHeader(style?: BuiltInParserName) {
+export async function createHeader(hash: string, style?: BuiltInParserName) {
   const { template } = await loadTemplate("meta.xml");
 
   const generated = template({
     source,
     version,
     generatedAt: new Date().toISOString(),
+    hash,
   });
 
   return commentOut(generated.split("\n"), style).join("\n");
 }
 
 export async function withHeader(generated: string, style?: BuiltInParserName) {
-  const header = await createHeader(style);
+  const hash = Bun.hash(generated).toString(16);
+  const header = await createHeader(hash, style);
   return header + "\n\n" + generated;
 }
 

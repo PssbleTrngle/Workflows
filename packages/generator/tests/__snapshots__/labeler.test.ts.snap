@@ -5,6 +5,7 @@ exports[`minecaft issue labeler generates labeler config without loader and vers
 #    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>1afa2bf9fbb6ce74</hash>
 # </meta>
 
 "
@@ -15,6 +16,7 @@ exports[`minecaft issue labeler generates labeler config without loader and sing
 #    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>1afa2bf9fbb6ce74</hash>
 # </meta>
 
 "
@@ -25,6 +27,7 @@ exports[`minecaft issue labeler generates labeler config without loader and mult
 #    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>95b62c33acaa0fdd</hash>
 # </meta>
 
 1.20.1.x:
@@ -39,6 +42,7 @@ exports[`minecaft issue labeler generates labeler config single loader and no ve
 #    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>1afa2bf9fbb6ce74</hash>
 # </meta>
 
 "
@@ -49,6 +53,7 @@ exports[`minecaft issue labeler generates labeler config multiple loaders and no
 #    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>f1429872d2d32a60</hash>
 # </meta>
 
 neoforge:
@@ -63,6 +68,7 @@ exports[`minecaft issue labeler generates labeler config multiple loaders and si
 #    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>f1429872d2d32a60</hash>
 # </meta>
 
 neoforge:
@@ -77,6 +83,7 @@ exports[`minecaft issue labeler generates labeler config multiple loaders and mu
 #    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>12cca36587fc1899</hash>
 # </meta>
 
 neoforge:

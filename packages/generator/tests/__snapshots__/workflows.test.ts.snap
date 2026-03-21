@@ -5,6 +5,7 @@ exports[`minecraft test workflows generates test workflow without sonar: test wo
 #    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>ad76682bc0c2a1dc</hash>
 # </meta>
 
 name: Test
@@ -70,6 +71,7 @@ exports[`minecraft test workflows generates test workflow with sonar: test workf
 #    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>398906ed633e567b</hash>
 # </meta>
 
 name: Test
@@ -150,6 +152,7 @@ exports[`minecraft test workflows generates test workflow with loader branches: 
 #    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>ad76682bc0c2a1dc</hash>
 # </meta>
 
 name: Test
@@ -215,6 +218,7 @@ exports[`minecaft release workflows generates release workflow with curseforge: 
 #    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>e5f72a807654f8d</hash>
 # </meta>
 
 name: Release
@@ -260,6 +264,7 @@ exports[`minecaft release workflows generates release workflow with modrinth: re
 #    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>1cec49dbc23de42b</hash>
 # </meta>
 
 name: Release
@@ -305,6 +310,7 @@ exports[`minecaft release workflows generates release workflow with github: rele
 #    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>b689c22070cd4347</hash>
 # </meta>
 
 name: Release
@@ -350,6 +356,7 @@ exports[`minecaft release workflows generates release workflow with nexus: relea
 #    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
 #    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>c9de020d30cbcc92</hash>
 # </meta>
 
 name: Release
