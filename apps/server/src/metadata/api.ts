@@ -6,7 +6,7 @@ import { installationContext } from "../installation";
 import validate from "../validation";
 import { authorize, type AuthenticatedResponse } from "./auth";
 import { getStatus, getStatusesByRepository } from "./cache";
-import refresh from "./checks/refresh";
+import check from "./checks";
 import { eventDispatcher } from "./events";
 
 const paginationQuery = z.object({
@@ -71,7 +71,7 @@ export default function createApiRoutes(app: App) {
     validate({ body: repoParams }),
     async (req, res: AuthenticatedResponse) => {
       const context = await installationContext(app, req.body);
-      const status = await refresh(req.body, context);
+      const status = await check(req.body, context);
 
       res.json({ success: true, status });
     },
