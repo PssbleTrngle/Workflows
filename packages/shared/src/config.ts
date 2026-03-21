@@ -19,7 +19,7 @@ export function intEnv(key: string) {
 export function boolEnv(key: string) {
   const stringValue = env(key);
   if (!stringValue) return null;
-  return Boolean(key);
+  return stringValue === "true";
 }
 
 export async function requireFile(path: string) {

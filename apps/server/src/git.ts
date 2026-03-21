@@ -40,7 +40,7 @@ async function clone(
   url.username = "x-access-token";
   url.password = token;
 
-  const relativePath = join(repository.full_name, branch);
+  const relativePath = join(repository.full_name, branch.replaceAll("/", "-"));
   const repositoryPath = join(basePath, relativePath);
   if (existsSync(repositoryPath)) {
     const message = `there is already a process running for ${repository.full_name}`;
