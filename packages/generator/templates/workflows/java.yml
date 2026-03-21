@@ -4,3 +4,5 @@
      distribution: temurin
 
 - uses: gradle/actions/setup-gradle@v4
+  with:
+     cache-read-only: {{ var 'github.event_name != \'push\'' }}

@@ -1,36 +1,105 @@
 // Bun Snapshot v1, https://bun.sh/docs/test/snapshots
 
 exports[`minecraft licenses generates LICENSE.md: minecraft license 1`] = `
-"# <meta>
-#    <source>@pssbletrngle/github-meta-generator</source>
-#    <version>0.0.0-dev</version>
-#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
-# </meta>
+"<!---
+<meta>
+   <source>@pssbletrngle/github-meta-generator</source>
+   <version>0.0.0-dev</version>
+   <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+</meta>
+-->
 
-### Code: [MIT](https://opensource.org/license/mit)
+# License Overview
 
-Copyright 2025 Username
+## Assets License (All Rights Reserved)
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+All Rights Reserved
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+Copyright (c) 2025 Username
 
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+This license applies to any files under the following directories:
 
-### Assets: All Rights Reserved
+- ./src/main/resources/assets/
 
-Assets includes all original textures and/or models made for the project. If the project includes assets or derivatives of assets created by someone unaffiliated with the project,
-those assets should be licensed under the original author's copyright.
-You may not use original assets anywhere without permission unless otherwise stated.
+---
 
-### Branding: All Rights Reserved
+## Code License (MIT)
 
-Branding includes project titles, project descriptions, logos, thumbnails, and promotional material.
-You may not use this project’s branding anywhere, including in forks, reuploads, add-ons or description pages without permission unless otherwise stated.
+All other files are licensed under the MIT License:
 
-### Purpose of License:
+MIT License
 
-I want to have my work be usable and adaptable by anyone, but I do not want to be associated with entire forks/reuploads that may be published.
-You are free to use my work as long as I am credited, but if you are to fork/reupload projects in their entirety, I ask that you differentiate the branding of the derivative from the original work, as well as remove all original assets.
+Copyright (c) 2025 Username
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"
+`;
+
+exports[`minecraft licenses generates LICENSE.md with loader subdirectories: minecraft multiloader license 1`] = `
+"<!---
+<meta>
+   <source>@pssbletrngle/github-meta-generator</source>
+   <version>0.0.0-dev</version>
+   <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+</meta>
+-->
+
+# License Overview
+
+## Assets License (All Rights Reserved)
+
+All Rights Reserved
+
+Copyright (c) 2025 Username
+
+This license applies to any files under the following directories:
+
+- ./common/src/main/resources/assets/
+- ./neoforge/src/main/resources/assets/
+- ./fabric/src/main/resources/assets/
+
+---
+
+## Code License (MIT)
+
+All other files are licensed under the MIT License:
+
+MIT License
+
+Copyright (c) 2025 Username
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 "
 `;

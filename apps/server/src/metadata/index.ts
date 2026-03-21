@@ -2,9 +2,10 @@ import type { WebhookEventDefinition } from "@octokit/webhooks/types";
 import { configPath } from "@pssbletrngle/github-meta-generator";
 import type { RepoSearch, Repository } from "@pssbletrngle/workflows-types";
 import type { App } from "octokit";
-import { createAppGitUser } from "../user";
+import logger from "../logger";
+import { createGitUser } from "../user";
 import createApiRoutes from "./api";
-import { saveStatus } from "./cache";
+import { deleteCacheForRepository, saveStatus, updateCache } from "./cache";
 import generateMetadata, { metadataBranch } from "./generator";
 import createUIMiddlware from "./ui";
 
@@ -16,9 +17,9 @@ function shouldTriggerUpdate({
   return [added, removed, modified].flat().includes(configPath);
 }
 
-export function registerMetadataHooks(hooks: App["webhooks"]) {
+export async function registerMetadataHooks(hooks: App["webhooks"]) {
   hooks.onError((error) => {
-    console.error(error);
+    logger.error(error);
   });
 
   hooks.on("push", async ({ payload, octokit }) => {
@@ -45,10 +46,7 @@ export function registerMetadataHooks(hooks: App["webhooks"]) {
       if (!branch)
         throw new Error(`unable to decode branch name from ref '${ref}'`);
 
-      const user = await createAppGitUser(
-        { repository, installation },
-        octokit,
-      );
+      const user = await createGitUser({ repository, installation, octokit });
       await generateMetadata(repository, branch, octokit, user);
     }
   });
@@ -76,7 +74,56 @@ export function registerMetadataHooks(hooks: App["webhooks"]) {
       ref: `heads/${pull_request.head.ref}`,
     });
 
-    saveStatus({ ...search, base: pull_request.base.ref }, "up-to-date");
+    saveStatus({ ...search, branch: pull_request.base.ref }, "up-to-date");
+  });
+
+  hooks.on("repository.renamed", async ({ payload }) => {
+    const to: RepoSearch = {
+      owner: payload.repository.owner.login,
+      repo: payload.repository.name,
+    };
+
+    const from = {
+      owner: payload.repository.owner.login,
+      repo: payload.changes.repository.name.from,
+    };
+
+    logger.info("repository got renamed", { from, to });
+
+    await updateCache(from, to);
+  });
+
+  hooks.on("repository.transferred", async ({ payload }) => {
+    const to: RepoSearch = {
+      owner: payload.repository.owner.login,
+      repo: payload.repository.name,
+    };
+
+    const fromOwner =
+      payload.changes.owner.from.organization ??
+      payload.changes.owner.from.user;
+
+    if (!fromOwner) return;
+
+    const from = {
+      owner: fromOwner.login,
+      repo: payload.repository.name,
+    };
+
+    logger.info("repository got transferred", { from, to });
+
+    await updateCache(from, to);
+  });
+
+  hooks.on("repository.deleted", async ({ payload }) => {
+    const repo: RepoSearch = {
+      owner: payload.repository.owner.login,
+      repo: payload.repository.name,
+    };
+
+    logger.info("repository got deleted", { repo });
+
+    await deleteCacheForRepository(repo);
   });
 }
 

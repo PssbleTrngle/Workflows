@@ -1,8 +1,5 @@
 ---
-import type {
-  RepositoryStatus,
-  StatusResult,
-} from "@pssbletrngle/workflows-types/metadata";
+import type { StatusResult } from "@pssbletrngle/workflows-types/metadata";
 import Panel from "../components/Panel.astro";
 import Layout from "../layout.astro";
 
@@ -14,12 +11,12 @@ const page = Number.parseInt(Astro.url.searchParams.get("page") || "1");
 async function listStatuses() {
   const entries = await api.request<StatusResult[]>(`status?page=${page}`);
 
-  const map: Record<string, Record<string, RepositoryStatus>> = {};
+  const map: Record<string, Record<string, Omit<StatusResult, "search">>> = {};
 
-  entries.forEach(({ search, status }) => {
+  entries.forEach(({ search, ...status }) => {
     const repository = `${search.owner}/${search.repo}`;
     if (!(repository in map)) map[repository] = {};
-    map[repository][search.base] = status;
+    map[repository][search.branch] = status;
   });
 
   return map;

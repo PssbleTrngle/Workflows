@@ -4,10 +4,12 @@ import type {
   RepoSearchWithBranch,
 } from "@pssbletrngle/workflows-types";
 
-const { repo, disabled } = Astro.props as {
+type Props = {
   repo: RepoSearchWithBranch | RepoSearch;
   disabled?: boolean;
 };
+
+const { repo, disabled } = Astro.props;
 ---
 
 <form
@@ -17,7 +19,11 @@ const { repo, disabled } = Astro.props as {
 >
   <input type="hidden" name="owner" value={repo.owner} />
   <input type="hidden" name="repo" value={repo.repo} />
-  {"base" in repo && <input type="hidden" name="base" value={repo.base} />}
+  {
+    "branch" in repo && (
+      <input type="hidden" name="branch" value={repo.branch} />
+    )
+  }
   <button title="Refresh" disabled={disabled}>🔄</button>
 </form>
 

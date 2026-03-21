@@ -26,9 +26,7 @@ jobs:
 
 
          - name: Build and upload
-           uses: gradle/gradle-build-action@v2
-           with:
-              arguments: build publish
+           run: ./gradlew build publish
            env:
               {{#if upload.modrinth}}
               MODRINTH_TOKEN: {{ var 'secrets.MODRINTH_TOKEN' }}

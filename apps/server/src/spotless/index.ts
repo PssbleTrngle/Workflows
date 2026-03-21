@@ -2,7 +2,8 @@ import type { components } from "@octokit/openapi-types";
 import type { WebhookEventDefinition } from "@octokit/webhooks/types";
 import type { App, Octokit } from "octokit";
 import type { GitUser } from "../git";
-import { createAppGitUser } from "../user";
+import logger from "../logger";
+import { createGitUser } from "../user";
 import runSpotless from "./execute";
 
 function matchesCommand(content: string) {
@@ -72,7 +73,7 @@ async function handleEvent(
   if (!matchesCommand(comment.body)) return;
   if (!CAN_RUN_COMMAND.includes(comment.author_association)) return;
 
-  const user = await createAppGitUser({ repository, installation }, octokit);
+  const user = await createGitUser({ repository, installation, octokit });
 
   const { data: pullRequest } = (await octokit.request(
     `GET ${issue.pull_request.url}`,
@@ -93,13 +94,13 @@ async function handleEvent(
 
     if (commited) {
       await react(octokit, user, { comment, repository }, Reaction.THUMBS_UP);
-      console.info("<- fixed code with spotless apply");
+      logger.info("<- fixed code with spotless apply");
     } else {
       await react(octokit, user, { comment, repository }, Reaction.THUMBS_DOWN);
-      console.info("<- no changes to be fixed by spotless");
+      logger.info("<- no changes to be fixed by spotless");
     }
   } catch (e) {
-    console.error("<- error occured when running spotless");
+    logger.error("<- error occured when running spotless");
     await react(octokit, user, { comment, repository }, Reaction.CONFUSED);
     throw e;
   }

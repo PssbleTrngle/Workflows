@@ -25,11 +25,6 @@ const forgeSignature: RequestHandler = async (request, _, next) => {
   return next();
 };
 
-const logRequests: RequestHandler = (request, _, next) => {
-  console.info(`${request.method} -> ${request.originalUrl}`);
-  return next();
-};
-
 async function devUIProxy(): Promise<RequestHandler> {
   const patterns = [
     /^\/@vite\//,
@@ -48,5 +43,5 @@ async function devUIProxy(): Promise<RequestHandler> {
 }
 
 export async function createDevMiddleware() {
-  return [forgeSignature, logRequests, await devUIProxy()];
+  return [forgeSignature, await devUIProxy()];
 }

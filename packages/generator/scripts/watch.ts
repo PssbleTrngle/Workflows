@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { $ } from "bun";
 import { watch } from "fs";
 

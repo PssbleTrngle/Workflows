@@ -1,0 +1,11 @@
+{
+  "name": "@pssbletrngle/workflows-scripts",
+  "private": true,
+  "dependencies": {
+    "@types/bun": "latest",
+    "@pssbletrngle/workflows-configs": "workspace:*"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

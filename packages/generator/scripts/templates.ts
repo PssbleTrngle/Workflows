@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import type { BunFile } from "bun";
 import handlebars from "handlebars";
 import { readdirSync, statSync } from "node:fs";
@@ -37,6 +38,8 @@ function parserOf(file: string): BuiltInParserName | null {
     case ".yml":
     case ".yaml":
       return "yaml";
+    case ".md":
+      return "markdown";
     default:
       return null;
   }

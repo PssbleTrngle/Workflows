@@ -1,7 +1,9 @@
 import z, { type ZodType } from "zod";
 
+export const DETECT_KEY = "detect";
+
 function orDetect<T>(schema: ZodType<T>) {
-  return schema.or(z.literal("detect")).default("detect");
+  return schema.or(z.literal(DETECT_KEY)).default(DETECT_KEY);
 }
 
 const uploadSchema = z.object({
@@ -41,6 +43,7 @@ const webSchema = z.object({
 
 const commonSchema = z.object({
   workflows: z.boolean().default(true).describe("generate workflow files"),
+  owner: orDetect(z.string().nonempty()).describe("the owner of this code"),
   issueTemplates: z
     .boolean()
     .default(true)
@@ -49,6 +52,7 @@ const commonSchema = z.object({
   license: z.boolean().default(true).describe("generate a license"),
   assignee: z
     .string()
+    .nonempty()
     .optional()
     .describe("assignee to be used in issue templates"),
   overwrite: z
@@ -71,7 +75,7 @@ export type ConfigSchema = z.infer<typeof schema>;
 
 const resolvedSchema = schema.superRefine((data, context) => {
   Object.entries(data).forEach(([key, input]) => {
-    if (input === "detect")
+    if (input === DETECT_KEY)
       context.addIssue({
         code: "invalid_value",
         message: `could not detect values`,

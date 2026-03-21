@@ -1,7 +1,9 @@
 import {
+  DETECT_KEY,
   packageManagerSchema,
   validateConfig,
 } from "@pssbletrngle/github-meta-generator";
+import logger from "../logger";
 import type { MetadataContext } from "./branches";
 
 function uniq<T>(values: T[]): T[] {
@@ -19,46 +21,52 @@ function detect(branches: string[], pattern: RegExp): string[] {
 }
 
 function detectLoadersFrom(branches: string[]) {
-  return detect(branches, /^(forge|fabric|quilt|neoforge)(?:\/.+)?$/);
+  return detect(branches, /^main\/(forge|fabric|quilt|neoforge)(?:\/.+)?$/);
 }
 
 function detectVersionsFrom(branches: string[]) {
-  return detect(branches, /^(?:.+\/)?(\d+\.\d+(?:\.(?:\d+))?)(?:\.x)?$/)
+  return detect(branches, /^main\/(?:.+\/)?(\d+\.\d+(?:\.(?:\d+))?)(?:\.x)?$/)
     .toSorted()
     .toReversed();
 }
 
 export default async function detectProperties(
   repositoryPath: string,
-  { config, branches }: MetadataContext,
+  { config, branches, target }: MetadataContext,
 ) {
   if (config.type === "web") {
-    if (config.manager === "detect") {
+    if (config.manager === DETECT_KEY) {
       const { packageManager } = await Bun.file("package.json").json();
       const [, match] = /^(\w+)@/.exec(packageManager) ?? [];
       config.manager = packageManagerSchema.parse(match);
-      console.info(`  -> detected package manager ${config.manager}`);
+      logger.info(`  -> detected package manager ${config.manager}`);
     }
   }
 
   if (config.type === "minecraft") {
-    if (config.versions === "detect") {
+    if (config.versions === DETECT_KEY) {
       const detected = detectVersionsFrom(branches);
       if (detected.length) {
         config.versions = detected;
-        console.info(
-          `  -> detected minecraft versions: ${detected.join(", ")}`,
-        );
+        logger.info(`  -> detected minecraft versions: ${detected.join(", ")}`);
       }
     }
 
-    if (config.loaders === "detect") {
+    if (config.loaders === DETECT_KEY) {
       const detected = detectLoadersFrom(branches);
       if (detected.length) {
         config.loaders = detected;
-        console.info(`  -> detected minecraft loaders: ${detected.join(", ")}`);
+        logger.info(`  -> detected minecraft loaders: ${detected.join(", ")}`);
       }
     }
+  }
+
+  if (config.owner === DETECT_KEY) {
+    config.owner = target.owner;
+  }
+
+  if (config.assignee === "@owner") {
+    config.assignee = config.owner;
   }
 
   return validateConfig(config, false);

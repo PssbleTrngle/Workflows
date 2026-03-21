@@ -1,8 +1,10 @@
 import type { Repository } from "@pssbletrngle/workflows-types";
 import { $ } from "bun";
 import { existsSync, mkdirSync, rmSync } from "node:fs";
+import { rm } from "node:fs/promises";
 import { join } from "node:path";
 import config from "./config";
+import logger from "./logger";
 
 export type GitUser = {
   token: string;
@@ -12,7 +14,14 @@ export type GitUser = {
 
 const basePath = config.git.cloneDir;
 
-if (!existsSync(basePath)) {
+export async function setupGitCloneDir() {
+  if (existsSync(basePath)) {
+    logger.debug(`clearing tmp dir at ${basePath}`);
+    await rm(basePath, { recursive: true });
+  } else {
+    logger.debug(`creating tmp dir at ${basePath}`);
+  }
+
   mkdirSync(basePath, { recursive: true });
 }
 
@@ -26,7 +35,7 @@ async function clone(
   behaviour: DuplicateBehaviour,
 ) {
   const url = new URL(repository.clone_url);
-  console.info(`-> cloning into ${url} @ ${branch}`);
+  logger.info(`-> cloning into ${url} @ ${branch}`);
 
   url.username = "x-access-token";
   url.password = token;
@@ -37,7 +46,7 @@ async function clone(
     const message = `there is already a process running for ${repository.full_name}`;
     if (behaviour === "abort") throw new Error(message);
     if (behaviour === "skip") {
-      console.warn(message);
+      logger.warn(message);
       return repositoryPath;
     } else if (behaviour === "delete") {
       rmSync(repositoryPath, { recursive: true });
@@ -48,14 +57,14 @@ async function clone(
     .cwd(basePath)
     .quiet();
 
-  console.info(`-> sucessfully cloned into ${repository.full_name}`);
+  logger.info(`-> sucessfully cloned into ${repository.full_name}`);
 
   return repositoryPath;
 }
 
 async function detectChanges(path: string) {
   const output =
-    await $`git diff --cached --quiet --ignore-matching-lines="#\\s+<"`
+    await $`git diff --quiet --cached --ignore-matching-lines="\\s+<.+>"`
       .nothrow()
       .cwd(path);
 
@@ -79,10 +88,10 @@ async function branchExists(repositoryPath: string, branch: string) {
 
 async function checkoutBranch(repositoryPath: string, branch: string) {
   if (await branchExists(repositoryPath, branch)) {
-    console.info(`-> using existing branch ${branch}`);
+    logger.info(`-> using existing branch ${branch}`);
     await $`git checkout ${branch}`.cwd(repositoryPath).quiet();
   } else {
-    console.info(`-> creating branch ${branch}`);
+    logger.info(`-> creating branch ${branch}`);
     await $`git checkout -b ${branch}`.cwd(repositoryPath).quiet();
   }
 }
@@ -104,17 +113,17 @@ async function wrappedCloneAndModify<T extends ActionResult>(
   const changed = await detectChanges(repositoryPath);
 
   if (!changed) {
-    console.info("<- no changes detected");
+    logger.info("<- no changes detected");
     return;
   }
 
-  console.info(`-> creating commit as ${user.name}`);
+  logger.info(`-> creating commit as ${user.name}`);
 
   await $`git commit -m "${result.message}"`.cwd(repositoryPath).quiet();
 
   await $`git push`.cwd(repositoryPath).quiet();
 
-  console.info("-> completed actions and pushed changes");
+  logger.info("-> completed actions and pushed changes");
 
   return result;
 }
@@ -143,7 +152,7 @@ export async function cloneAndModify<T extends ActionResult>(
     return result;
   } catch (ex) {
     if (ex instanceof Error) {
-      console.error(`<- an error occurred executing action: ${ex.message}`);
+      logger.error(`<- an error occurred executing action: ${ex.message}`);
     }
     rmSync(repositoryPath, { recursive: true });
     throw ex;

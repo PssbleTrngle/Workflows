@@ -2,18 +2,19 @@ import { json, Router } from "express";
 import { type App } from "octokit";
 import z from "zod";
 import { cutoff } from "../error";
+import { installationContext } from "../installation";
 import validate from "../validation";
 import { authorize, type AuthenticatedResponse } from "./auth";
 import { getStatus, getStatusesByRepository } from "./cache";
+import refresh from "./checks/refresh";
 import { eventDispatcher } from "./events";
-import refresh from "./refresh";
 
 const paginationQuery = z.object({
   page: z.coerce.number().int().positive().default(1),
   pageSize: z.coerce.number().int().positive().default(20),
 });
 
-export default function createApiRoutes(_: App) {
+export default function createApiRoutes(app: App) {
   const router = Router();
 
   router.use(...authorize("fail"));
@@ -31,7 +32,7 @@ export default function createApiRoutes(_: App) {
   );
 
   router.get(
-    "/:owner/:repo/:base/status",
+    "/:owner/:repo/:branch/status",
     async (req, res: AuthenticatedResponse) => {
       // TODO authorization guard
       const status = await getStatus(req.params);
@@ -62,14 +63,15 @@ export default function createApiRoutes(_: App) {
   const repoParams = z.object({
     owner: z.string().nonempty(),
     repo: z.string().nonempty(),
-    base: z.string().nonempty().optional(),
+    branch: z.string().nonempty().optional(),
   });
 
   router.post(
     "/refresh",
     validate({ body: repoParams }),
     async (req, res: AuthenticatedResponse) => {
-      const status = await refresh(req.body, res.locals);
+      const context = await installationContext(app, req.body);
+      const status = await refresh(req.body, context);
 
       res.json({ success: true, status });
     },

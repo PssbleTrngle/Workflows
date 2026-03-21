@@ -1,4 +1,9 @@
-export { configSchema, packageManagerSchema, validateConfig } from "./config";
+export {
+  configSchema,
+  DETECT_KEY,
+  packageManagerSchema,
+  validateConfig,
+} from "./config";
 export type {
   ConfigSchema,
   MinecraftConfigSchema,
@@ -10,4 +15,5 @@ export { generateWithConfig, type TemplateData } from "./generator";
 export { generateIssueTemplate } from "./issueTemplates/generate";
 export { generateLicenses } from "./licenses/generate";
 export { isGenerated, type Meta } from "./meta";
+export type { Options } from "./options";
 export { generateWorkflow } from "./workflows/generate";

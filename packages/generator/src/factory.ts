@@ -28,7 +28,7 @@ export default function createGenerator(
         },
       },
     );
-    if (header) generated = await withHeader(generated);
+    if (header) generated = await withHeader(generated, parser);
     if (parser) return format(generated, { parser });
     return generated;
   };

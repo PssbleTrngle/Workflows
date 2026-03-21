@@ -1,6 +1,7 @@
 import { type WebhookEventDefinition } from "@octokit/webhooks/types";
 import { publishEvent } from "@pssbletrngle/workflows-events";
 import { App } from "octokit";
+import logger from "./logger";
 
 type PackagePublished = WebhookEventDefinition<"package-published">;
 
@@ -9,7 +10,7 @@ async function handlePackagePublished(event: PackagePublished) {
 
   if (pack.package_type !== "CONTAINER") return;
   if (!pack.owner) {
-    console.warn(`owner missing for ${pack.name}`);
+    logger.warn(`owner missing for ${pack.name}`);
     return;
   }
 

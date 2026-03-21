@@ -1,5 +1,6 @@
 import { sendEmbeds } from "@pssbletrngle/workflows-notifications";
 import type { App } from "octokit";
+import logger from "./logger";
 
 const enum ItemStatus {
   BACKLOG = "19a9db19",
@@ -32,7 +33,7 @@ export function registerIssuesHooks(hooks: App["webhooks"]) {
   hooks.on("issues.assigned", async ({ payload, octokit }) => {
     const { issue } = payload;
 
-    console.info("-> adding issue to backlog:", issue.title);
+    logger.info("-> adding issue to backlog:", issue.title);
 
     const isBug = issue.labels?.some((it) => it.name.toLowerCase() === "bug");
     const color = isBug ? 0xd43350 : 0xdecc2a;
@@ -73,7 +74,7 @@ export function registerIssuesHooks(hooks: App["webhooks"]) {
 
   hooks.on("issues.unassigned", async ({ payload, octokit }) => {
     const { issue } = payload;
-    console.log(
+    logger.info(
       "-> trying to remove issue from backlog if present:",
       issue.title,
     );

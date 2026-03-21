@@ -1,4 +1,5 @@
 import type { BunFile } from "bun";
+import type { BuiltInParserName } from "prettier";
 import { source, version } from "../dist/meta.json";
 import { loadTemplate } from "../dist/templates";
 
@@ -7,7 +8,19 @@ export type Meta = {
   source: string;
 };
 
-export async function createHeader() {
+function commentOut(lines: string[], style?: BuiltInParserName): string[] {
+  if (style === "yaml") {
+    return lines.map((it) => `# ${it}`);
+  }
+
+  if (style === "markdown") {
+    return ["<!---", ...lines, "-->"];
+  }
+
+  return lines;
+}
+
+export async function createHeader(style?: BuiltInParserName) {
   const { template } = await loadTemplate("meta.xml");
 
   const generated = template({
@@ -16,14 +29,11 @@ export async function createHeader() {
     generatedAt: new Date().toISOString(),
   });
 
-  return generated
-    .split("\n")
-    .map((it) => `# ${it}`)
-    .join("\n");
+  return commentOut(generated.split("\n"), style).join("\n");
 }
 
-export async function withHeader(generated: string) {
-  const header = await createHeader();
+export async function withHeader(generated: string, style?: BuiltInParserName) {
+  const header = await createHeader(style);
   return header + "\n\n" + generated;
 }
 

@@ -46,6 +46,14 @@ jobs:
                  type=semver,pattern={{version}},enable=${{ github.event_name == 'release' }}
                  type=sha,priority=250,enable=${{ github.event_name != 'release' }}
 
+         - name: Setup Bun
+           uses: oven-sh/setup-bun@v2
+
+         - name: Update release properties
+           run: bun run packages/scripts/prerelease.ts
+           env:
+              BUILD_NUMBER: ${{ github.run_number }}
+
          - name: Build and push Docker image
            uses: docker/build-push-action@v6
            with:

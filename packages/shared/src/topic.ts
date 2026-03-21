@@ -1,7 +1,7 @@
 import type { RepoSearchWithBranch } from "@pssbletrngle/workflows-types";
 
-function createPath({ base, owner, repo }: RepoSearchWithBranch) {
-  return `${owner}/${repo}/${base}`;
+function createPath({ branch, owner, repo }: RepoSearchWithBranch) {
+  return `${owner}/${repo}/${branch}`;
 }
 
 export function createTopic(

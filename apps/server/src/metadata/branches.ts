@@ -3,7 +3,10 @@ import {
   validateConfig,
   type ConfigSchema,
 } from "@pssbletrngle/github-meta-generator";
-import type { RepoSearch } from "@pssbletrngle/workflows-types";
+import type {
+  RepoSearch,
+  RepoSearchWithBranch,
+} from "@pssbletrngle/workflows-types";
 import type { Octokit, RequestError } from "octokit";
 
 export async function fetchBranches(octokit: Octokit, search: RepoSearch) {
@@ -13,8 +16,7 @@ export async function fetchBranches(octokit: Octokit, search: RepoSearch) {
 
 async function fetchConfig(
   octokit: Octokit,
-  branch: string,
-  search: RepoSearch,
+  { branch, ...search }: RepoSearchWithBranch,
 ) {
   try {
     const { data } = await octokit.rest.repos.getContent({
@@ -37,21 +39,20 @@ async function fetchConfig(
   }
 }
 
-const MC_VERSION_PATTERN =
-  /^((forge|fabric|neoforge|quilt)\/)?\d+\.\d+(\.(\d+|x))?$/;
-
 export type MetadataContext = {
   branches: string[];
   config: ConfigSchema;
+  target: RepoSearchWithBranch;
 };
 
-function isMainBranch(branch: string, { branches, config }: MetadataContext) {
+function isMainBranch(branch: string, { branches }: MetadataContext) {
   if (branch === "main" && !branches.includes("develop")) {
     return true;
   }
 
-  if (config.type === "minecraft" && MC_VERSION_PATTERN.test(branch)) {
-    return true;
+  if (branch.startsWith("main/")) {
+    const suffix = branch.substring("main/".length);
+    return !branches.includes(`develop/${suffix}`);
   }
 
   return false;
@@ -59,18 +60,17 @@ function isMainBranch(branch: string, { branches, config }: MetadataContext) {
 
 export async function createMetadataContext(
   octokit: Octokit,
-  search: RepoSearch,
-  base: string,
+  target: RepoSearchWithBranch,
 ) {
   const [config, branches] = await Promise.all([
-    fetchConfig(octokit, base, search),
-    fetchBranches(octokit, search),
+    fetchConfig(octokit, target),
+    fetchBranches(octokit, target),
   ]);
 
   if (!config) return null;
 
-  const context: MetadataContext = { branches, config };
+  const context: MetadataContext = { branches, config, target };
 
-  if (isMainBranch(base, context)) return context;
+  if (isMainBranch(target.branch, context)) return context;
   return null;
 }

@@ -8,4 +8,9 @@ export default defineConfig([
   js.configs.recommended,
   ts.configs.recommended,
   overrides(import.meta.dirname),
+  {
+    rules: {
+      "no-console": "error",
+    },
+  },
 ]);

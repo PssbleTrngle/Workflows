@@ -17,7 +17,7 @@ export type RepoSearch = {
 export type RepoSearchWithBranch = {
   owner: string;
   repo: string;
-  base: string;
+  branch: string;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

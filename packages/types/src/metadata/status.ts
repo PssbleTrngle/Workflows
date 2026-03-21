@@ -1,4 +1,5 @@
 import type { RepoSearchWithBranch } from "..";
+import type { Checks } from "./checks";
 
 export type RepositoryStatus =
   | "opened-pr"
@@ -9,4 +10,5 @@ export type RepositoryStatus =
 export type StatusResult = {
   search: RepoSearchWithBranch;
   status: RepositoryStatus;
+  checks: Checks;
 };

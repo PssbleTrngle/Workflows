@@ -1,9 +1,11 @@
 import type { CreateTokenInterface } from "@octokit/oauth-app";
+import type { Repository } from "@pssbletrngle/workflows-types";
 import cookieParser from "cookie-parser";
 import type { Request, RequestHandler, Response } from "express";
 import type { ParamsDictionary, Query } from "express-serve-static-core";
 import { Octokit } from "octokit";
 import { ApiError } from "../error";
+import logger from "../logger";
 
 const COOKIE_NAME = "webhooks-session";
 
@@ -32,20 +34,30 @@ export async function logout(response: Response) {
 
 type AuthenticationStrategy = "redirect" | "fail";
 
-export type AuthenticatedContext = {
+type CommonContext = {
   octokit: Octokit;
+};
+
+export type OAuthContext = CommonContext & {
   token: string;
 };
+
+export type InstallationContext = CommonContext & {
+  installation: { id: number };
+  repository: Repository;
+};
+
+export type AuthenticatedContext = OAuthContext | InstallationContext;
 
 export type AuthenticatedHandler = RequestHandler<
   ParamsDictionary,
   unknown,
   unknown,
   Query,
-  AuthenticatedContext
+  OAuthContext
 >;
 
-export type AuthenticatedResponse = Response<unknown, AuthenticatedContext>;
+export type AuthenticatedResponse = Response<unknown, OAuthContext>;
 
 function extractToken(req: Request) {
   const cookie: string = req.cookies[COOKIE_NAME];
@@ -65,12 +77,12 @@ function createHandler(strategy: AuthenticationStrategy): AuthenticatedHandler {
 
     if (token) {
       res.locals.token = token;
-      res.locals.octokit = new Octokit({ auth: token });
+      res.locals.octokit = new Octokit({ auth: token, log: logger });
       return next();
     }
 
     if (strategy === "redirect") {
-      console.info("starting login flow");
+      logger.debug("starting login flow");
       res.redirect("/api/github/oauth/login");
     } else {
       throw new ApiError("requires login", 401);
