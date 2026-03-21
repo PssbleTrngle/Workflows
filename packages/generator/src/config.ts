@@ -111,7 +111,8 @@ export const configSchema = z.toJSONSchema(schema, {
 
     // deny additional properties for type-specific configs
     if (path.length === 2) {
-      jsonSchema.unevaluatedProperties = false;
+      // TODO not working yet
+      // jsonSchema.unevaluatedProperties = false;
     }
 
     // fields with default values do not need to be marked as required
