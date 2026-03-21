@@ -12,7 +12,7 @@ export type GitUser = {
   name: string;
 };
 
-const basePath = config.git.cloneDir;
+const basePath = join(config.git.cloneDir, "clones");
 
 export async function setupGitCloneDir() {
   if (existsSync(basePath)) {

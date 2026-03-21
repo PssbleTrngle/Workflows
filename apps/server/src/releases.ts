@@ -17,6 +17,8 @@ async function handlePackagePublished(event: PackagePublished) {
   const name = `${pack.owner.login}/${pack.name}`.toLowerCase();
   const tag = pack.package_version?.container_metadata?.tag?.name ?? "latest";
 
+  logger.info("release created", { package: name, tag });
+
   await publishEvent("update_containers", {
     name,
     tag,
