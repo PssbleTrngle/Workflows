@@ -1,11 +1,20 @@
 import type { WebhookEventDefinition } from "@octokit/webhooks/types";
 import { configPath } from "@pssbletrngle/github-meta-generator";
-import type { RepoSearch, Repository } from "@pssbletrngle/workflows-types";
+import type {
+  RepoSearch,
+  RepoSearchWithBranch,
+  Repository,
+} from "@pssbletrngle/workflows-types";
 import type { App } from "octokit";
 import logger from "../logger";
 import { createGitUser } from "../user";
 import createApiRoutes from "./api";
-import { deleteCacheForRepository, saveStatus, updateCache } from "./cache";
+import {
+  deleteCache,
+  deleteCacheForRepository,
+  saveStatus,
+  updateCache,
+} from "./cache";
 import generateMetadata, { metadataBranch } from "./generator";
 import createUIMiddlware from "./ui";
 
@@ -28,7 +37,7 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
     function isValidRepository(
       value: typeof repository,
     ): value is Repository & typeof repository {
-      return !!repository.owner?.login;
+      return !!value.owner?.login;
     }
 
     if (!isValidRepository(repository))
@@ -124,6 +133,33 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
     logger.info("repository got deleted", { repo });
 
     await deleteCacheForRepository(repo);
+  });
+
+  hooks.on("delete", async ({ payload }) => {
+    if (payload.ref_type !== "branch") return;
+
+    const repo: RepoSearchWithBranch = {
+      owner: payload.repository.owner.login,
+      repo: payload.repository.name,
+      branch: payload.ref,
+    };
+
+    logger.info("branch got deleted", { repo });
+
+    await deleteCache(repo);
+  });
+
+  hooks.on("create", async ({ payload, octokit }) => {
+    if (payload.ref_type !== "branch") return;
+    const { repository, installation } = payload;
+
+    if (!installation) {
+      octokit.log.warn(`installation missing for ${repository.full_name}`);
+      return;
+    }
+
+    const user = await createGitUser({ repository, installation, octokit });
+    await generateMetadata(repository, payload.ref, octokit, user);
   });
 }
 
