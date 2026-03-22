@@ -1,4 +1,8 @@
-import { generateInFolder } from "@pssbletrngle/github-meta-generator";
+import {
+  detectProperties,
+  generateInFolder,
+  type MetadataContext,
+} from "@pssbletrngle/github-meta-generator";
 import meta from "@pssbletrngle/github-meta-generator/meta";
 import type {
   RepoSearchWithBranch,
@@ -9,16 +13,14 @@ import type { Octokit } from "octokit";
 import type { ActionResult } from "../git";
 import { cloneAndModify, type GitUser } from "../git";
 import logger from "../logger";
-import type { MetadataContext } from "./branches";
 import { createMetadataContext } from "./branches";
 import { deleteCache, saveMetadata, saveStatus } from "./cache";
-import detectProperties from "./detection";
 
 export async function updateMetadataFiles(
   repositoryPath: string,
   context: MetadataContext,
 ): Promise<ActionResult> {
-  const config = await detectProperties(repositoryPath, context);
+  const config = await detectProperties(context);
 
   await generateInFolder(repositoryPath, config, { logger });
 

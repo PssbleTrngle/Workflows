@@ -3,12 +3,8 @@ import {
   packageManagerSchema,
   validateConfig,
 } from "@pssbletrngle/github-meta-generator";
-import logger from "../logger";
-import type { MetadataContext } from "./branches";
-
-function uniq<T>(values: T[]): T[] {
-  return values.filter((v, i, a) => a.indexOf(v) === i);
-}
+import { uniq } from "@pssbletrngle/workflows-shared/util";
+import type { MetadataContext } from "./context";
 
 function detect(branches: string[], pattern: RegExp): string[] {
   return uniq(
@@ -30,10 +26,12 @@ function detectVersionsFrom(branches: string[]) {
     .toReversed();
 }
 
-export default async function detectProperties(
-  repositoryPath: string,
-  { config, branches, target }: MetadataContext,
-) {
+export default async function detectProperties({
+  config,
+  branches,
+  target,
+  logger,
+}: MetadataContext) {
   if (config.type === "web") {
     if (config.manager === DETECT_KEY) {
       const { packageManager } = await Bun.file("package.json").json();

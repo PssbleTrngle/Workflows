@@ -17,10 +17,9 @@ const updateSchema: Migration = (config) => {
   };
 };
 
-const referenceOwner: Migration = (config) => {
-  // TODO needs more context
-  if (!config.assignee) return config;
+const referenceOwner: Migration = (config, { target }) => {
+  if (config.assignee !== target.owner) return config;
   return { ...config, assignee: "@owner" };
 };
 
-export default [addVersion, updateSchema];
+export default [addVersion, updateSchema, referenceOwner];

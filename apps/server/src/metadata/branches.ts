@@ -1,13 +1,14 @@
 import {
   configPath,
   validateConfig,
-  type ConfigSchema,
+  type MetadataContext,
 } from "@pssbletrngle/github-meta-generator";
 import type {
   RepoSearch,
   RepoSearchWithBranch,
 } from "@pssbletrngle/workflows-types";
 import type { Octokit, RequestError } from "octokit";
+import logger from "../logger";
 
 export async function fetchBranches(octokit: Octokit, search: RepoSearch) {
   const { data } = await octokit.rest.repos.listBranches(search);
@@ -39,12 +40,7 @@ async function fetchConfig(
   }
 }
 
-export type MetadataContext = {
-  branches: string[];
-  config: ConfigSchema;
-  target: RepoSearchWithBranch;
-};
-
+// TODO test
 function isMainBranch(branch: string, { branches }: MetadataContext) {
   if (branch === "main" && !branches.includes("develop")) {
     return true;
@@ -69,7 +65,7 @@ export async function createMetadataContext(
 
   if (!config) return null;
 
-  const context: MetadataContext = { branches, config, target };
+  const context: MetadataContext = { branches, config, target, logger };
 
   if (isMainBranch(target.branch, context)) return context;
   return null;
