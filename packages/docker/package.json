@@ -10,10 +10,11 @@
     "format": "biome format --write src"
   },
   "dependencies": {
-    "@types/bun": "latest",
-    "dockerode": "^4.0.9",
     "@pssbletrngle/workflows-configs": "workspace:*",
-    "@types/dockerode": "^4.0.1"
+    "@types/bun": "latest",
+    "@types/dockerode": "^4.0.1",
+    "docker": "^1.0.0",
+    "dockerode": "^4.0.9"
   },
   "peerDependencies": {
     "typescript": "^5"

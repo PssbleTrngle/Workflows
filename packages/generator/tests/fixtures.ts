@@ -1,7 +1,7 @@
 import { globSync } from "node:fs";
 import { join } from "node:path";
 import { validateConfig } from "../src";
-import { Context } from "../src/generator";
+import type { Context } from "../src/generator";
 
 export async function loadFixtureFile(...paths: string[]): Promise<unknown> {
   const file = Bun.file(join(__dirname, "__fixtures__", ...paths));

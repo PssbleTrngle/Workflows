@@ -4,7 +4,7 @@ export function createGlobMock(
   paths: Record<string, string[]>,
 ): Context["glob"] {
   return (pattern) => {
-    if (pattern in paths) return paths[pattern];
+    if (pattern in paths) return paths[pattern]!;
     throw new Error(`unexpected pattern: '${pattern}'`);
   };
 }

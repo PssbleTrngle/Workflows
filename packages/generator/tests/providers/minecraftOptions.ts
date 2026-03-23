@@ -1,5 +1,5 @@
 import type { TemplateData } from "../../src";
-import { Context } from "../../src/generator";
+import type { Context } from "../../src/generator";
 import mockContext from "./context";
 
 export default function* optionsProvider(): Generator<
