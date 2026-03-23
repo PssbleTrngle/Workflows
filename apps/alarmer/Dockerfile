@@ -23,12 +23,12 @@ COPY --from=prepare /usr/src/out/full/ .
 RUN bun run build
 
 # run the app
-FROM base AS runner
+FROM node:alpine
+WORKDIR /usr/src/
 
 ENV NODE_ENV=production
 
-COPY --from=builder --chown=bun:bun /usr/src/apps/alarmer/dist ./alarmer
+COPY --from=builder /usr/src/apps/alarmer/dist ./alarmer
 
-USER bun
 EXPOSE 8080/tcp
-ENTRYPOINT [ "bun", "run", "alarmer/main.js" ]
+ENTRYPOINT [ "node", "alarmer/main.js" ]

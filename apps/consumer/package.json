@@ -8,7 +8,7 @@
     "check-types": "tsc --noEmit",
     "lint": "eslint src",
     "format": "biome format --write src",
-    "build": "bun build --outdir ./dist --target=bun --sourcemap=linked --env disable src/main.ts --external=cpu-features"
+    "build": "bun build --outdir ./dist --target=node --sourcemap=linked --env disable src/main.ts --external=cpu-features"
   },
   "dependencies": {
     "@pssbletrngle/workflows-docker": "workspace:*",
