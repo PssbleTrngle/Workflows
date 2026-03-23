@@ -3,7 +3,7 @@ import type { Meta } from "../src/meta";
 import getOutput from "./output";
 
 const { version = "0.0.0-dev", name } = await Bun.file(
-  join(__dirname, "..", "package.json")
+  join(__dirname, "..", "package.json"),
 ).json();
 
 const metadata: Meta = {

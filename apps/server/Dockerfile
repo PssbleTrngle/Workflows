@@ -31,6 +31,7 @@ RUN apt-get -y install git
 ENV NODE_ENV=production
 
 COPY --from=builder --chown=bun:bun /usr/src/apps/server/dist ./server
+COPY --from=builder --chown=bun:bun /usr/src/apps/server/scripts ./scripts
 
 ENV GITHUB_APP_PRIVATE_KEY_FILE=/usr/private-key.pem
 ENV GIT_CLONE_DIR=/usr/tmp
@@ -38,4 +39,8 @@ RUN mkdir "$GIT_CLONE_DIR" && chown bun:bun "$GIT_CLONE_DIR"
 
 USER bun
 EXPOSE 8080/tcp
+
+HEALTHCHECK --timeout=5s \
+   CMD bun run /usr/src/scripts/healthcheck.ts
+
 ENTRYPOINT [ "bun", "run", "server/main.js" ]

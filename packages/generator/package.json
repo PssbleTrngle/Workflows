@@ -13,7 +13,7 @@
     "gen:templates": "bun run scripts/templates.ts",
     "dev": "bun run scripts/watch.ts",
     "lint": "eslint {src,scripts,tests}",
-    "format": "biome format --write src",
+    "format": "biome format --write {src,scripts,tests}",
     "test": "bun test"
   },
   "dependencies": {

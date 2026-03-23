@@ -1,14 +1,8 @@
 {
-   "$schema": "http://localhost:8888/schema/config.json",
-   "$version": "1.0",
-   "type": "minecraft",
-   "assignee": "@owner",
-   "versions": [
-      "1.20",
-      "1.19"
-   ],
-   "loaders": [
-      "neoforge",
-      "fabric"
-   ]
+  "$schema": "http://localhost:8888/schema/config.json",
+  "$version": "1.0",
+  "type": "minecraft",
+  "assignee": "@owner",
+  "versions": ["1.20", "1.19"],
+  "loaders": ["neoforge", "fabric"]
 }

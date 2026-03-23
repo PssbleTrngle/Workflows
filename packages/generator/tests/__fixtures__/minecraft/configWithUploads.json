@@ -1,12 +1,12 @@
 {
-   "$schema": "http://localhost:8888/schema/config.json",
-   "$version": "1.0",
-   "type": "minecraft",
-   "issueTemplates": false,
-   "upload": {
-      "modrinth": true,
-      "curseforge": true,
-      "nexus": true,
-      "github": true
-   }
+  "$schema": "http://localhost:8888/schema/config.json",
+  "$version": "1.0",
+  "type": "minecraft",
+  "issueTemplates": false,
+  "upload": {
+    "modrinth": true,
+    "curseforge": true,
+    "nexus": true,
+    "github": true
+  }
 }

@@ -24,6 +24,10 @@ server.get("/schema/config.json", (_, response) => {
   response.json(configSchema);
 });
 
+server.get("/status", (_, response) => {
+  response.json({ running: true });
+});
+
 server.use(createNodeMiddleware(app));
 server.use("/metadata", await createMetadataMiddleware(app));
 
