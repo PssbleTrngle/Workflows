@@ -1,5 +1,8 @@
+import { join } from "node:path";
+import { format } from "prettier";
 import type { ConfigSchema } from "../config";
 import type { MetadataContext } from "../context";
+import { configPath } from "../files";
 import migerations_1_0 from "./1_0";
 
 type SchemaVersion = { major: number; minor: number };
@@ -38,7 +41,7 @@ export const migrateConfig: Migration = async (config, context) => {
 
   context.logger.info(
     `running ${neededMigrations.length} migerations for config`,
-    context,
+    { repo: context.target },
   );
 
   const migrated = await neededMigrations.reduce(
@@ -48,3 +51,14 @@ export const migrateConfig: Migration = async (config, context) => {
 
   return migrated;
 };
+
+export async function migrateConfigFile(
+  path: string,
+  context: Omit<MetadataContext, "config">,
+) {
+  const file = Bun.file(join(path, configPath));
+  const config: Partial<ConfigSchema> = await file.json();
+  const migrated = await migrateConfig(config, context);
+  const formatted = await format(JSON.stringify(migrated), { parser: "json" });
+  await file.write(formatted);
+}

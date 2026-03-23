@@ -18,10 +18,10 @@ export default async function runSpotless(
   user: GitUser,
 ) {
   logger.info("-> running spotless apply");
-  const result = await cloneAndModify(
+  const [result] = await cloneAndModify(
     repository,
     user,
-    (path) => executeGradle(path, "spotlessApply"),
+    [(path) => executeGradle(path, "spotlessApply")],
     branch,
   );
 

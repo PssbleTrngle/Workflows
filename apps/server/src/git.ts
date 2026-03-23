@@ -96,17 +96,23 @@ async function checkoutBranch(repositoryPath: string, branch: string) {
   }
 }
 
-async function wrappedCloneAndModify<T extends ActionResult>(
+type Action<T extends ActionResult = ActionResult> = (
+  path: string,
+) => Promise<T | false>;
+
+type ActionResults<T extends [...Action[]]> = {
+  [Index in keyof T]: Awaited<ReturnType<T[Index]>> | false;
+} & Pick<T, "length">;
+
+async function executeAction<T extends ActionResult>(
   repositoryPath: string,
   user: GitUser,
-  action: (path: string) => Promise<T | false>,
-  checkout?: string,
-) {
-  if (checkout) await checkoutBranch(repositoryPath, checkout);
-  await configureGit(repositoryPath, user);
-
+  action: Action<T>,
+): Promise<T | false> {
   const result = await action(repositoryPath);
-  if (result === false) return;
+  if (result === false) {
+    return false;
+  }
 
   await $`git add .`.cwd(repositoryPath).quiet();
 
@@ -114,38 +120,56 @@ async function wrappedCloneAndModify<T extends ActionResult>(
 
   if (!changed) {
     logger.info("<- no changes detected");
-    return;
+    return false;
   }
 
   logger.info(`-> creating commit as ${user.name}`);
-
   await $`git commit -m "${result.message}"`.cwd(repositoryPath).quiet();
+
+  return result;
+}
+
+async function wrappedCloneAndModify<T extends [...Action[]]>(
+  repositoryPath: string,
+  user: GitUser,
+  actions: T,
+  checkout?: string,
+): Promise<ActionResults<T>> {
+  if (checkout) await checkoutBranch(repositoryPath, checkout);
+  await configureGit(repositoryPath, user);
+
+  const results = [] as ActionResults<T>;
+
+  for (const action of actions) {
+    const result = await executeAction(repositoryPath, user, action);
+    results.push(result);
+  }
 
   await $`git push`.cwd(repositoryPath).quiet();
 
   logger.info("-> completed actions and pushed changes");
 
-  return result;
+  return results;
 }
 
 export type ActionResult = {
   message: string;
 };
 
-export async function cloneAndModify<T extends ActionResult>(
+export async function cloneAndModify<T extends [...Action[]]>(
   repository: Repository,
   user: GitUser,
-  action: (path: string) => Promise<T | false>,
+  actions: T,
   branch: string,
   checkout?: string,
-): Promise<undefined | T> {
+): Promise<ActionResults<T>> {
   const repositoryPath = await clone(repository, branch, user.token, "abort");
 
   try {
     const result = await wrappedCloneAndModify(
       repositoryPath,
       user,
-      action,
+      actions,
       checkout,
     );
     rmSync(repositoryPath, { recursive: true });

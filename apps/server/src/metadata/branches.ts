@@ -1,5 +1,6 @@
 import {
   configPath,
+  migrateConfig,
   validateConfig,
   type MetadataContext,
 } from "@pssbletrngle/github-meta-generator";
@@ -33,7 +34,7 @@ async function fetchConfig(
       throw new Error(`unable to load config file for branch ${branch}`);
     }
 
-    return validateConfig(JSON.parse(data));
+    return JSON.parse(data);
   } catch (e) {
     if ((e as RequestError).status === 404) return null;
     throw e;
@@ -58,14 +59,23 @@ export async function createMetadataContext(
   octokit: Octokit,
   target: RepoSearchWithBranch,
 ) {
-  const [config, branches] = await Promise.all([
+  const [uncheckedConfig, branches] = await Promise.all([
     fetchConfig(octokit, target),
     fetchBranches(octokit, target),
   ]);
 
-  if (!config) return null;
+  if (!uncheckedConfig) return null;
 
-  const context: MetadataContext = { branches, config, target, logger };
+  const migrationContext: Omit<MetadataContext, "config"> = {
+    branches,
+    target,
+    logger,
+  };
+
+  const migrated = await migrateConfig(uncheckedConfig, migrationContext);
+  const config = validateConfig(migrated);
+
+  const context: MetadataContext = { ...migrationContext, config };
 
   if (isMainBranch(target.branch, context)) return context;
   return null;

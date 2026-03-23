@@ -1,6 +1,7 @@
 import {
   detectProperties,
   generateInFolder,
+  migrateConfigFile,
   type MetadataContext,
 } from "@pssbletrngle/github-meta-generator";
 import meta from "@pssbletrngle/github-meta-generator/meta";
@@ -15,6 +16,14 @@ import { cloneAndModify, type GitUser } from "../git";
 import logger from "../logger";
 import { createMetadataContext } from "./branches";
 import { deleteCache, saveMetadata, saveStatus } from "./cache";
+
+export async function migrateMetadataConfig(
+  repositoryPath: string,
+  context: MetadataContext,
+): Promise<ActionResult> {
+  await migrateConfigFile(repositoryPath, context);
+  return { message: "migrated metadata config file" };
+}
 
 export async function updateMetadataFiles(
   repositoryPath: string,
@@ -63,7 +72,10 @@ export default async function generateMetadata(
     const result = await cloneAndModify(
       repository,
       user,
-      (path) => updateMetadataFiles(path, context),
+      [
+        (path) => migrateMetadataConfig(path, context),
+        (path) => updateMetadataFiles(path, context),
+      ],
       branch,
       checkout,
     );
