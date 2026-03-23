@@ -43,13 +43,8 @@ async function updateContainer(name: string, tag: string) {
 export async function updateContainers(name: string, tag: string) {
   const containers = await updateContainer(name, tag);
   if (!containers) {
-    console.info(`   no containers found`);
-    return;
+    return false;
   }
-
-  console.info(
-    `   updated ${containers.length} container(s): ${containers.map((it) => it.name).join(",")}`,
-  );
 
   return containers;
 }

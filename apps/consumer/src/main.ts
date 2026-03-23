@@ -30,14 +30,16 @@ function notifyUpdate(
 await subscribeEvent("update_containers", async (event) => {
   const containers = await updateContainers(event.name, event.tag);
 
-  console.info(`received update event for ${event.name}:${event.tag}`);
+  console.info(`-> received update event for ${event.name}:${event.tag}`);
 
   if (!containers) {
     console.info(`<- no containers found`);
     return;
   }
 
-  console.info(`<- updated ${containers.length} containers`);
+  console.info(
+    `<-  updated ${containers.length} container(s): ${containers.map((it) => it.name).join(",")}`,
+  );
 
   await notifyUpdate(event, containers);
 });

@@ -37,6 +37,7 @@ jobs:
           fetch-depth: 0
               
       {{> java }}
+           dependency-graph: generate-and-submit
 
 
       {{#if sonar}}
@@ -59,6 +60,7 @@ jobs:
         env:
           SONAR_TOKEN: {{ var 'secrets.SONAR_TOKEN' }}
           SONAR_HOST_URL: {{ var 'secrets.SONAR_HOST_URL' }}
+          GITHUB_DEPENDENCY_GRAPH_ENABLED: false
       {{/if}}
 
       - uses: actions/upload-artifact@v4
