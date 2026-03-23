@@ -34,7 +34,7 @@ export async function createHeader(hash: string, style?: BuiltInParserName) {
 }
 
 export async function withHeader(generated: string, style?: BuiltInParserName) {
-  const hash = Bun.hash(generated).toString(16);
+  const hash = Bun.hash.wyhash(generated).toString(16);
   const header = await createHeader(hash, style);
   return header + "\n\n" + generated;
 }

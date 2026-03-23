@@ -6,7 +6,7 @@ exports[`minecraft licenses generates LICENSE.md: minecraft license 1`] = `
    <source>@pssbletrngle/github-meta-generator</source>
    <version>0.0.0-dev</version>
    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
-   <hash>98efba61a730cfa1</hash>
+   <hash>abcdef</hash>
 </meta>
 -->
 
@@ -58,7 +58,7 @@ exports[`minecraft licenses generates LICENSE.md with loader subdirectories: min
    <source>@pssbletrngle/github-meta-generator</source>
    <version>0.0.0-dev</version>
    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
-   <hash>6173e048105e4db2</hash>
+   <hash>abcdef</hash>
 </meta>
 -->
 
@@ -112,7 +112,7 @@ exports[`minecraft licenses generates LICENSE.md within simple directory: minecr
    <source>@pssbletrngle/github-meta-generator</source>
    <version>0.0.0-dev</version>
    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
-   <hash>98efba61a730cfa1</hash>
+   <hash>abcdef</hash>
 </meta>
 -->
 
@@ -164,7 +164,7 @@ exports[`minecraft licenses generates LICENSE.md within multiloader directory: m
    <source>@pssbletrngle/github-meta-generator</source>
    <version>0.0.0-dev</version>
    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
-   <hash>f6b426b6233f5e0c</hash>
+   <hash>abcdef</hash>
 </meta>
 -->
 
