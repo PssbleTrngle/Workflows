@@ -4,7 +4,8 @@
    "module": "src/index.ts",
    "exports": {
       ".": "./src/index.ts",
-      "./metadata": "./src/metadata/index.ts"
+      "./metadata": "./src/metadata/index.ts",
+      "./logger": "./src/logger.ts"
    },
    "scripts": {
       "check-types": "tsc --noEmit",

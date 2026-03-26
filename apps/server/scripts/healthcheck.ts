@@ -1,6 +1,6 @@
 const port = Number.parseInt(process.env.PORT || "8080");
 
-if (isNaN(port)) throw new Error(`invalid port '${port}'`);
+if (Number.isNaN(port)) throw new Error(`invalid port '${port}'`);
 
 const response = await fetch(`http://localhost:${port}/status`);
 

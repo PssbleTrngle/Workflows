@@ -6,8 +6,8 @@
   },
   "scripts": {
     "check-types": "tsc --noEmit",
-    "lint": "eslint src",
-    "format": "biome format --write src",
+    "lint": "eslint {src,tests}",
+    "format": "biome format --write {src,tests}",
     "build": "bun build --outdir ./dist --target=node --sourcemap=linked --env disable src/main.ts --external=cpu-features"
   },
   "dependencies": {
@@ -15,6 +15,7 @@
     "@pssbletrngle/workflows-notifications": "workspace:*",
     "@pssbletrngle/workflows-events": "workspace:*",
     "@pssbletrngle/workflows-configs": "workspace:*",
+    "@pssbletrngle/workflows-shared": "workspace:*",
     "@types/bun": "latest"
   },
   "peerDependencies": {

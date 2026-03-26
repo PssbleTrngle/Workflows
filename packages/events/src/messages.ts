@@ -11,3 +11,7 @@ type Events = {
 export type EventType = keyof Events;
 
 export type Event<T extends EventType> = Events[T];
+
+export type EventMetadata = {
+  retry?: number;
+};

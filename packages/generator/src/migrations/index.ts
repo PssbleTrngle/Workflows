@@ -12,7 +12,7 @@ function parseVersion(value: string): SchemaVersion {
     number,
     number,
   ];
-  if (isNaN(major) || isNaN(minor))
+  if (Number.isNaN(major) || Number.isNaN(minor))
     throw new Error("invalid schema version format");
   return { major, minor };
 }

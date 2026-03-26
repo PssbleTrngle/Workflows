@@ -1,12 +1,7 @@
-type Log = (message: string, context?: unknown) => void;
+import type { Logger } from "@pssbletrngle/workflows-types/logger";
 
 export type Options = {
-  logger: {
-    info: Log;
-    error: Log;
-    warn: Log;
-    debug: Log;
-  };
+  logger: Logger;
 };
 
 export const defaultOptions: Options = {

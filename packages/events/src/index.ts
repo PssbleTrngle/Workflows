@@ -1,31 +1,51 @@
-import { channel, exchange, queue } from "./connection";
-import type { Event, EventType } from "./messages";
+import type { Logger } from "@pssbletrngle/workflows-types/logger";
+import createConnection from "./connection";
+import type { Event, EventMetadata, EventType } from "./messages";
 
 export * from "./messages";
 
-export async function subscribeEvent<T extends EventType>(
-  topic: T,
-  handler: (subject: Event<T>) => void | Promise<void>,
-) {
-  await channel.bindQueue(queue, exchange, topic);
+const maxRetries = 5;
 
-  await channel.consume(queue, async (message) => {
-    if (message) {
-      try {
-        const json = JSON.parse(message.content.toString());
-        await handler(json);
-        channel.ack(message);
-      } catch (e) {
-        console.error(e);
-        channel.nack(message);
-      }
-    }
-  });
-}
+export async function createEventBus(name: string, logger: Logger = console) {
+  const { channel, exchange, getQueue } = await createConnection(name, logger);
 
-export async function publishEvent<T extends EventType>(
-  topic: T,
-  data: Event<T>,
-) {
-  channel.publish(exchange, topic, Buffer.from(JSON.stringify(data)));
+  async function subscribe<T extends EventType>(
+    topic: T,
+    handler: (subject: Event<T>, meta: EventMetadata) => void | Promise<void>,
+  ) {
+    const queue = await getQueue(topic);
+
+    await channel.consume(
+      queue,
+      async (message) => {
+        if (message) {
+          const [death] = message.properties.headers?.["x-death"] ?? [];
+          const retry = death?.count;
+
+          try {
+            const json = JSON.parse(message.content.toString());
+            await handler(json, { retry });
+            channel.ack(message);
+          } catch (e) {
+            if (retry !== undefined && retry >= maxRetries) {
+              logger.error("max retries exceeded for message", {
+                error: (e as Error).message,
+              });
+              channel.ack(message);
+              return;
+            }
+
+            channel.nack(message, undefined, false);
+          }
+        }
+      },
+      { exclusive: true },
+    );
+  }
+
+  async function publish<T extends EventType>(topic: T, data: Event<T>) {
+    channel.publish(exchange, topic, Buffer.from(JSON.stringify(data)));
+  }
+
+  return { publish, subscribe };
 }

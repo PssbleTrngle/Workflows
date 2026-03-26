@@ -3,10 +3,12 @@ import {
   type ContainerDisplay,
 } from "@pssbletrngle/workflows-docker";
 import {
-  subscribeEvent,
+  createEventBus,
   type UpdateContainersCommand,
 } from "@pssbletrngle/workflows-events";
 import { sendEmbeds } from "@pssbletrngle/workflows-notifications";
+import { requireEnv } from "@pssbletrngle/workflows-shared/config";
+import { createLock } from "@pssbletrngle/workflows-shared/lock";
 
 function notifyUpdate(
   { name, tag, keys }: UpdateContainersCommand,
@@ -27,19 +29,27 @@ function notifyUpdate(
   });
 }
 
-await subscribeEvent("update_containers", async (event) => {
-  const containers = await updateContainers(event.name, event.tag);
+// TODO env variable/hostname?
+const name = requireEnv("CONSUMER_NAME");
 
-  console.info(`-> received update event for ${event.name}:${event.tag}`);
+const events = await createEventBus(`consumer_${name}`);
+const lock = createLock();
 
-  if (!containers) {
-    console.info(`<- no containers found`);
-    return;
-  }
+await events.subscribe("update_containers", (event) =>
+  lock.withAquired(async () => {
+    const containers = await updateContainers(event.name, event.tag);
 
-  console.info(
-    `<-  updated ${containers.length} container(s): ${containers.map((it) => it.name).join(",")}`,
-  );
+    console.info(`-> received update event for ${event.name}:${event.tag}`);
 
-  await notifyUpdate(event, containers);
-});
+    if (!containers) {
+      console.info(`<- no containers found`);
+      return;
+    }
+
+    console.info(
+      `<-  updated ${containers.length} container(s): ${containers.map((it) => it.name).join(",")}`,
+    );
+
+    await notifyUpdate(event, containers);
+  }),
+);

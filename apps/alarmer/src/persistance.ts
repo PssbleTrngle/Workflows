@@ -7,7 +7,7 @@ export async function lastAlarm(id: string) {
   const raw = await redis.get(`alarm:${id}`);
   if (!raw) return undefined;
   const millis = Number.parseInt(raw);
-  if (isNaN(millis)) return undefined;
+  if (Number.isNaN(millis)) return undefined;
   return new Date(millis);
 }
 

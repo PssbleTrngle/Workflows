@@ -4,12 +4,14 @@
   "exports": {
     "./config": "./src/config.ts",
     "./topic": "./src/topic.ts",
-    "./util": "./src/util.ts"
+    "./util": "./src/util.ts",
+    "./lock": "./src/lock.ts"
   },
   "scripts": {
     "check-types": "tsc --noEmit",
-    "lint": "eslint src",
-    "format": "biome format --write src"
+    "lint": "eslint {src,tests}",
+    "format": "biome format --write {src,tests}",
+    "test": "bun test"
   },
   "dependencies": {
     "@pssbletrngle/workflows-configs": "workspace:*",

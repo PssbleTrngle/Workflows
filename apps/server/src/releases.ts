@@ -1,9 +1,11 @@
 import { type WebhookEventDefinition } from "@octokit/webhooks/types";
-import { publishEvent } from "@pssbletrngle/workflows-events";
+import { createEventBus } from "@pssbletrngle/workflows-events";
 import { App } from "octokit";
 import logger from "./logger";
 
 type PackagePublished = WebhookEventDefinition<"package-published">;
+
+const events = await createEventBus("server");
 
 async function handlePackagePublished(event: PackagePublished) {
   const pack = event.package;
@@ -19,7 +21,7 @@ async function handlePackagePublished(event: PackagePublished) {
 
   logger.info("release created", { package: name, tag });
 
-  await publishEvent("update_containers", {
+  await events.publish("update_containers", {
     name,
     tag,
     keys: [pack.owner.login, pack.name],
