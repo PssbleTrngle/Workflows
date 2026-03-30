@@ -26,7 +26,7 @@ export default async function createConnection(
     if (queues.has(topic)) return queues.get(topic)!;
 
     const queue = `${name}_${topic}`;
-    const retryQueue = `${queue}-retry`;
+    const retryQueue = `${queue}_retry`;
 
     await channel.assertQueue(queue, {
       durable: true,

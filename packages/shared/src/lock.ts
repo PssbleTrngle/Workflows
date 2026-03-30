@@ -25,10 +25,8 @@ export function createLock(defaultOptions: LockOptions = {}): Lock {
   const release: Release = () => {
     const next = queue.pop();
     if (next) {
-      console.log("notifying next");
       next.resolve(release);
     } else {
-      console.log("unlocking queue");
       locked = false;
     }
   };
