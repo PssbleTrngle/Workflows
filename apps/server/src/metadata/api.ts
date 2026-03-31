@@ -5,7 +5,7 @@ import { cutoff } from "../error";
 import { installationContext } from "../installation";
 import validate from "../validation";
 import { authorize, type AuthenticatedResponse } from "./auth";
-import { getStatus, getStatusesByRepository } from "./cache";
+import { getChecks, getStatus, getStatusesByRepository } from "./cache";
 import check from "./checks";
 import { eventDispatcher } from "./events";
 
@@ -35,8 +35,12 @@ export default function createApiRoutes(app: App) {
     "/:owner/:repo/:branch/status",
     async (req, res: AuthenticatedResponse) => {
       // TODO authorization guard
-      const status = await getStatus(req.params);
-      res.json({ status });
+      const [status, checks] = await Promise.all([
+        getStatus(req.params),
+        getChecks(req.params),
+      ]);
+
+      res.json({ status, checks });
     },
   );
 

@@ -1,8 +1,9 @@
+import { notNull } from "@pssbletrngle/workflows-shared/util";
 import logger from "./logger";
 import type { AuthenticatedHandler } from "./metadata/auth";
 
 type Connection = {
-  send(key: string, payload: unknown): void;
+  send(key: string, payload?: unknown): void;
 };
 
 export type EventDispatcher = Connection & {
@@ -21,9 +22,11 @@ export default function createEventDispatcher(): EventDispatcher {
 
     const connection: Connection = {
       send: (key, payload) => {
-        const encoded = JSON.stringify(payload);
         res.write(`event: ${key}\n`);
-        res.write(`data: ${encoded}\n`);
+        if (notNull(payload)) {
+          const encoded = JSON.stringify(payload);
+          res.write(`data: ${encoded}\n`);
+        }
         res.write("\n");
       },
     };

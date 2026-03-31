@@ -1,14 +1,17 @@
 ---
-import type { StatusResult } from "@pssbletrngle/workflows-types/metadata";
+import type {
+  RepositoryStatusResult,
+  StatusResult,
+} from "@pssbletrngle/workflows-types/metadata";
 import Panel from "../components/Panel.astro";
 import Layout from "../layout.astro";
 
-const { api, octokit } = Astro.locals;
+const { api } = Astro.locals;
 
 // TODO validate?
 const page = Number.parseInt(Astro.url.searchParams.get("page") || "1");
 
-async function listStatuses() {
+async function listStatuses(): Promise<RepositoryStatusResult[]> {
   const entries = await api.request<StatusResult[]>(`status?page=${page}`);
 
   const map: Record<string, Record<string, Omit<StatusResult, "search">>> = {};
@@ -19,30 +22,22 @@ async function listStatuses() {
     map[repository][search.branch] = status;
   });
 
-  return map;
-}
-
-async function listRepos() {
-  const { data } = await octokit.rest.repos.listForAuthenticatedUser({
-    per_page: 20,
-    page,
-    sort: "pushed",
+  return Object.entries(map).map(([key, status]) => {
+    const [owner, repo] = key.split("/");
+    return {
+      status,
+      subject: { owner, repo },
+    };
   });
-
-  return data;
 }
 
-const [repos, statuses] = await Promise.all([listRepos(), listStatuses()]);
+const statuses = await listStatuses();
 ---
 
 <Layout>
   <h1>Welcome</h1>
   <ul>
-    {
-      repos.map((repo) => (
-        <Panel repo={repo} status={statuses[repo.full_name]} />
-      ))
-    }
+    {statuses.map((props) => <Panel {...props} />)}
   </ul>
 </Layout>
 

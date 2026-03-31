@@ -1,4 +1,4 @@
-import type { RepoSearchWithBranch } from "..";
+import type { RepoSearch, RepoSearchWithBranch } from "..";
 import type { Checks } from "./checks";
 
 export type RepositoryStatus =
@@ -11,4 +11,9 @@ export type StatusResult = {
   search: RepoSearchWithBranch;
   status: RepositoryStatus;
   checks: Checks;
+};
+
+export type RepositoryStatusResult = {
+  status: Record<string, Omit<StatusResult, "search">>;
+  subject: RepoSearch;
 };

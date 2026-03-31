@@ -1,25 +1,17 @@
 ---
-import type { RepoSearch, Repository } from "@pssbletrngle/workflows-types";
-import type { StatusResult } from "@pssbletrngle/workflows-types/metadata";
+import type { RepositoryStatusResult } from "@pssbletrngle/workflows-types/metadata";
 import Refresh from "./Refresh.astro";
 import Status from "./Status.astro";
 
-type Props = {
-  repo: Repository;
-  status?: Record<string, Omit<StatusResult, "search">>;
-};
+type Props = RepositoryStatusResult;
 
-const { status = {}, repo } = Astro.props;
-
-const subject: RepoSearch = {
-  owner: repo.owner.login,
-  repo: repo.name,
-};
+const { status = {}, subject } = Astro.props;
+const url = `https://github.com/${subject.owner}/${subject.repo}`;
 ---
 
 <li class="panel">
-  <a class="title" href={repo.html_url}>
-    {repo.full_name}
+  <a class="title" href={url}>
+    {subject.owner}/${subject.repo}
   </a>
   <Refresh repo={subject} />
   <ul class="branches">

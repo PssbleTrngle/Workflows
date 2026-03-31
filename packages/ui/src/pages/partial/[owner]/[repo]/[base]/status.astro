@@ -1,7 +1,7 @@
 ---
 import { createTopic } from "@pssbletrngle/workflows-shared/topic";
 import { type RepoSearchWithBranch } from "@pssbletrngle/workflows-types";
-import type { RepositoryStatus } from "@pssbletrngle/workflows-types/metadata";
+import type { StatusResult } from "@pssbletrngle/workflows-types/metadata";
 import StatusComponent from "../../../../../components/Status.astro";
 
 export const partial = true;
@@ -10,9 +10,9 @@ const { api } = Astro.locals;
 
 const data = Astro.params as RepoSearchWithBranch;
 
-const { status } = await api.request<{ status: RepositoryStatus }>(
+const { status, checks } = await api.request<StatusResult>(
   createTopic(data, "status"),
 );
 ---
 
-<StatusComponent status={status} subject={data} />
+<StatusComponent status={status} checks={checks} subject={data} />

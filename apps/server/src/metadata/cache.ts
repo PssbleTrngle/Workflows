@@ -122,9 +122,10 @@ const checksKey = ({ owner, repo, branch }: RepoSearchWithBranch) =>
 
 export async function saveChecks(repo: RepoSearchWithBranch, checks: Checks) {
   await redis.call("JSON.MERGE", checksKey(repo), `$`, JSON.stringify(checks));
+  eventDispatcher.sendChecksUpdate(repo, checks);
 }
 
-async function getChecks(repo: RepoSearchWithBranch): Promise<Checks> {
+export async function getChecks(repo: RepoSearchWithBranch): Promise<Checks> {
   const raw = await redis.call("JSON.GET", checksKey(repo), "$");
   const saved = JSON.parse(raw as string) as Checks[];
   return saved?.[0] ?? {};
