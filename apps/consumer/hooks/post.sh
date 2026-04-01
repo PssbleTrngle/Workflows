@@ -1,3 +1,3 @@
 #!/bin/sh
 
-node hooks/post.js
+node consumer/hooks/post.js
