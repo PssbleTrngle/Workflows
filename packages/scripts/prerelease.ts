@@ -1,7 +1,9 @@
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
 
-const version = `1.0.${process.env.BUILD_NUMBER}`;
+const version = process.env.RELEASE_VERSION;
+
+if (!version) throw new Error("release version missing");
 
 async function updatePackageJson(path: string) {
   const file = Bun.file(join(path, "package.json"));

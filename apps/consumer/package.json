@@ -6,9 +6,9 @@
   },
   "scripts": {
     "check-types": "tsc --noEmit",
-    "lint": "eslint {src,tests}",
-    "format": "biome format --write {src,tests}",
-    "build": "bun build --outdir ./dist --target=node --sourcemap=linked --env disable src/main.ts --external=cpu-features"
+    "lint": "eslint {src,tests,scripts}",
+    "format": "biome format --write {src,tests,scripts}",
+    "build": "bun build --outdir ./dist --target=node --sourcemap=linked --env disable src/main.ts src/hooks/post.ts  --external=cpu-features"
   },
   "dependencies": {
     "@pssbletrngle/workflows-docker": "workspace:*",

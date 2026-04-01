@@ -29,6 +29,12 @@ WORKDIR /usr/src/
 ENV NODE_ENV=production
 
 COPY --from=builder /usr/src/apps/consumer/dist ./consumer
+COPY --from=builder /usr/src/apps/consumer/hooks ./consumer
+
+LABEL com.centurylinklabs.watchtower.lifecycle.post-update=/usr/src/consumer/hooks/post.sh
+
+ARG $version
+ENV APP_VERSION=$version
 
 EXPOSE 8080/tcp
 ENTRYPOINT [ "node", "consumer/main.js" ]
