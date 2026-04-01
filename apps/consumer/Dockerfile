@@ -33,7 +33,7 @@ COPY --from=builder /usr/src/apps/consumer/hooks ./consumer
 
 LABEL com.centurylinklabs.watchtower.lifecycle.post-update=/usr/src/consumer/post.sh
 
-ARG $version
+ARG version
 ENV APP_VERSION=$version
 
 EXPOSE 8080/tcp
