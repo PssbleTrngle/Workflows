@@ -31,7 +31,7 @@ ENV NODE_ENV=production
 COPY --from=builder /usr/src/apps/consumer/dist ./consumer
 COPY --from=builder /usr/src/apps/consumer/hooks ./consumer
 
-LABEL com.centurylinklabs.watchtower.lifecycle.post-update=/usr/src/consumer/hooks/post.sh
+LABEL com.centurylinklabs.watchtower.lifecycle.post-update=/usr/src/consumer/post.sh
 
 ARG $version
 ENV APP_VERSION=$version

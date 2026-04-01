@@ -1,3 +1,3 @@
 #!/bin/sh
 
-node dist/hooks/post.js
+node hooks/post.js
