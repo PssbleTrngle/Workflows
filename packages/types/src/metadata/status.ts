@@ -9,11 +9,11 @@ export type RepositoryStatus =
 
 export type StatusResult = {
   search: RepoSearchWithBranch;
-  status: RepositoryStatus;
+  status?: RepositoryStatus;
   checks: Checks;
 };
 
 export type RepositoryStatusResult = {
-  status: Record<string, Omit<StatusResult, "search">>;
+  statuses: StatusResult[];
   subject: RepoSearch;
 };

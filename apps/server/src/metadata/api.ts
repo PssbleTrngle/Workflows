@@ -1,14 +1,18 @@
-import type { RepoSearchWithBranch } from "@pssbletrngle/workflows-types";
+import type {
+  RepoSearch,
+  RepoSearchWithBranch,
+} from "@pssbletrngle/workflows-types";
 import { randomUUIDv7 } from "bun";
 import { json, Router } from "express";
 import { type App } from "octokit";
 import z from "zod";
-import { cutoff } from "../error";
+import { ApiError, cutoff } from "../error";
 import { installationContext } from "../installation";
 import validate from "../validation";
 import { authorize, type AuthenticatedResponse } from "./auth";
 import { getChecks, getStatus, getStatusesByRepository } from "./cache";
 import check from "./checks";
+import { getRepositories, getRepository, updateRepository } from "./database";
 import { eventDispatcher } from "./events";
 
 const paginationQuery = z.object({
@@ -23,6 +27,45 @@ export default function createApiRoutes(app: App) {
   router.use(json());
 
   router.use("/sse", eventDispatcher.handler);
+
+  // TODO remove
+  router.get("/setup", async (_, res: AuthenticatedResponse) => {
+    const { data: repositories } =
+      await res.locals.octokit.rest.repos.listForAuthenticatedUser({
+        sort: "pushed",
+      });
+
+    for (const repository of repositories) {
+      const subject: RepoSearch = {
+        owner: repository.owner.login,
+        repo: repository.name,
+      };
+      try {
+        const context = await installationContext(app, subject);
+        await updateRepository(context, subject);
+      } catch {
+        // not installed on repository
+      }
+    }
+
+    res.json({ success: true });
+  });
+
+  router.get(
+    "/repository/:owner/:repo",
+    async (req, res: AuthenticatedResponse) => {
+      // TODO authorization guard
+      const repository = await getRepository(req.params);
+      if (!repository) throw new ApiError("repository not found", 404);
+      res.json(repository);
+    },
+  );
+
+  router.get("/repository", async (req, res: AuthenticatedResponse) => {
+    // TODO authorization guard
+    const repositories = await getRepositories();
+    res.json({ entries: repositories });
+  });
 
   router.get(
     "/:owner/:repo/status",

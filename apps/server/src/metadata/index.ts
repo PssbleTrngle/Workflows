@@ -1,9 +1,9 @@
 import type { WebhookEventDefinition } from "@octokit/webhooks/types";
 import { configPath } from "@pssbletrngle/github-meta-generator";
 import type {
+  GithubRepository,
   RepoSearch,
   RepoSearchWithBranch,
-  Repository,
 } from "@pssbletrngle/workflows-types";
 import type { App } from "octokit";
 import logger from "../logger";
@@ -36,7 +36,7 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
 
     function isValidRepository(
       value: typeof repository,
-    ): value is Repository & typeof repository {
+    ): value is GithubRepository & typeof repository {
       return !!value.owner?.login;
     }
 

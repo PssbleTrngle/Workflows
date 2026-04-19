@@ -6,8 +6,8 @@ import {
 } from "@pssbletrngle/github-meta-generator";
 import meta from "@pssbletrngle/github-meta-generator/meta";
 import type {
+  GithubRepository,
   RepoSearchWithBranch,
-  Repository,
 } from "@pssbletrngle/workflows-types";
 import type { RepositoryStatus } from "@pssbletrngle/workflows-types/metadata";
 import type { Octokit } from "octokit";
@@ -43,7 +43,7 @@ export function metadataBranch(branch: string) {
 }
 
 export default async function generateMetadata(
-  repository: Repository,
+  repository: GithubRepository,
   branch: string,
   octokit: Octokit,
   user: GitUser,

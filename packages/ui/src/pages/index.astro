@@ -1,8 +1,6 @@
 ---
-import type {
-  RepositoryStatusResult,
-  StatusResult,
-} from "@pssbletrngle/workflows-types/metadata";
+import type { Page } from "@pssbletrngle/workflows-types";
+import type { Repository } from "@pssbletrngle/workflows-types/metadata";
 import CheckButton from "../components/CheckButton.astro";
 import Panel from "../components/Panel.astro";
 import Layout from "../layout.astro";
@@ -12,33 +10,16 @@ const { api } = Astro.locals;
 // TODO validate?
 const page = Number.parseInt(Astro.url.searchParams.get("page") || "1");
 
-async function listStatuses(): Promise<RepositoryStatusResult[]> {
-  const entries = await api.request<StatusResult[]>(`status?page=${page}`);
-
-  const map: Record<string, Record<string, Omit<StatusResult, "search">>> = {};
-
-  entries.forEach(({ search, ...status }) => {
-    const repository = `${search.owner}/${search.repo}`;
-    if (!(repository in map)) map[repository] = {};
-    map[repository][search.branch] = status;
-  });
-
-  return Object.entries(map).map(([key, status]) => {
-    const [owner, repo] = key.split("/");
-    return {
-      status,
-      subject: { owner, repo },
-    };
-  });
-}
-
-const statuses = await listStatuses();
+// todo pass query params?
+const { entries: repositories } = await api.request<Page<Repository>>(
+  `repository?page=${page}`,
+);
 ---
 
 <Layout>
   <CheckButton />
   <ul class="status-list">
-    {statuses.map((props) => <Panel {...props} />)}
+    {repositories.map((props) => <Panel {...props} />)}
   </ul>
 </Layout>
 

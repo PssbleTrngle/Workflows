@@ -1,4 +1,6 @@
-export type Repository = {
+export * from "./page";
+
+export type GithubRepository = {
   id: number;
   html_url: string;
   clone_url: string;
@@ -7,6 +9,11 @@ export type Repository = {
   owner: {
     login: string;
   };
+};
+
+export type WithTimestamps = {
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type RepoSearch = {

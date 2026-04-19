@@ -1,32 +1,38 @@
 ---
 import { createId } from "@pssbletrngle/workflows-shared/topic";
-import type { RepositoryStatusResult } from "@pssbletrngle/workflows-types/metadata";
+import type { Repository } from "@pssbletrngle/workflows-types/metadata";
 import type { HTMLAttributes } from "astro/types";
 import Refresh from "./Refresh.astro";
 import Status from "./Status.astro";
 
-type Props = RepositoryStatusResult & HTMLAttributes<"li">;
+type Props = Repository & HTMLAttributes<"li">;
 
-const { status = {}, subject, ...props } = Astro.props;
-const url = `https://github.com/${subject.owner}/${subject.repo}`;
+const { owner, repo, branches, ...props } = Astro.props;
+const url = `https://github.com/${owner}/${repo}`;
 ---
 
 <li
   {...props}
   class:list={["panel", props.class]}
-  id={createId("repo", subject)}
+  id={createId("repo", { owner, repo })}
 >
   <a class="title" href={url}>
-    {subject.owner}/{subject.repo}
+    {owner}/{repo}
   </a>
-  <Refresh repo={subject} />
+  <Refresh repo={{ owner, repo }} />
   <ul class="branches">
     {
-      Object.entries(status).map(([branch, props]) => (
-        <li>
-          <Status subject={{ ...subject, branch }} {...props} />
-        </li>
-      ))
+      branches.map(
+        (branch) =>
+          branch.status && (
+            <li>
+              <Status
+                subject={{ owner, repo, branch: branch.ref }}
+                status={branch.status}
+              />
+            </li>
+          ),
+      )
     }
   </ul>
 </li>

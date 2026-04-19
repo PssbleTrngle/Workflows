@@ -1,5 +1,5 @@
 import type { CreateTokenInterface } from "@octokit/oauth-app";
-import type { Repository } from "@pssbletrngle/workflows-types";
+import type { GithubRepository } from "@pssbletrngle/workflows-types";
 import cookieParser from "cookie-parser";
 import type { Request, RequestHandler, Response } from "express";
 import type { ParamsDictionary, Query } from "express-serve-static-core";
@@ -44,7 +44,7 @@ export type OAuthContext = CommonContext & {
 
 export type InstallationContext = CommonContext & {
   installation: { id: number };
-  repository: Repository;
+  repository: GithubRepository;
 };
 
 export type AuthenticatedContext = OAuthContext | InstallationContext;

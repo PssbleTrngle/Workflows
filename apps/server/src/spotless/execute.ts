@@ -1,4 +1,4 @@
-import type { Repository } from "@pssbletrngle/workflows-types";
+import type { GithubRepository } from "@pssbletrngle/workflows-types";
 import { $ } from "bun";
 import { cloneAndModify, type ActionResult, type GitUser } from "../git";
 import logger from "../logger";
@@ -13,7 +13,7 @@ async function executeGradle(
 }
 
 export default async function runSpotless(
-  repository: Repository,
+  repository: GithubRepository,
   branch: string,
   user: GitUser,
 ) {

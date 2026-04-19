@@ -1,1 +1,2 @@
-export { default as redis } from "./client";
+export * from "./connection";
+export * from "./documents/repository";

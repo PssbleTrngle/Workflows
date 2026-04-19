@@ -1,5 +1,4 @@
 import type { Meta } from "@pssbletrngle/github-meta-generator";
-import { redis } from "@pssbletrngle/workflows-persistance";
 import type {
   RepoSearch,
   RepoSearchWithBranch,
@@ -27,14 +26,11 @@ export async function saveStatus(
   repository: RepoSearchWithBranch,
   status: RepositoryStatus,
 ) {
-  await redis.set(statusKey(repository), status);
   eventDispatcher.sendStatusUpdate(repository, status);
 }
 
 export async function deleteCache(repository: RepoSearchWithBranch) {
   logger.debug("deleting cache for branch", repository);
-  await redis.del(statusKey(repository));
-  await redis.del(metaKey(repository));
 }
 
 export async function deleteCacheForRepository(repository: RepoSearch) {
@@ -48,22 +44,12 @@ export async function deleteCacheForRepository(repository: RepoSearch) {
   );
 }
 
-export function getStatus(repository: RepoSearchWithBranch) {
-  return redis.get(statusKey(repository)) as Promise<RepositoryStatus | null>;
+export function getStatus(_: RepoSearchWithBranch) {
+  return null as RepositoryStatus | null;
 }
 
-async function getStatuses(
-  search: RepoSearchWithBranch,
-): Promise<StatusResult[]> {
-  const keys = await redis.keys(statusKey(search));
-  const searches = keys.map((it) => parseKey(statusPrefix, it));
-  return Promise.all(
-    searches.map(async (search) => ({
-      search,
-      status: (await getStatus(search))!,
-      checks: await getChecks(search),
-    })),
-  );
+async function getStatuses(_: RepoSearchWithBranch): Promise<StatusResult[]> {
+  return [];
 }
 
 export function getStatusesByRepository({ owner, repo }: RepoSearch) {
@@ -78,12 +64,7 @@ const metaPrefix = "metadata:meta:";
 const metaKey = ({ owner, repo, branch }: RepoSearchWithBranch) =>
   metaPrefix + `${owner}:${repo}:${branch}`;
 
-export async function saveMetadata(
-  repository: RepoSearchWithBranch,
-  meta: Meta,
-) {
-  await redis.set(metaKey(repository), JSON.stringify(meta));
-}
+export async function saveMetadata(_: RepoSearchWithBranch, _2: Meta) {}
 
 export async function getMeta(repository: RepoSearchWithBranch) {
   const json = await redis.get(metaKey(repository));
@@ -121,12 +102,9 @@ const checksKey = ({ owner, repo, branch }: RepoSearchWithBranch) =>
   checksPrefix + `${owner}:${repo}:${branch}`;
 
 export async function saveChecks(repo: RepoSearchWithBranch, checks: Checks) {
-  await redis.call("JSON.MERGE", checksKey(repo), `$`, JSON.stringify(checks));
   eventDispatcher.sendChecksUpdate(repo, checks);
 }
 
 export async function getChecks(repo: RepoSearchWithBranch): Promise<Checks> {
-  const raw = await redis.call("JSON.GET", checksKey(repo), "$");
-  const saved = JSON.parse(raw as string) as Checks[];
-  return saved?.[0] ?? {};
+  return {};
 }

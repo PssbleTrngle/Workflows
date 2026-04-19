@@ -1,4 +1,4 @@
-import type { Repository } from "@pssbletrngle/workflows-types";
+import type { GithubRepository } from "@pssbletrngle/workflows-types";
 import { $ } from "bun";
 import { existsSync, mkdirSync, rmSync } from "node:fs";
 import { rm } from "node:fs/promises";
@@ -29,7 +29,7 @@ export async function setupGitCloneDir() {
 type DuplicateBehaviour = "abort" | "skip" | "delete";
 
 async function clone(
-  repository: Repository,
+  repository: GithubRepository,
   branch: string,
   token: string,
   behaviour: DuplicateBehaviour,
@@ -157,7 +157,7 @@ export type ActionResult = {
 };
 
 export async function cloneAndModify<T extends [...Action[]]>(
-  repository: Repository,
+  repository: GithubRepository,
   user: GitUser,
   actions: T,
   branch: string,

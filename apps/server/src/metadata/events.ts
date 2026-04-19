@@ -30,8 +30,10 @@ eventDispatcher.sendChecksUpdate = (subject) => {
   eventDispatcher.send(createTopic("status_updated", subject));
 };
 
-eventDispatcher.sendRepositoryUpdate = ({ subject, status }) => {
-  eventDispatcher.send(createTopic("repository_updated", subject), { status });
+eventDispatcher.sendRepositoryUpdate = ({ subject, statuses }) => {
+  eventDispatcher.send(createTopic("repository_updated", subject), {
+    statuses,
+  });
 };
 
 /*
