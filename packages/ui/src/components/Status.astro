@@ -1,5 +1,5 @@
 ---
-import { createTopic } from "@pssbletrngle/workflows-shared/topic";
+import { createPath, createTopic } from "@pssbletrngle/workflows-shared/topic";
 import type { RepoSearchWithBranch } from "@pssbletrngle/workflows-types";
 import type {
   Check,
@@ -34,8 +34,6 @@ const { subject, status, checks = {} } = Astro.props;
 
 const icon = icons[status];
 
-const topic = createTopic(subject, "status");
-
 const warnings = Object.entries(checks)
   .filter(([_, value]) => value === false)
   .map(([key]) => messages[key as Check]);
@@ -43,8 +41,8 @@ const warnings = Object.entries(checks)
 
 <span
   class="status"
-  hx-trigger={`sse:${topic}`}
-  hx-get={`/metadata/partial/${topic}`}
+  hx-trigger={`sse:${createTopic("status_updated", subject)}`}
+  hx-get={`/metadata/partial/${createPath(subject, "status")}`}
   hx-swap="outerHTML"
 >
   <span>{subject.branch}</span>

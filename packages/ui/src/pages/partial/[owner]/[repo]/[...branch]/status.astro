@@ -1,0 +1,17 @@
+---
+import StatusComponent from "@/components/Status.astro";
+import { type RepoSearchWithBranch } from "@pssbletrngle/workflows-types";
+import type { StatusResult } from "@pssbletrngle/workflows-types/metadata";
+
+export const partial = true;
+
+const { api } = Astro.locals;
+
+const subject = Astro.params as RepoSearchWithBranch;
+
+const { status, checks } = await api.request<StatusResult>(
+  `${subject.owner}/${subject.repo}/status/${subject.branch}`,
+);
+---
+
+<StatusComponent status={status} checks={checks} subject={subject} />

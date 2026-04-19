@@ -5,6 +5,7 @@ import type {
 import logger from "../../logger";
 import type { InstallationContext } from "../auth";
 import { fetchBranches } from "../branches";
+import { eventDispatcher } from "../events";
 import checkProtection from "./protection";
 import refresh from "./refresh";
 
@@ -25,18 +26,20 @@ async function checkFor(
 }
 
 export default async function check(
-  search: RepoSearchWithBranch | RepoSearch,
+  subject: RepoSearchWithBranch | RepoSearch,
   context: InstallationContext,
 ) {
-  if ("branch" in search) {
-    return await checkFor(search, context);
+  if ("branch" in subject) {
+    await checkFor(subject, context);
   } else {
-    const branches = await fetchBranches(context.octokit, search);
+    const branches = await fetchBranches(context.octokit, subject);
 
     await Promise.all(
       branches.map((branch) => {
-        return checkFor({ ...search, branch }, context);
+        return checkFor({ ...subject, branch }, context);
       }),
     );
+
+    eventDispatcher.sendRepositoryUpdate({ subject, status: {} });
   }
 }

@@ -3,6 +3,7 @@ import { type RepoSearchWithBranch } from "@pssbletrngle/workflows-types";
 import type {
   Checks,
   RepositoryStatus,
+  RepositoryStatusResult,
 } from "@pssbletrngle/workflows-types/metadata";
 import createEventDispatcher, { type EventDispatcher } from "../sse";
 
@@ -13,16 +14,31 @@ type MetadataEventDispatcher = EventDispatcher & {
   ): void;
 
   sendChecksUpdate(repository: RepoSearchWithBranch, checks: Checks): void;
+
+  sendRepositoryUpdate(repository: RepositoryStatusResult): void;
 };
 
 export const eventDispatcher =
   createEventDispatcher() as MetadataEventDispatcher;
 
 eventDispatcher.sendStatusUpdate = (subject, status) => {
-  eventDispatcher.send(createTopic(subject, "status"), { status });
+  eventDispatcher.send(createTopic("status_updated", subject), { status });
 };
 
-// TODO move to owner tpoic
+// TODO move to owner topic
 eventDispatcher.sendChecksUpdate = (subject) => {
-  eventDispatcher.send(createTopic(subject, "status"));
+  eventDispatcher.send(createTopic("status_updated", subject));
 };
+
+eventDispatcher.sendRepositoryUpdate = ({ subject, status }) => {
+  eventDispatcher.send(createTopic("repository_updated", subject), { status });
+};
+
+/*
+setInterval(() => {
+  eventDispatcher.sendRepositoryAdded({
+    subject: { owner: "PssbleTrngle", repo: "TestMod" },
+    status: {},
+  });
+}, 1000);
+*/

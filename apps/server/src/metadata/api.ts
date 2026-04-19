@@ -1,3 +1,5 @@
+import type { RepoSearchWithBranch } from "@pssbletrngle/workflows-types";
+import { randomUUIDv7 } from "bun";
 import { json, Router } from "express";
 import { type App } from "octokit";
 import z from "zod";
@@ -32,12 +34,19 @@ export default function createApiRoutes(app: App) {
   );
 
   router.get(
-    "/:owner/:repo/:branch/status",
+    "/:owner/:repo/status/*branch",
     async (req, res: AuthenticatedResponse) => {
       // TODO authorization guard
+
+      const { branch, ...rest } = req.params;
+      const subject: RepoSearchWithBranch = {
+        ...rest,
+        branch: branch.join("/"),
+      };
+
       const [status, checks] = await Promise.all([
-        getStatus(req.params),
-        getChecks(req.params),
+        getStatus(subject),
+        getChecks(subject),
       ]);
 
       res.json({ status, checks });
@@ -75,9 +84,12 @@ export default function createApiRoutes(app: App) {
     validate({ body: repoParams }),
     async (req, res: AuthenticatedResponse) => {
       const context = await installationContext(app, req.body);
-      const status = await check(req.body, context);
 
-      res.json({ success: true, status });
+      // not used yet, could be used for tracing
+      const uuid = randomUUIDv7();
+      res.json({ message: "refresh started", uuid });
+
+      check(req.body, context);
     },
   );
 

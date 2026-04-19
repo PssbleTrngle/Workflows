@@ -13,6 +13,11 @@ if (dev) {
   dotenv.config({ path: [".env.dev", ".env.local"] });
 }
 
+// github uses the default redirect url configured in the app if none is provided
+const redirectUrl = dev
+  ? "https://dev.workflows.somethingcatchy.net/metadata/callback"
+  : undefined;
+
 export default {
   dev,
   app: {
@@ -21,6 +26,7 @@ export default {
     oauth: {
       clientId: requireEnv("GITHUB_OAUTH_CLIENT_ID"),
       clientSecret: requireEnv("GITHUB_OAUTH_CLIENT_SECRET"),
+      redirectUrl,
     },
   },
   webhooks: {

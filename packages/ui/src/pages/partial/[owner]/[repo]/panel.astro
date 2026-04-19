@@ -1,0 +1,8 @@
+---
+import PanelComponent from "@/components/Panel.astro";
+import type { RepoSearch } from "@pssbletrngle/workflows-types";
+
+const subject = Astro.params as RepoSearch;
+---
+
+<PanelComponent subject={subject} status={{}} />

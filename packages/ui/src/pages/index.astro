@@ -3,6 +3,7 @@ import type {
   RepositoryStatusResult,
   StatusResult,
 } from "@pssbletrngle/workflows-types/metadata";
+import CheckButton from "../components/CheckButton.astro";
 import Panel from "../components/Panel.astro";
 import Layout from "../layout.astro";
 
@@ -35,8 +36,8 @@ const statuses = await listStatuses();
 ---
 
 <Layout>
-  <h1>Welcome</h1>
-  <ul>
+  <CheckButton />
+  <ul class="status-list">
     {statuses.map((props) => <Panel {...props} />)}
   </ul>
 </Layout>

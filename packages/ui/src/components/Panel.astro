@@ -1,17 +1,23 @@
 ---
+import { createId } from "@pssbletrngle/workflows-shared/topic";
 import type { RepositoryStatusResult } from "@pssbletrngle/workflows-types/metadata";
+import type { HTMLAttributes } from "astro/types";
 import Refresh from "./Refresh.astro";
 import Status from "./Status.astro";
 
-type Props = RepositoryStatusResult;
+type Props = RepositoryStatusResult & HTMLAttributes<"li">;
 
-const { status = {}, subject } = Astro.props;
+const { status = {}, subject, ...props } = Astro.props;
 const url = `https://github.com/${subject.owner}/${subject.repo}`;
 ---
 
-<li class="panel">
+<li
+  {...props}
+  class:list={["panel", props.class]}
+  id={createId("repo", subject)}
+>
   <a class="title" href={url}>
-    {subject.owner}/${subject.repo}
+    {subject.owner}/{subject.repo}
   </a>
   <Refresh repo={subject} />
   <ul class="branches">

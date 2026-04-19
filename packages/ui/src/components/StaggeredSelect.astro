@@ -1,0 +1,87 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Option = Record<string, string>;
+
+export type Props = HTMLAttributes<"div"> & {
+  options: Option[];
+};
+
+const { options, ...props } = Astro.props;
+const reference = options[0];
+const keys = Object.keys(reference);
+---
+
+<staggered-select {...props} data-options={JSON.stringify(options)}>
+  {
+    keys.map((key) => (
+        <label for={`select-${key}`}>{key}</label>
+        <select id={`select-${key}`} name={key} disabled>
+          <option>Loading...</option>
+        </select>
+    ))
+  }
+</staggered-select>
+
+<script>
+  import { uniq } from "@pssbletrngle/workflows-shared/util";
+
+  type Option = Record<string, string>;
+
+  class StaggeredSelect extends HTMLElement {
+    connectedCallback() {
+      const options: Option[] = JSON.parse(this.dataset.options ?? "[]");
+      const reference = options[0];
+
+      const keys = Object.keys(reference);
+
+      const selects = Object.fromEntries(
+        [...this.querySelectorAll("select")].map((it) => [it.name, it]),
+      );
+
+      const updates = Object.entries(selects).map(([key, select], i) => {
+        const previousKeys = keys.slice(0, i);
+
+        function getOptions() {
+          const filtered = options.filter((it) =>
+            previousKeys.every((key, i) => it[key] === selects[key].value),
+          );
+
+          return uniq(filtered.map((it) => it[key]));
+        }
+
+        return () => {
+          select.disabled = false;
+          const options = getOptions();
+          select.replaceChildren(
+            ...options.map((it) => {
+              const element = document.createElement("option");
+              element.value = it;
+              element.innerText = it;
+              return element;
+            }),
+          );
+        };
+      });
+
+      Object.values(selects).forEach((select, i) => {
+        const staggered = updates.slice(i + 1);
+        select.addEventListener("input", () => staggered.forEach((it) => it()));
+      });
+
+      updates.forEach((it) => it());
+    }
+  }
+
+  customElements.define("staggered-select", StaggeredSelect);
+</script>
+
+<style scoped>
+  staggered-select {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+
+    gap: 1em;
+  }
+</style>
