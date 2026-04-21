@@ -1,5 +1,6 @@
 import type { Meta } from "@pssbletrngle/github-meta-generator";
 import currentMeta from "@pssbletrngle/github-meta-generator/meta";
+import { Repositories } from "@pssbletrngle/workflows-persistance";
 import type { Branch } from "@pssbletrngle/workflows-types/metadata";
 import { type App } from "octokit";
 import check from ".";
@@ -7,7 +8,6 @@ import config from "../../config";
 import { setupGitCloneDir } from "../../git";
 import { installationContext } from "../../installation";
 import logger from "../../logger";
-import { getRepositories } from "../database";
 
 function isOutdated(saved: Branch["generatorMeta"], current: Meta) {
   if (config.dev) return true;
@@ -20,7 +20,7 @@ export default async function onStartup(app: App) {
 
   if (!config.startupCheck) return;
 
-  const repositories = await getRepositories();
+  const repositories = await Repositories.find();
 
   const metas = repositories.flatMap(({ owner, repo, branches }) =>
     branches.map((it) => {

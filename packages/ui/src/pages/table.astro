@@ -1,0 +1,37 @@
+---
+import Row from "@/components/Row.astro";
+import type { Page } from "@pssbletrngle/workflows-types";
+import type { Repository } from "@pssbletrngle/workflows-types/metadata";
+import Layout from "../layout.astro";
+
+const { api } = Astro.locals;
+
+// TODO validate?
+const page = Number.parseInt(Astro.url.searchParams.get("page") || "1");
+
+// todo pass query params?
+const { entries: repositories } = await api.request<Page<Repository>>(
+  `repository?page=${page}`,
+);
+---
+
+<Layout>
+  <ul class="repositories">
+    {repositories.map((props) => <Row {...props} />)}
+  </ul>
+</Layout>
+
+<style scoped>
+  .repositories {
+    list-style: none;
+
+    display: grid;
+
+    grid-template:
+      "icon name branch status checks setup"
+      / 50px 1fr 250px 2em 4em 10em;
+
+    column-gap: 1em;
+    row-gap: 0.5em;
+  }
+</style>

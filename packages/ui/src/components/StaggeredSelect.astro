@@ -44,7 +44,7 @@ const keys = Object.keys(reference);
 
         function getOptions() {
           const filtered = options.filter((it) =>
-            previousKeys.every((key, i) => it[key] === selects[key].value),
+            previousKeys.every((key) => it[key] === selects[key].value),
           );
 
           return uniq(filtered.map((it) => it[key]));

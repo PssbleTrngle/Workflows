@@ -1,0 +1,81 @@
+---
+import Branch from "@/components/Branch.astro";
+import {
+  createId,
+  createPath,
+  createTopic,
+} from "@pssbletrngle/workflows-shared/topic";
+import type { RepoSearch } from "@pssbletrngle/workflows-types";
+import type { Repository } from "@pssbletrngle/workflows-types/metadata";
+import type { HTMLAttributes } from "astro/types";
+
+type Props = Repository & HTMLAttributes<"li">;
+
+const { owner, repo, branches, icon, ...props } = Astro.props;
+const url = `https://github.com/${owner}/${repo}`;
+
+const subject: RepoSearch = { owner, repo };
+---
+
+<li
+  {...props}
+  hx-trigger={`sse:${createTopic("repository_updated", Astro.props)}`}
+  hx-get={`/metadata/partial/${createPath(Astro.props, "repository")}`}
+  hx-swap="outerHTML"
+  class:list={["repository", props.class]}
+  id={createId("repo", subject)}
+>
+  {icon ? <img alt="" class="icon" src={icon} /> : <div class="icon" />}
+  <a class="name" href={url}>{owner}/{repo}</a>
+
+  <ul class="branches">
+    {branches.map((it) => <Branch {...it} repo={subject} />)}
+  </ul>
+</li>
+
+<style scoped define:vars={{ branches: branches.length }}>
+  .repository {
+    background: #fff1;
+    padding: 0.5em;
+    border-radius: 10px;
+
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-template-rows: subgrid;
+
+    grid-column: span 6;
+    grid-row: span var(--branches);
+
+    align-items: center;
+
+    &,
+    & > * {
+      grid-row: span var(--branches);
+    }
+
+    .branches {
+      list-style: none;
+
+      grid-column: span 4;
+
+      display: grid;
+      grid-template-columns: subgrid;
+      grid-template-rows: subgrid;
+
+      .branch {
+        grid-column: span 4;
+
+        display: grid;
+        grid-template-columns: subgrid;
+        grid-template-rows: subgrid;
+      }
+    }
+
+    .icon {
+      aspect-ratio: 1 / 1;
+      object-fit: contain;
+      width: 100%;
+      border-radius: 5px;
+    }
+  }
+</style>

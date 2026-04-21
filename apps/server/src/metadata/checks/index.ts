@@ -5,11 +5,7 @@ import type {
 import logger from "../../logger";
 import type { InstallationContext } from "../auth";
 import { fetchBranches } from "../branches";
-import checkIcon from "./icon";
-import checkProtection from "./protection";
-import refresh from "./refresh";
 import checkSetup from "./setup";
-import checkViewers from "./viewers";
 
 async function runChecks(promises: Promise<unknown>[]) {
   const results = await Promise.allSettled(promises);
@@ -26,8 +22,8 @@ async function branchChecks(
   context: InstallationContext,
 ) {
   await runChecks([
-    refresh(search, context),
-    checkProtection(search, context.octokit),
+    // refresh(search, context),
+    // checkProtection(search, context.octokit),
     checkSetup(search, context.octokit),
   ]);
 }
@@ -39,8 +35,8 @@ async function checkRepository(
   const branches = await fetchBranches(context.octokit, subject);
 
   await runChecks([
-    checkIcon(subject, context.octokit),
-    checkViewers(subject, context.octokit),
+    //  checkIcon(subject, context.octokit),
+    //  checkViewers(subject, context.octokit),
   ]);
 
   await Promise.all(

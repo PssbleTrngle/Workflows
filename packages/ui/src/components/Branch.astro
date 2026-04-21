@@ -1,0 +1,103 @@
+---
+import {
+  createId,
+  createPath,
+  createTopic,
+} from "@pssbletrngle/workflows-shared/topic";
+import type {
+  RepoSearch,
+  RepoSearchWithBranch,
+} from "@pssbletrngle/workflows-types";
+import type {
+  Branch,
+  Check,
+  RepositoryStatus,
+} from "@pssbletrngle/workflows-types/metadata";
+import type { HTMLAttributes } from "astro/types";
+
+type Props = Branch &
+  HTMLAttributes<"li"> & {
+    repo: RepoSearch;
+  };
+
+const checkMessages: Record<Check, [string, string]> = {
+  canModify: [
+    "no ruleset is blocking the app",
+    "a ruleset is blocking the app",
+  ],
+  isProtected: ["the branch is protected", "the branch is not protected"],
+};
+
+const statusMessages: Record<RepositoryStatus, string> = {
+  failed: "failed",
+  "opened-pr": "pull request opened",
+  "up-to-date": "up to date",
+  running: "running...",
+};
+
+const statusIcons: Record<RepositoryStatus, string> = {
+  failed: "🧨",
+  "opened-pr": "🙏",
+  "up-to-date": "✅",
+  running: "🏃‍♂️",
+};
+
+const { repo, ref, generatorMeta, setup, checks, status, ...props } =
+  Astro.props;
+
+const subject: RepoSearchWithBranch = { ...repo, branch: ref };
+---
+
+<li
+  hx-trigger={`sse:${createTopic("branch_updated", subject)}`}
+  hx-get={`/metadata/partial/${createPath(subject, "branch")}`}
+  hx-swap="outerHTML"
+  class:list={["branch", props.class]}
+  id={createId("branch", subject)}
+  {...props}
+>
+  <span class="ref">{ref}</span>
+  {
+    status ? (
+      <span class="status" title={statusMessages[status]}>
+        {statusIcons[status]}
+      </span>
+    ) : (
+      <span />
+    )
+  }
+  <span>
+    {
+      Object.entries(checks ?? {}).map(([check, status]) => (
+        <span
+          class="check"
+          title={checkMessages[check as Check][status ? 0 : 1]}
+        >
+          {status ? "🟢" : "🔴"}
+        </span>
+      ))
+    }
+  </span>
+  {setup?.gradleHelper ? <span>v{setup.gradleHelper}</span> : <span />}
+</li>
+
+<style scoped>
+  .branch {
+    border-radius: 4px;
+    outline: 2px solid #fff1;
+    padding: 0.5em;
+
+    align-items: center;
+
+    .check,
+    .status {
+      user-select: none;
+      cursor: help;
+    }
+
+    .ref {
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+</style>
