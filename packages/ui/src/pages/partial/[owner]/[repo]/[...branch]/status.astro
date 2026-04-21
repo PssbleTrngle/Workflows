@@ -1,7 +1,9 @@
 ---
 import StatusComponent from "@/components/Status.astro";
+import { ApiError } from "@/lib/api";
+import { createPath } from "@pssbletrngle/workflows-shared/topic";
 import { type RepoSearchWithBranch } from "@pssbletrngle/workflows-types";
-import type { StatusResult } from "@pssbletrngle/workflows-types/metadata";
+import type { Branch } from "@pssbletrngle/workflows-types/metadata";
 
 export const partial = true;
 
@@ -9,9 +11,11 @@ const { api } = Astro.locals;
 
 const subject = Astro.params as RepoSearchWithBranch;
 
-const { status, checks } = await api.request<StatusResult>(
-  `${subject.owner}/${subject.repo}/status/${subject.branch}`,
+const { status, checks } = await api.request<Branch>(
+  `repository/${createPath(subject)}`,
 );
+
+if (!status) throw new ApiError("branch has no status", 404);
 ---
 
 <StatusComponent status={status} checks={checks} subject={subject} />

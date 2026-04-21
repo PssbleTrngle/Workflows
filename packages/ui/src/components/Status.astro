@@ -20,8 +20,8 @@ const messages: Record<RepositoryStatus | Check, string> = {
   "opened-pr": "Pull Request opened",
   "up-to-date": "Up to date",
   running: "Running...",
-  not_blocked: "a ruleset is blocking the app",
-  protected: "the branch is not protected",
+  canModify: "a ruleset is blocking the app",
+  isProtected: "the branch is not protected",
 };
 
 type Props = {
@@ -41,7 +41,7 @@ const warnings = Object.entries(checks)
 
 <span
   class="status"
-  hx-trigger={`sse:${createTopic("status_updated", subject)}`}
+  hx-trigger={`sse:${createTopic("branch_updated", subject)}`}
   hx-get={`/metadata/partial/${createPath(subject, "status")}`}
   hx-swap="outerHTML"
 >

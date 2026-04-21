@@ -11,9 +11,11 @@ export type GithubRepository = {
   };
 };
 
+export type DateTime = string | number | Date;
+
 export type WithTimestamps = {
-  createdAt: string;
-  updatedAt: string;
+  createdAt: DateTime;
+  updatedAt: DateTime;
 };
 
 export type RepoSearch = {
@@ -28,4 +30,4 @@ export type RepoSearchWithBranch = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type Dictionary = Record<string, any>;
+export type Dictionary<K extends string = string> = Record<K, any>;

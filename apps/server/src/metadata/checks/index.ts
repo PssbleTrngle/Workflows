@@ -2,57 +2,52 @@ import type {
   RepoSearch,
   RepoSearchWithBranch,
 } from "@pssbletrngle/workflows-types";
-import type {
-  RepositoryStatus,
-  StatusResult,
-} from "@pssbletrngle/workflows-types/metadata";
 import logger from "../../logger";
 import type { InstallationContext } from "../auth";
 import { fetchBranches } from "../branches";
-import { eventDispatcher } from "../events";
+import checkIcon from "./icon";
 import checkProtection from "./protection";
 import refresh from "./refresh";
+import checkSetup from "./setup";
+import checkViewers from "./viewers";
 
-export async function checkBranch(
-  search: RepoSearchWithBranch,
-  context: InstallationContext,
-): Promise<StatusResult> {
-  const results = await Promise.allSettled([
-    refresh(search, context),
-    checkProtection(search, context.octokit),
-  ]);
+async function runChecks(promises: Promise<unknown>[]) {
+  const results = await Promise.allSettled(promises);
 
   for (const result of results) {
     if (result.status === "rejected") {
       logger.error((result.reason as Error).message);
     }
   }
-
-  const status: RepositoryStatus | undefined =
-    results[0].status === "fulfilled" ? results[0].value : "failed";
-
-  return {
-    status,
-    search,
-    checks: {},
-  };
 }
 
-export async function checkRepository(
+async function branchChecks(
+  search: RepoSearchWithBranch,
+  context: InstallationContext,
+) {
+  await runChecks([
+    refresh(search, context),
+    checkProtection(search, context.octokit),
+    checkSetup(search, context.octokit),
+  ]);
+}
+
+async function checkRepository(
   subject: RepoSearch,
   context: InstallationContext,
 ) {
   const branches = await fetchBranches(context.octokit, subject);
 
-  const statuses = await Promise.all(
+  await runChecks([
+    checkIcon(subject, context.octokit),
+    checkViewers(subject, context.octokit),
+  ]);
+
+  await Promise.all(
     branches.map((branch) => {
-      return checkBranch({ ...subject, branch }, context);
+      return branchChecks({ ...subject, branch }, context);
     }),
   );
-
-  eventDispatcher.sendRepositoryUpdate({ subject, statuses });
-
-  return statuses;
 }
 
 export default async function check(
@@ -60,7 +55,7 @@ export default async function check(
   context: InstallationContext,
 ) {
   if ("branch" in subject) {
-    await checkBranch(subject, context);
+    await branchChecks(subject, context);
   } else {
     await checkRepository(subject, context);
   }

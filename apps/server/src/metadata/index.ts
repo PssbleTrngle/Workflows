@@ -10,11 +10,11 @@ import logger from "../logger";
 import { createGitUser } from "../user";
 import createApiRoutes from "./api";
 import {
-  deleteCache,
-  deleteCacheForRepository,
+  deleteBranch,
+  deleteRepository,
+  migrateRepository,
   saveStatus,
-  updateCache,
-} from "./cache";
+} from "./database";
 import generateMetadata, { metadataBranch } from "./generator";
 import createUIMiddlware from "./ui";
 
@@ -99,7 +99,7 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
 
     logger.info("repository got renamed", { from, to });
 
-    await updateCache(from, to);
+    await migrateRepository(from, to);
   });
 
   hooks.on("repository.transferred", async ({ payload }) => {
@@ -121,7 +121,7 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
 
     logger.info("repository got transferred", { from, to });
 
-    await updateCache(from, to);
+    await migrateRepository(from, to);
   });
 
   hooks.on("repository.deleted", async ({ payload }) => {
@@ -132,7 +132,7 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
 
     logger.info("repository got deleted", { repo });
 
-    await deleteCacheForRepository(repo);
+    await deleteRepository(repo);
   });
 
   hooks.on("delete", async ({ payload }) => {
@@ -146,7 +146,7 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
 
     logger.info("branch got deleted", { repo });
 
-    await deleteCache(repo);
+    await deleteBranch(repo);
   });
 
   hooks.on("create", async ({ payload, octokit }) => {

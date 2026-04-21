@@ -3,19 +3,21 @@ import type {
   RepoSearch,
   RepoSearchWithBranch,
 } from "@pssbletrngle/workflows-types";
+import type { HTMLAttributes } from "astro/types";
 
 type Props = {
   repo: RepoSearchWithBranch | RepoSearch;
   disabled?: boolean;
-};
+} & HTMLAttributes<"form">;
 
-const { repo, disabled } = Astro.props;
+const { repo, disabled, ...props } = Astro.props;
 ---
 
 <form
   hx-post="/metadata/api/refresh"
   hx-swap="none"
   hx-disabled-elt="find button"
+  {...props}
 >
   <input type="hidden" name="owner" value={repo.owner} />
   <input type="hidden" name="repo" value={repo.repo} />

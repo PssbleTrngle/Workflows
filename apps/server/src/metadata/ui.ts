@@ -2,7 +2,7 @@ import { handler } from "@pssbletrngle/workflows-ui";
 import { Router, type RequestHandler } from "express";
 import type { App } from "octokit";
 import config from "../config";
-import { ApiError } from "../error";
+import { ApiError, errorHandler } from "../error";
 import logger from "../logger";
 import { authorize, login } from "./auth";
 
@@ -45,7 +45,7 @@ async function astroOrProxy(): Promise<RequestHandler> {
 export default async function createUIMiddlware(app: App) {
   const router = Router();
 
-  router.get("/callback", createCallback(app));
+  router.get("/callback", createCallback(app), errorHandler);
 
   router.use(...authorize("redirect"), await astroOrProxy());
 

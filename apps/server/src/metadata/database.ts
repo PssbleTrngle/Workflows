@@ -2,72 +2,164 @@ import {
   connectDatabase,
   Repositories,
 } from "@pssbletrngle/workflows-persistance";
-import type { RepoSearch } from "@pssbletrngle/workflows-types";
+import { mapKeys } from "@pssbletrngle/workflows-shared/util";
+import type {
+  RepoSearch,
+  RepoSearchWithBranch,
+  WithTimestamps,
+} from "@pssbletrngle/workflows-types";
 import type {
   Branch,
+  Checks,
   Repository,
+  RepositoryStatus,
 } from "@pssbletrngle/workflows-types/metadata";
-import type { Octokit } from "octokit";
+import type { QueryFilter } from "mongoose";
 import logger from "../logger";
-import type { InstallationContext } from "./auth";
-import { checkRepository } from "./checks";
+import type { AuthenticatedContext, OAuthContext } from "./auth";
+import { eventDispatcher } from "./events";
 
 await connectDatabase(logger);
 
-async function getIcon(octokit: Octokit, search: RepoSearch) {
-  const paths = [".idea/icon.svg", ".idea/icon.png"];
-
-  try {
-    const result = await Promise.any(
-      paths.map((path) =>
-        octokit.rest.repos.getContent({
-          ...search,
-          path,
-        }),
-      ),
-    );
-
-    return result.data.download_url;
-  } catch {
-    return null;
-  }
+function authFilter(context: AuthenticatedContext): QueryFilter<Repository> {
+  if ("userId" in context) return { visibleTo: context.userId };
+  return {
+    owner: context.repository.owner.login,
+    repo: context.repository.name,
+  };
 }
 
 export async function updateRepository(
-  context: InstallationContext,
   subject: RepoSearch,
+  values: Omit<Partial<Repository>, "branches" | keyof WithTimestamps>,
 ) {
-  logger.debug("updating", subject);
+  await Repositories.updateOne(subject, values, { upsert: true });
+  eventDispatcher.sendRepositoryUpdate(subject);
+}
 
-  //const { data } = await octokit.rest.repos.get(search);
-
-  const statuses = await checkRepository(subject, context);
-
-  const branches = statuses.map<Branch>((it) => ({
-    ref: it.search.branch,
-    status: it.status,
-  }));
-
-  const icon = await getIcon(context.octokit, subject);
-
-  await Repositories.updateOne(
-    subject,
-    {
-      icon,
-      branches,
+export async function addRepositoryViewer(subject: RepoSearch, userId: string) {
+  await Repositories.updateOne(subject, {
+    $push: {
+      visibleTo: userId,
     },
-    {
-      upsert: true,
+  });
+}
+
+export async function removeRepositoryViewer(
+  subject: RepoSearch,
+  userId: string,
+) {
+  await Repositories.updateOne(subject, {
+    $pull: {
+      visibleTo: userId,
     },
-  );
+  });
 }
 
 export async function getRepository(
   search: RepoSearch,
+  context: AuthenticatedContext,
 ): Promise<Repository | null> {
-  return await Repositories.findOne(search);
+  return await Repositories.findOne({
+    ...search,
+    $and: [authFilter(context)],
+  });
 }
 
-export async function getRepositories(): Promise<Repository[]> {
-  return await Repositories.find({});
+export async function getRepositoryBranch(
+  search: RepoSearchWithBranch,
+  context: AuthenticatedContext,
+): Promise<Branch | null> {
+  const repository = await getRepository(search, context);
+  const branch = repository?.branches.find((it) => it.ref === search.branch);
+  return branch ?? null;
+}
+
+//export type RepositoryFilter = {
+//
+//}
+
+export async function getRepositories(
+  context: OAuthContext,
+): Promise<Repository[]> {
+  return await Repositories.find(
+    {
+      branches: { $ne: [] },
+      $and: [authFilter(context)],
+    },
+    undefined,
+  );
+}
+
+export async function migrateRepository(from: RepoSearch, to: RepoSearch) {
+  await Repositories.updateMany(from, to);
+}
+
+export async function deleteRepository(subject: RepoSearch) {
+  await Repositories.deleteMany(subject);
+}
+
+async function updateBranch(
+  subject: RepoSearchWithBranch,
+  values: Partial<Branch>,
+) {
+  const { branch, ...search } = subject;
+
+  const result = await Repositories.updateMany(
+    { ...search, "branches.ref": branch },
+    mapKeys(values, (it) => `branches.$.${it}`),
+  );
+
+  if (result.modifiedCount === 0) {
+    await Repositories.updateMany(
+      search,
+      {
+        $push: { branches: { ref: branch, ...values } },
+      },
+      { upsert: true },
+    );
+  }
+
+  eventDispatcher.sendBranchUpdate(subject);
+}
+
+export async function saveStatus(
+  subject: RepoSearchWithBranch,
+  status: RepositoryStatus,
+) {
+  await updateBranch(subject, { status });
+}
+
+export async function saveChecks(
+  subject: RepoSearchWithBranch,
+  checks: Checks,
+) {
+  await updateBranch(subject, { checks });
+}
+
+export async function saveSetup(
+  subject: RepoSearchWithBranch,
+  setup: Branch["setup"],
+) {
+  await updateBranch(subject, { setup });
+}
+
+export async function saveMeta(
+  subject: RepoSearchWithBranch,
+  generatorMeta: Branch["generatorMeta"],
+) {
+  await updateBranch(subject, { generatorMeta });
+}
+
+export async function deleteBranch(subject: RepoSearchWithBranch) {
+  const { branch, ...search } = subject;
+  const result = await Repositories.updateMany(search, {
+    $pull: {
+      branches: { ref: branch },
+    },
+  });
+
+  if (result.modifiedCount > 0) {
+    logger.debug("deleting cache for branch", subject);
+  }
 }

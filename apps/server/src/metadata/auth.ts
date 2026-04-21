@@ -40,6 +40,7 @@ type CommonContext = {
 
 export type OAuthContext = CommonContext & {
   token: string;
+  userId: string;
 };
 
 export type InstallationContext = CommonContext & {
@@ -78,6 +79,9 @@ function createHandler(strategy: AuthenticationStrategy): AuthenticatedHandler {
     if (token) {
       res.locals.token = token;
       res.locals.octokit = new Octokit({ auth: token, log: logger });
+      const { data: user } =
+        await res.locals.octokit.rest.users.getAuthenticated();
+      res.locals.userId = user.login;
       return next();
     }
 

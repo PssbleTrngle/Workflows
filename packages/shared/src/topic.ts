@@ -13,7 +13,7 @@ export function createPath(
   return parts.join("/");
 }
 
-type Topic = "status_updated" | "repository_updated";
+type Topic = "branch_updated" | "repository_updated";
 
 export function createTopic(
   type: Topic,

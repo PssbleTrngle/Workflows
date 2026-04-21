@@ -9,11 +9,13 @@ const schema = new mongoose.Schema<Repository>(
     owner: { type: String, required: true },
     repo: { type: String, required: true },
     icon: { type: String },
+    visibleTo: [{ type: String }],
     branches: [
       {
         ref: { type: String, required: true },
         generatorMeta: {
           version: { type: String, required: true },
+          source: { type: String, required: true },
           generatedAt: { type: Date, required: true },
         },
         status: {
@@ -42,5 +44,7 @@ const schema = new mongoose.Schema<Repository>(
     timestamps: true,
   },
 );
+
+schema.index({ owner: 1, repo: 1 }, { unique: true });
 
 export const Repositories = mongoose.model("Repository", schema);

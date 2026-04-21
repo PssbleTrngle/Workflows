@@ -15,7 +15,7 @@ import type { ActionResult } from "../git";
 import { cloneAndModify, type GitUser } from "../git";
 import logger from "../logger";
 import { createMetadataContext } from "./branches";
-import { deleteCache, saveMetadata, saveStatus } from "./cache";
+import { deleteBranch, saveMeta, saveStatus } from "./database";
 
 export async function migrateMetadataConfig(
   repositoryPath: string,
@@ -58,7 +58,7 @@ export default async function generateMetadata(
     const context = await createMetadataContext(octokit, repo);
 
     if (!context) {
-      deleteCache(repo);
+      deleteBranch(repo);
       return;
     }
 
@@ -82,7 +82,7 @@ export default async function generateMetadata(
 
     const doneState: RepositoryStatus = checkout ? "opened-pr" : "up-to-date";
 
-    await saveMetadata(repo, meta);
+    await saveMeta(repo, { ...meta, generatedAt: Date.now() });
 
     if (!result) {
       await saveStatus(repo, doneState);
