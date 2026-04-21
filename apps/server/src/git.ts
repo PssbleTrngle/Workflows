@@ -1,4 +1,4 @@
-import type { GithubRepository } from "@pssbletrngle/workflows-types";
+import type { RepoSearchWithBranch } from "@pssbletrngle/workflows-types";
 import { $ } from "bun";
 import { existsSync, mkdirSync, rmSync } from "node:fs";
 import { rm } from "node:fs/promises";
@@ -29,21 +29,21 @@ export async function setupGitCloneDir() {
 type DuplicateBehaviour = "abort" | "skip" | "delete";
 
 async function clone(
-  repository: GithubRepository,
-  branch: string,
+  { owner, branch, repo }: RepoSearchWithBranch,
+  cloneUrl: string,
   token: string,
   behaviour: DuplicateBehaviour,
 ) {
-  const url = new URL(repository.clone_url);
+  const url = new URL(cloneUrl);
   logger.info(`-> cloning into ${url} @ ${branch}`);
 
   url.username = "x-access-token";
   url.password = token;
 
-  const relativePath = join(repository.full_name, branch.replaceAll("/", "-"));
+  const relativePath = join(owner, repo, branch.replaceAll("/", "-"));
   const repositoryPath = join(basePath, relativePath);
   if (existsSync(repositoryPath)) {
-    const message = `there is already a process running for ${repository.full_name}`;
+    const message = `there is already a process running for ${owner}/${repo}@${branch}`;
     if (behaviour === "abort") throw new Error(message);
     if (behaviour === "skip") {
       logger.warn(message);
@@ -57,7 +57,7 @@ async function clone(
     .cwd(basePath)
     .quiet();
 
-  logger.info(`-> sucessfully cloned into ${repository.full_name}`);
+  logger.info(`-> sucessfully cloned into ${owner}/${repo}`);
 
   return repositoryPath;
 }
@@ -157,13 +157,13 @@ export type ActionResult = {
 };
 
 export async function cloneAndModify<T extends [...Action[]]>(
-  repository: GithubRepository,
+  subject: RepoSearchWithBranch,
+  cloneUrl: string,
   user: GitUser,
   actions: T,
-  branch: string,
   checkout?: string,
 ): Promise<ActionResults<T>> {
-  const repositoryPath = await clone(repository, branch, user.token, "abort");
+  const repositoryPath = await clone(subject, cloneUrl, user.token, "abort");
 
   try {
     const result = await wrappedCloneAndModify(

@@ -9,6 +9,7 @@ import type { App } from "octokit";
 import logger from "../logger";
 import { createGitUser } from "../user";
 import createApiRoutes from "./api";
+import checkSetup from "./checks/setup";
 import {
   deleteBranch,
   deleteRepository,
@@ -18,12 +19,13 @@ import {
 import generateMetadata, { metadataBranch } from "./generator";
 import createUIMiddlware from "./ui";
 
-function shouldTriggerUpdate({
-  added,
-  removed,
-  modified,
-}: WebhookEventDefinition<"push">["commits"][0]) {
-  return [added, removed, modified].flat().includes(configPath);
+function fileChanged(
+  commits: WebhookEventDefinition<"push">["commits"],
+  path: string,
+) {
+  return commits.some(({ added, removed, modified }) => {
+    return [added, removed, modified].flat().includes(path);
+  });
 }
 
 export async function registerMetadataHooks(hooks: App["webhooks"]) {
@@ -43,7 +45,17 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
     if (!isValidRepository(repository))
       throw new Error(`owner missing for repository ${repository.full_name}`);
 
-    if (commits.some(shouldTriggerUpdate)) {
+    const [, branch] = /^refs\/heads\/(.+)$/.exec(ref) ?? [];
+    if (!branch)
+      throw new Error(`unable to decode branch name from ref '${ref}'`);
+
+    const subject: RepoSearchWithBranch = {
+      owner: repository.owner.login,
+      repo: repository.name,
+      branch,
+    };
+
+    if (fileChanged(commits, configPath)) {
       octokit.log.info(`config changed for ${repository.full_name}`);
 
       if (!installation) {
@@ -51,12 +63,12 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
         return;
       }
 
-      const [, branch] = /^refs\/heads\/(.+)$/.exec(ref) ?? [];
-      if (!branch)
-        throw new Error(`unable to decode branch name from ref '${ref}'`);
-
       const user = await createGitUser({ repository, installation, octokit });
-      await generateMetadata(repository, branch, octokit, user);
+      await generateMetadata(subject, repository.clone_url, octokit, user);
+    }
+
+    if (fileChanged(commits, "settings.gradle.kts")) {
+      await checkSetup(subject, octokit);
     }
   });
 
@@ -138,15 +150,15 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
   hooks.on("delete", async ({ payload }) => {
     if (payload.ref_type !== "branch") return;
 
-    const repo: RepoSearchWithBranch = {
+    const subject: RepoSearchWithBranch = {
       owner: payload.repository.owner.login,
       repo: payload.repository.name,
       branch: payload.ref,
     };
 
-    logger.info("branch got deleted", { repo });
+    logger.info("branch got deleted", { subject });
 
-    await deleteBranch(repo);
+    await deleteBranch(subject);
   });
 
   hooks.on("create", async ({ payload, octokit }) => {
@@ -158,8 +170,19 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
       return;
     }
 
+    const subject: RepoSearchWithBranch = {
+      owner: payload.repository.owner.login,
+      repo: payload.repository.name,
+      branch: payload.ref,
+    };
+
     const user = await createGitUser({ repository, installation, octokit });
-    await generateMetadata(repository, payload.ref, octokit, user);
+    await generateMetadata(
+      subject,
+      payload.repository.clone_url,
+      octokit,
+      user,
+    );
   });
 }
 
