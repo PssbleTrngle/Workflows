@@ -10,7 +10,7 @@ export async function getFileContent(
     const { data } = await octokit.rest.repos.getContent({
       ...subject,
       ref: branch,
-      path: "settings.gradle.kts",
+      path,
       mediaType: {
         format: "raw",
       },

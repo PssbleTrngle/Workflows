@@ -14,7 +14,6 @@ export default function repositoryRouter() {
   router.get(
     "/:owner/:repo/*branch",
     async (req, res: AuthenticatedResponse) => {
-      // TODO authorization guard
       const { branch, ...rest } = req.params;
       const subject: RepoSearchWithBranch = {
         ...rest,
@@ -29,14 +28,12 @@ export default function repositoryRouter() {
   );
 
   router.get("/:owner/:repo", async (req, res: AuthenticatedResponse) => {
-    // TODO authorization guard
     const repository = await getRepository(req.params, res.locals);
     if (!repository) throw new ApiError("repository not found", 404);
     res.json(repository);
   });
 
   router.get("/", async (_, res: AuthenticatedResponse) => {
-    // TODO authorization guard
     const repositories = await getRepositories(res.locals);
     res.json({ entries: repositories });
   });

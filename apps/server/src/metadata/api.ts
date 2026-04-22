@@ -3,6 +3,7 @@ import { randomUUIDv7 } from "bun";
 import { json, Router } from "express";
 import { type App } from "octokit";
 import z from "zod";
+import config from "../config";
 import { cutoff } from "../error";
 import { installationContext } from "../installation";
 import validate from "../validation";
@@ -21,35 +22,36 @@ export default function createApiRoutes(app: App) {
 
   router.use("/repository", repositoryRouter());
 
-  // TODO remove
-  router.get("/setup", async (_, res: AuthenticatedResponse) => {
-    const { octokit } = res.locals;
+  if (config.dev) {
+    router.get("/setup", async (_, res: AuthenticatedResponse) => {
+      const { octokit } = res.locals;
 
-    // not used yet, could be used for tracing
-    const uuid = randomUUIDv7();
-    res.json({ message: "setup started", uuid });
+      // not used yet, could be used for tracing
+      const uuid = randomUUIDv7();
+      res.json({ message: "setup started", uuid });
 
-    for await (const { data: repositories } of octokit.paginate.iterator(
-      octokit.rest.repos.listForAuthenticatedUser,
-      { sort: "pushed" },
-    )) {
-      for (const repository of repositories) {
-        if (repository.fork) continue;
+      for await (const { data: repositories } of octokit.paginate.iterator(
+        octokit.rest.repos.listForAuthenticatedUser,
+        { sort: "pushed" },
+      )) {
+        for (const repository of repositories) {
+          if (repository.fork) continue;
 
-        const subject: RepoSearch = {
-          owner: repository.owner.login,
-          repo: repository.name,
-        };
+          const subject: RepoSearch = {
+            owner: repository.owner.login,
+            repo: repository.name,
+          };
 
-        try {
-          const context = await installationContext(app, subject);
-          await check(subject, context);
-        } catch {
-          // not installed on repository
+          try {
+            const context = await installationContext(app, subject);
+            await check(subject, context);
+          } catch {
+            // not installed on repository
+          }
         }
       }
-    }
-  });
+    });
+  }
 
   router.post(
     "/refresh",

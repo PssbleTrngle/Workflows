@@ -4,6 +4,7 @@ import {
   intEnv,
   requireEnv,
   requireFile,
+  requirePath,
 } from "@pssbletrngle/workflows-shared/config";
 
 const dev = process.env.NODE_ENV !== "production";
@@ -36,7 +37,7 @@ export default {
     port: intEnv("PORT") ?? 8080,
   },
   git: {
-    cloneDir: requireEnv("GIT_CLONE_DIR"),
+    cloneDir: requirePath("GIT_CLONE_DIR"),
   },
   mongo: {},
   log: {

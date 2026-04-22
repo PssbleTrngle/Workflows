@@ -23,7 +23,6 @@ async function fetchConfig(octokit: Octokit, search: RepoSearchWithBranch) {
   return JSON.parse(data);
 }
 
-// TODO test
 function isMainBranch(branch: string, { branches }: MetadataContext) {
   if (branch === "main" && !branches.includes("develop")) {
     return true;

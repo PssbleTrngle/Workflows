@@ -1,5 +1,5 @@
 import type { Logger } from "@pssbletrngle/workflows-types/logger";
-import mongoose from "mongoose";
+import mongoose, { type ConnectOptions } from "mongoose";
 import config from "./config";
 
 const { host, port, user, pass, database } = config;
@@ -9,8 +9,7 @@ export async function connectDatabase(logger: Logger) {
 
   logger.debug("connecting to MongoDB", { url });
 
-  // TODO check authSource
   await mongoose.connect(url, {
     authSource: "admin",
-  });
+  } as ConnectOptions);
 }

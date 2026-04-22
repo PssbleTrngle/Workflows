@@ -1,0 +1,69 @@
+---
+import TestCase from "@/components/TestCase.astro";
+import Layout from "@/layout.astro";
+import { createPath } from "@pssbletrngle/workflows-shared/topic";
+import { mapValues, notNull } from "@pssbletrngle/workflows-shared/util";
+import type { RepoSearch } from "@pssbletrngle/workflows-types";
+import type {
+  Repository,
+  TestResult,
+} from "@pssbletrngle/workflows-types/metadata";
+
+const { api, octokit } = Astro.locals;
+
+// TODO not hard-coded
+const subject: RepoSearch = {
+  owner: "PssbleTrngle",
+  repo: "TestMod",
+};
+
+async function fetchTestResults() {
+  const { data } = await octokit.rest.actions.listWorkflowRunsForRepo({
+    ...subject,
+    event: "release",
+  });
+
+  const grouped = Object.groupBy(data.workflow_runs, ({ head_branch }) => {
+    const [, version, module] = head_branch?.split("-") ?? [];
+    if (!version || !module) return "unknown";
+    return `main/${module}/${version}`;
+  });
+
+  return mapValues(grouped, (runs) => {
+    const latest = runs?.[0];
+    if (!latest) throw new Error("whatever");
+    const { status, conclusion } = latest;
+    return { status, conclusion, at: latest.created_at } as TestResult;
+  });
+}
+
+const [{ branches }, results] = await Promise.all([
+  api.request<Repository>(`repository/${createPath(subject)}`),
+  fetchTestResults(),
+]);
+
+const cases = branches
+  .map((branch) => {
+    if (!branch.ref.startsWith("main/")) return null;
+    const result = results[branch.ref];
+    if (!result) return null;
+
+    return { ...branch, result };
+  })
+  .filter(notNull);
+---
+
+<Layout>
+  <ul class="cases">
+    {cases.map((props) => <TestCase repo={subject} {...props} />)}
+  </ul>
+</Layout>
+
+<style scoped>
+  .cases {
+    list-style: none;
+
+    display: grid;
+    gap: 1em;
+  }
+</style>

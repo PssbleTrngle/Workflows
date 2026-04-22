@@ -10,9 +10,18 @@ export function uniq<T>(values: T[]): T[] {
 
 export function mapKeys(
   from: Dictionary,
-  mapper: (value: string) => string,
+  mapper: (key: string) => string,
 ): Dictionary {
   return Object.fromEntries(
     Object.entries(from).map(([key, value]) => [mapper(key), value]),
+  );
+}
+
+export function mapValues<T, R>(
+  from: Record<string, T>,
+  mapper: (value: T, key: string) => R,
+): Record<string, R> {
+  return Object.fromEntries(
+    Object.entries(from).map(([key, value]) => [key, mapper(value, key)]),
   );
 }

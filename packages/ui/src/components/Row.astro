@@ -8,11 +8,14 @@ import {
 import type { RepoSearch } from "@pssbletrngle/workflows-types";
 import type { Repository } from "@pssbletrngle/workflows-types/metadata";
 import type { HTMLAttributes } from "astro/types";
+import Refresh from "./Refresh.astro";
 
 type Props = Repository & HTMLAttributes<"li">;
 
 const { owner, repo, branches, icon, ...props } = Astro.props;
 const url = `https://github.com/${owner}/${repo}`;
+
+const anyRunning = branches.some((it) => it.status === "running");
 
 const subject: RepoSearch = { owner, repo };
 ---
@@ -31,6 +34,8 @@ const subject: RepoSearch = { owner, repo };
   <ul class="branches">
     {branches.map((it) => <Branch {...it} repo={subject} />)}
   </ul>
+
+  <Refresh subject={subject} disabled={anyRunning} />
 </li>
 
 <style scoped define:vars={{ branches: branches.length }}>
@@ -43,7 +48,7 @@ const subject: RepoSearch = { owner, repo };
     grid-template-columns: subgrid;
     grid-template-rows: subgrid;
 
-    grid-column: span 6;
+    grid-column: span 8;
     grid-row: span var(--branches);
 
     align-items: center;
@@ -56,14 +61,14 @@ const subject: RepoSearch = { owner, repo };
     .branches {
       list-style: none;
 
-      grid-column: span 4;
+      grid-column: span 5;
 
       display: grid;
       grid-template-columns: subgrid;
       grid-template-rows: subgrid;
 
       .branch {
-        grid-column: span 4;
+        grid-column: span 5;
 
         display: grid;
         grid-template-columns: subgrid;

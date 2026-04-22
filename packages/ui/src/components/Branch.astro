@@ -14,6 +14,7 @@ import type {
   RepositoryStatus,
 } from "@pssbletrngle/workflows-types/metadata";
 import type { HTMLAttributes } from "astro/types";
+import Refresh from "./Refresh.astro";
 
 type Props = Branch &
   HTMLAttributes<"li"> & {
@@ -46,6 +47,7 @@ const { repo, ref, generatorMeta, setup, checks, status, ...props } =
   Astro.props;
 
 const subject: RepoSearchWithBranch = { ...repo, branch: ref };
+const url = `https://github.com/${subject.owner}/${subject.repo}/tree/${subject.branch}`;
 ---
 
 <li
@@ -56,7 +58,7 @@ const subject: RepoSearchWithBranch = { ...repo, branch: ref };
   id={createId("branch", subject)}
   {...props}
 >
-  <span class="ref">{ref}</span>
+  <a class="ref" href={url}>{ref}</a>
   {
     status ? (
       <span class="status" title={statusMessages[status]}>
@@ -79,6 +81,7 @@ const subject: RepoSearchWithBranch = { ...repo, branch: ref };
     }
   </span>
   {setup?.gradleHelper ? <span>v{setup.gradleHelper}</span> : <span />}
+  <Refresh subject={subject} disabled={status === "running"} />
 </li>
 
 <style scoped>

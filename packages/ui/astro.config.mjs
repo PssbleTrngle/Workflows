@@ -15,7 +15,7 @@ export default defineConfig({
         protocol: "ws",
         clientPort: 4321,
       },
-      allowedHosts: ["workflows.somethingcatchy.net"],
+      allowedHosts: [".workflows.somethingcatchy.net"],
       proxy: {
         "/metadata/api": {
           target: "http://localhost:8888",

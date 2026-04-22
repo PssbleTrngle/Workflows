@@ -157,6 +157,18 @@ import Indicator from "./components/Indicator.astro";
 
       box-shadow: #0002 0 10px 20px;
     }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+
+      transition: color 0.1s ease;
+
+      &:hover {
+        color: color-mix(in srgb, var(--accent) 80%, #fff);
+        text-decoration: underline;
+      }
+    }
   </style>
 </html>
 

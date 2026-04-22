@@ -6,11 +6,11 @@ import type {
 import type { HTMLAttributes } from "astro/types";
 
 type Props = {
-  repo: RepoSearchWithBranch | RepoSearch;
+  subject: RepoSearchWithBranch | RepoSearch;
   disabled?: boolean;
 } & HTMLAttributes<"form">;
 
-const { repo, disabled, ...props } = Astro.props;
+const { subject, disabled, ...props } = Astro.props;
 ---
 
 <form
@@ -19,11 +19,11 @@ const { repo, disabled, ...props } = Astro.props;
   hx-disabled-elt="find button"
   {...props}
 >
-  <input type="hidden" name="owner" value={repo.owner} />
-  <input type="hidden" name="repo" value={repo.repo} />
+  <input type="hidden" name="owner" value={subject.owner} />
+  <input type="hidden" name="repo" value={subject.repo} />
   {
-    "branch" in repo && (
-      <input type="hidden" name="branch" value={repo.branch} />
+    "branch" in subject && (
+      <input type="hidden" name="branch" value={subject.branch} />
     )
   }
   <button title="Refresh" disabled={disabled}>🔄</button>

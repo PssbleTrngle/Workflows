@@ -53,11 +53,17 @@ async function clone(
     }
   }
 
-  await $`git clone ${url} --branch ${branch} ${relativePath}`
-    .cwd(basePath)
-    .quiet();
+  try {
+    await $`git clone --depth 1 ${url} --branch ${branch} ${relativePath}`
+      .cwd(basePath)
+      .quiet();
 
-  logger.info(`-> sucessfully cloned into ${owner}/${repo}`);
+    logger.info(`-> sucessfully cloned into ${owner}/${repo}`);
+  } catch (ex) {
+    logger.error("<- unable to clone repository", { owner, repo, branch });
+    rmSync(repositoryPath, { recursive: true });
+    throw ex;
+  }
 
   return repositoryPath;
 }
@@ -147,7 +153,7 @@ async function wrappedCloneAndModify<T extends [...Action[]]>(
 
   await $`git push`.cwd(repositoryPath).quiet();
 
-  logger.info("-> completed actions and pushed changes");
+  logger.debug("<- completed actions and pushed changes");
 
   return results;
 }
