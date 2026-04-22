@@ -65,6 +65,8 @@ export default function createApiRoutes(app: App) {
     async (req, res: AuthenticatedResponse) => {
       const context = await installationContext(app, req.body);
 
+      // TODO authorization guard
+
       // not used yet, could be used for tracing
       const uuid = randomUUIDv7();
       res.json({ message: "refresh started", uuid });

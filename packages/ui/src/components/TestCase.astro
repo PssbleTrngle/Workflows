@@ -48,12 +48,11 @@ function statusIcon(status: TestStatus): string {
   }
 }
 
-const { repo, ref, generatorMeta, setup, checks, status, result, ...props } =
-  Astro.props;
+const { repo, ref, result, ...props } = Astro.props;
 
 const subject: RepoSearchWithBranch = { ...repo, branch: ref };
 
-const [_, type = "?", version = "?"] = ref.split("/");
+const [, type = "?", version = "?"] = ref.split("/");
 
 const testStatus = result.conclusion ?? result.status;
 

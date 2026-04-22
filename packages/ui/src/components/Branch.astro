@@ -43,8 +43,7 @@ const statusIcons: Record<RepositoryStatus, string> = {
   running: "🏃‍♂️",
 };
 
-const { repo, ref, generatorMeta, setup, checks, status, ...props } =
-  Astro.props;
+const { repo, ref, setup, checks, status, ...props } = Astro.props;
 
 const subject: RepoSearchWithBranch = { ...repo, branch: ref };
 const url = `https://github.com/${subject.owner}/${subject.repo}/tree/${subject.branch}`;

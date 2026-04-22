@@ -176,23 +176,13 @@ import Indicator from "./components/Indicator.astro";
   import "htmx-ext-json-enc";
   import "htmx-ext-sse";
   import "htmx.org";
-  import type { HtmxResponseInfo } from "htmx.org";
 
-  type BeforeSwapEvent = Event & {
-    detail: HtmxResponseInfo & {
-      swapOverride?: string;
-    };
-  };
+  document.body.addEventListener("htmx:beforeSwap", ({ detail }) => {
+    const override =
+      detail.requestConfig.elt.getAttribute("hx-target-override");
 
-  document.addEventListener(
-    "htmx:beforeSwap",
-    ({ detail }: BeforeSwapEvent) => {
-      const override =
-        detail.requestConfig.elt.getAttribute("hx-target-override");
-
-      if (override && document.querySelector(override)) {
-        detail.swapOverride = override;
-      }
-    },
-  );
+    if (override && document.querySelector(override)) {
+      detail.swapOverride = override;
+    }
+  });
 </script>
