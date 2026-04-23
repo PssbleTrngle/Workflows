@@ -31,6 +31,9 @@ export default function createApiClient(
 ): ApiClient {
   async function request<T>(endpoint: string, init: RequestInit = {}) {
     const url = new URL(endpoint, `${origin}/metadata/api/`);
+
+    console.log(`using token: ${token}`);
+
     const response = await fetch(url, {
       ...init,
       headers: {
