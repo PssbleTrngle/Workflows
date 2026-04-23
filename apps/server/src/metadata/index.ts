@@ -1,29 +1,31 @@
 import type { WebhookEventDefinition } from "@octokit/webhooks/types";
 import { configPath } from "@pssbletrngle/github-meta-generator";
 import type {
+  GithubRepository,
   RepoSearch,
   RepoSearchWithBranch,
-  Repository,
 } from "@pssbletrngle/workflows-types";
 import type { App } from "octokit";
 import logger from "../logger";
 import { createGitUser } from "../user";
 import createApiRoutes from "./api";
+import checkSetup from "./checks/setup";
 import {
-  deleteCache,
-  deleteCacheForRepository,
+  deleteBranch,
+  deleteRepository,
+  migrateRepository,
   saveStatus,
-  updateCache,
-} from "./cache";
+} from "./database";
 import generateMetadata, { metadataBranch } from "./generator";
 import createUIMiddlware from "./ui";
 
-function shouldTriggerUpdate({
-  added,
-  removed,
-  modified,
-}: WebhookEventDefinition<"push">["commits"][0]) {
-  return [added, removed, modified].flat().includes(configPath);
+function fileChanged(
+  commits: WebhookEventDefinition<"push">["commits"],
+  path: string,
+) {
+  return commits.some(({ added, removed, modified }) => {
+    return [added, removed, modified].flat().includes(path);
+  });
 }
 
 export async function registerMetadataHooks(hooks: App["webhooks"]) {
@@ -36,14 +38,24 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
 
     function isValidRepository(
       value: typeof repository,
-    ): value is Repository & typeof repository {
+    ): value is GithubRepository & typeof repository {
       return !!value.owner?.login;
     }
 
     if (!isValidRepository(repository))
       throw new Error(`owner missing for repository ${repository.full_name}`);
 
-    if (commits.some(shouldTriggerUpdate)) {
+    const [, branch] = /^refs\/heads\/(.+)$/.exec(ref) ?? [];
+    if (!branch)
+      throw new Error(`unable to decode branch name from ref '${ref}'`);
+
+    const subject: RepoSearchWithBranch = {
+      owner: repository.owner.login,
+      repo: repository.name,
+      branch,
+    };
+
+    if (fileChanged(commits, configPath)) {
       octokit.log.info(`config changed for ${repository.full_name}`);
 
       if (!installation) {
@@ -51,12 +63,12 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
         return;
       }
 
-      const [, branch] = /^refs\/heads\/(.+)$/.exec(ref) ?? [];
-      if (!branch)
-        throw new Error(`unable to decode branch name from ref '${ref}'`);
-
       const user = await createGitUser({ repository, installation, octokit });
-      await generateMetadata(repository, branch, octokit, user);
+      await generateMetadata(subject, repository.clone_url, octokit, user);
+    }
+
+    if (fileChanged(commits, "settings.gradle.kts")) {
+      await checkSetup(subject, octokit);
     }
   });
 
@@ -99,7 +111,7 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
 
     logger.info("repository got renamed", { from, to });
 
-    await updateCache(from, to);
+    await migrateRepository(from, to);
   });
 
   hooks.on("repository.transferred", async ({ payload }) => {
@@ -121,7 +133,7 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
 
     logger.info("repository got transferred", { from, to });
 
-    await updateCache(from, to);
+    await migrateRepository(from, to);
   });
 
   hooks.on("repository.deleted", async ({ payload }) => {
@@ -132,21 +144,21 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
 
     logger.info("repository got deleted", { repo });
 
-    await deleteCacheForRepository(repo);
+    await deleteRepository(repo);
   });
 
   hooks.on("delete", async ({ payload }) => {
     if (payload.ref_type !== "branch") return;
 
-    const repo: RepoSearchWithBranch = {
+    const subject: RepoSearchWithBranch = {
       owner: payload.repository.owner.login,
       repo: payload.repository.name,
       branch: payload.ref,
     };
 
-    logger.info("branch got deleted", { repo });
+    logger.info("branch got deleted", { subject });
 
-    await deleteCache(repo);
+    await deleteBranch(subject);
   });
 
   hooks.on("create", async ({ payload, octokit }) => {
@@ -158,8 +170,19 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
       return;
     }
 
+    const subject: RepoSearchWithBranch = {
+      owner: payload.repository.owner.login,
+      repo: payload.repository.name,
+      branch: payload.ref,
+    };
+
     const user = await createGitUser({ repository, installation, octokit });
-    await generateMetadata(repository, payload.ref, octokit, user);
+    await generateMetadata(
+      subject,
+      payload.repository.clone_url,
+      octokit,
+      user,
+    );
   });
 }
 

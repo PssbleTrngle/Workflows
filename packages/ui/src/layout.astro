@@ -9,28 +9,6 @@ import Indicator from "./components/Indicator.astro";
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>Workflows Dashboard</title>
-
-    <script
-      is:inline
-      src="https://unpkg.com/htmx.org@2.0.6"
-      integrity="sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z/B2WVG4smwBkRVm"
-      crossorigin="anonymous"></script>
-
-    <script
-      is:inline
-      src="https://cdn.jsdelivr.net/npm/htmx-ext-response-targets@2.0.2"
-      integrity="sha384-aiAPowx3gG+h620/TJLIfLPgBcn6DMWlhu45oOhWVwTOjds9E6X2pmGbT4Xc8XMJ"
-      crossorigin="anonymous"></script>
-
-    <script
-      is:inline
-      src="https://cdn.jsdelivr.net/npm/htmx-ext-sse@2.2.4"
-      integrity="sha384-A986SAtodyH8eg8x8irJnYUk7i9inVQqYigD6qZ9evobksGNIXfeFvDwLSHcp31N"
-      crossorigin="anonymous"></script>
-
-    <script
-      is:inline
-      src="https://unpkg.com/htmx.org@1.9.12/dist/ext/json-enc.js"></script>
   </head>
   <body
     hx-ext="json-enc-custom,response-targets,sse,json-enc"
@@ -47,6 +25,8 @@ import Indicator from "./components/Indicator.astro";
     :root {
       --accent: #7e56c2;
       --text: #ddd;
+      --bg-1: #1e2129;
+      --bg-2: #303644;
     }
 
     html,
@@ -54,7 +34,7 @@ import Indicator from "./components/Indicator.astro";
       margin: 0;
       padding: 0;
 
-      background: #1e2129;
+      background: var(--bg-1);
       color: var(--text);
       font-family: sans-serif;
 
@@ -144,8 +124,8 @@ import Indicator from "./components/Indicator.astro";
       }
 
       label {
-        margin-top: 0.5em;
-        margin-bottom: -0.5em;
+        font-style: italic;
+        opacity: 0.5;
       }
 
       button[type="submit"] {
@@ -165,5 +145,44 @@ import Indicator from "./components/Indicator.astro";
         text-align: center;
       }
     }
+
+    dialog {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+
+      background: var(--bg-2);
+      color: var(--text);
+      border: none;
+
+      box-shadow: #0002 0 10px 20px;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+
+      transition: color 0.1s ease;
+
+      &:hover {
+        color: color-mix(in srgb, var(--accent) 80%, #fff);
+        text-decoration: underline;
+      }
+    }
   </style>
 </html>
+
+<script>
+  import "htmx-ext-json-enc";
+  import "htmx-ext-sse";
+  import "htmx.org";
+
+  document.body.addEventListener("htmx:beforeSwap", ({ detail }) => {
+    const override =
+      detail.requestConfig.elt.getAttribute("hx-target-override");
+
+    if (override && document.querySelector(override)) {
+      detail.swapOverride = override;
+    }
+  });
+</script>

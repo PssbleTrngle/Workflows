@@ -8,7 +8,8 @@ import type {
   RepoSearch,
   RepoSearchWithBranch,
 } from "@pssbletrngle/workflows-types";
-import type { Octokit, RequestError } from "octokit";
+import type { Octokit } from "octokit";
+import { getFileContent } from "../files";
 import logger from "../logger";
 
 export async function fetchBranches(octokit: Octokit, search: RepoSearch) {
@@ -16,32 +17,12 @@ export async function fetchBranches(octokit: Octokit, search: RepoSearch) {
   return data.map((it) => it.name);
 }
 
-async function fetchConfig(
-  octokit: Octokit,
-  { branch, ...search }: RepoSearchWithBranch,
-) {
-  try {
-    const { data } = await octokit.rest.repos.getContent({
-      ...search,
-      path: configPath,
-      ref: branch,
-      mediaType: {
-        format: "raw",
-      },
-    });
-
-    if (typeof data !== "string") {
-      throw new Error(`unable to load config file for branch ${branch}`);
-    }
-
-    return JSON.parse(data);
-  } catch (e) {
-    if ((e as RequestError).status === 404) return null;
-    throw e;
-  }
+async function fetchConfig(octokit: Octokit, search: RepoSearchWithBranch) {
+  const data = await getFileContent(search, configPath, octokit);
+  if (!data) return null;
+  return JSON.parse(data);
 }
 
-// TODO test
 function isMainBranch(branch: string, { branches }: MetadataContext) {
   if (branch === "main" && !branches.includes("develop")) {
     return true;

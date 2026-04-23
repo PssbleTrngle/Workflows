@@ -1,4 +1,6 @@
-export type Repository = {
+export * from "./page";
+
+export type GithubRepository = {
   id: number;
   html_url: string;
   clone_url: string;
@@ -7,6 +9,13 @@ export type Repository = {
   owner: {
     login: string;
   };
+};
+
+export type DateTime = string | number | Date;
+
+export type WithTimestamps = {
+  createdAt: DateTime;
+  updatedAt: DateTime;
 };
 
 export type RepoSearch = {
@@ -21,4 +30,4 @@ export type RepoSearchWithBranch = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type Dictionary = Record<string, any>;
+export type Dictionary<K extends string = string> = Record<K, any>;

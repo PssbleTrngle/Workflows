@@ -1,15 +1,17 @@
 import type { Meta } from "@pssbletrngle/github-meta-generator";
 import currentMeta from "@pssbletrngle/github-meta-generator/meta";
+import { Repositories } from "@pssbletrngle/workflows-persistance";
+import type { Branch } from "@pssbletrngle/workflows-types/metadata";
 import { type App } from "octokit";
 import check from ".";
 import config from "../../config";
 import { setupGitCloneDir } from "../../git";
 import { installationContext } from "../../installation";
 import logger from "../../logger";
-import { getMetas } from "../cache";
 
-function isOutdated(saved: Meta, current: Meta) {
+function isOutdated(saved: Branch["generatorMeta"], current: Meta) {
   if (config.dev) return true;
+  if (!saved) return true;
   return saved.version !== current.version;
 }
 
@@ -18,7 +20,16 @@ export default async function onStartup(app: App) {
 
   if (!config.startupCheck) return;
 
-  const metas = await getMetas();
+  const repositories = await Repositories.find();
+
+  const metas = repositories.flatMap(({ owner, repo, branches }) =>
+    branches.map((it) => {
+      const search = { owner, repo, branch: it.ref };
+      const meta = it.generatorMeta;
+      return { search, meta };
+    }),
+  );
+
   const outdated = metas.filter((it) => isOutdated(it.meta, currentMeta));
 
   logger.info(`found ${outdated.length} outdated branches`);

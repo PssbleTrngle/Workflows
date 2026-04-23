@@ -1,28 +1,23 @@
 import { createTopic } from "@pssbletrngle/workflows-shared/topic";
-import { type RepoSearchWithBranch } from "@pssbletrngle/workflows-types";
-import type {
-  Checks,
-  RepositoryStatus,
-} from "@pssbletrngle/workflows-types/metadata";
+import {
+  type RepoSearch,
+  type RepoSearchWithBranch,
+} from "@pssbletrngle/workflows-types";
 import createEventDispatcher, { type EventDispatcher } from "../sse";
 
 type MetadataEventDispatcher = EventDispatcher & {
-  sendStatusUpdate(
-    repository: RepoSearchWithBranch,
-    status: RepositoryStatus,
-  ): void;
+  sendBranchUpdate(repository: RepoSearchWithBranch): void;
 
-  sendChecksUpdate(repository: RepoSearchWithBranch, checks: Checks): void;
+  sendRepositoryUpdate(repository: RepoSearch): void;
 };
 
 export const eventDispatcher =
   createEventDispatcher() as MetadataEventDispatcher;
 
-eventDispatcher.sendStatusUpdate = (subject, status) => {
-  eventDispatcher.send(createTopic(subject, "status"), { status });
+eventDispatcher.sendBranchUpdate = (subject) => {
+  eventDispatcher.send(createTopic("branch_updated", subject));
 };
 
-// TODO move to owner tpoic
-eventDispatcher.sendChecksUpdate = (subject) => {
-  eventDispatcher.send(createTopic(subject, "status"));
+eventDispatcher.sendRepositoryUpdate = (subject) => {
+  eventDispatcher.send(createTopic("repository_updated", subject));
 };

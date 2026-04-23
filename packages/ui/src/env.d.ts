@@ -5,3 +5,13 @@ declare namespace App {
     api: import("./lib/api").ApiClient;
   }
 }
+
+type BeforeSwapEvent = Event & {
+  detail: HtmxResponseInfo & {
+    swapOverride?: string;
+  };
+};
+
+interface HTMLElementEventMap {
+  "htmx:beforeSwap": BeforeSwapEvent;
+}

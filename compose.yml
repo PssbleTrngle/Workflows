@@ -1,21 +1,22 @@
 name: workflows
 
 services:
-  redis:
-    image: redis/redis-stack
-    container_name: workflows-redis
-    volumes:
-      - redis:/data
-    ports:
-      - 6379:6379
-      - 8001:8001
-
   rabbitmq:
     container_name: workflows-rabbitmq
     image: rabbitmq:4-management
     ports:
       - 5672:5672
       - 15672:15672
+
+  mongo:
+    image: mongo
+    container_name: workflows-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: workflows
+      MONGO_INITDB_ROOT_PASSWORD: workflows
+      MONGO_INITDB_DATABASE: workflows
+    ports:
+      - 27017:27017
 
 volumes:
   redis:

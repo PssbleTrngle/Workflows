@@ -1,5 +1,6 @@
 import type { components } from "@octokit/openapi-types";
 import type { WebhookEventDefinition } from "@octokit/webhooks/types";
+import type { RepoSearchWithBranch } from "@pssbletrngle/workflows-types";
 import type { App, Octokit } from "octokit";
 import type { GitUser } from "../git";
 import logger from "../logger";
@@ -89,8 +90,14 @@ async function handleEvent(
 
   await react(octokit, user, { comment, repository }, Reaction.EYES);
 
+  const subject: RepoSearchWithBranch = {
+    repo: repository.name,
+    owner: repository.owner.login,
+    branch: pullRequest.head.ref,
+  };
+
   try {
-    const commited = await runSpotless(repository, pullRequest.head.ref, user);
+    const commited = await runSpotless(subject, repository.clone_url, user);
 
     if (commited) {
       await react(octokit, user, { comment, repository }, Reaction.THUMBS_UP);

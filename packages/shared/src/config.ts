@@ -1,3 +1,5 @@
+import { tmpdir } from "node:os";
+
 export function env(key: string) {
   return process.env[key];
 }
@@ -6,6 +8,12 @@ export function requireEnv(key: string) {
   const value = env(key);
   if (value) return value;
   throw new Error(`environment variable '${key}' missing`);
+}
+
+export function requirePath(key: string) {
+  const value = requireEnv(key);
+  if (value === ":temp:") return tmpdir();
+  return value;
 }
 
 export function intEnv(key: string) {

@@ -4,6 +4,7 @@ import {
   intEnv,
   requireEnv,
   requireFile,
+  requirePath,
 } from "@pssbletrngle/workflows-shared/config";
 
 const dev = process.env.NODE_ENV !== "production";
@@ -13,6 +14,11 @@ if (dev) {
   dotenv.config({ path: [".env.dev", ".env.local"] });
 }
 
+// github uses the default redirect url configured in the app if none is provided
+const redirectUrl = dev
+  ? "https://dev.workflows.somethingcatchy.net/metadata/callback"
+  : undefined;
+
 export default {
   dev,
   app: {
@@ -21,6 +27,7 @@ export default {
     oauth: {
       clientId: requireEnv("GITHUB_OAUTH_CLIENT_ID"),
       clientSecret: requireEnv("GITHUB_OAUTH_CLIENT_SECRET"),
+      redirectUrl,
     },
   },
   webhooks: {
@@ -30,12 +37,9 @@ export default {
     port: intEnv("PORT") ?? 8080,
   },
   git: {
-    cloneDir: requireEnv("GIT_CLONE_DIR"),
+    cloneDir: requirePath("GIT_CLONE_DIR"),
   },
-  redis: {
-    host: env("REDIS_HOST") ?? "localhost",
-    port: intEnv("REDIS_PORT") ?? 6379,
-  },
+  mongo: {},
   log: {
     level: env("LOG_LEVEL") ?? "info",
   },

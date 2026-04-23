@@ -1,5 +1,5 @@
 import type { CreateTokenInterface } from "@octokit/oauth-app";
-import type { Repository } from "@pssbletrngle/workflows-types";
+import type { GithubRepository } from "@pssbletrngle/workflows-types";
 import cookieParser from "cookie-parser";
 import type { Request, RequestHandler, Response } from "express";
 import type { ParamsDictionary, Query } from "express-serve-static-core";
@@ -40,11 +40,12 @@ type CommonContext = {
 
 export type OAuthContext = CommonContext & {
   token: string;
+  userId: string;
 };
 
 export type InstallationContext = CommonContext & {
   installation: { id: number };
-  repository: Repository;
+  repository: GithubRepository;
 };
 
 export type AuthenticatedContext = OAuthContext | InstallationContext;
@@ -78,6 +79,9 @@ function createHandler(strategy: AuthenticationStrategy): AuthenticatedHandler {
     if (token) {
       res.locals.token = token;
       res.locals.octokit = new Octokit({ auth: token, log: logger });
+      const { data: user } =
+        await res.locals.octokit.rest.users.getAuthenticated();
+      res.locals.userId = user.login;
       return next();
     }
 

@@ -1,0 +1,23 @@
+---
+import {
+  createId,
+  createPath,
+  createTopic,
+} from "@pssbletrngle/workflows-shared/topic";
+import type { RepoSearch } from "@pssbletrngle/workflows-types";
+
+const subject = (await Astro.request.json()) as RepoSearch;
+
+await Astro.locals.api.submit("refresh", subject);
+
+export const partial = true;
+---
+
+<div
+  hx-trigger={`sse:${createTopic("repository_updated", subject)}`}
+  hx-get={`/metadata/partial/${createPath(subject, "panel")}`}
+  hx-swap="outerHTML"
+  hx-target-override={`#${createId("repo", subject)}`}
+>
+  Loading...
+</div>

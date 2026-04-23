@@ -1,9 +1,8 @@
 import { notNull } from "@pssbletrngle/workflows-shared/util";
 import type { RepoSearchWithBranch } from "@pssbletrngle/workflows-types";
-import { Check } from "@pssbletrngle/workflows-types/metadata";
 import type { Octokit } from "octokit";
 import logger from "../../logger";
-import { saveChecks } from "../cache";
+import { saveChecks } from "../database";
 
 const BLOCKING_RULE_TYPES = ["pull_request", "required_status_checks"];
 
@@ -41,7 +40,7 @@ export default async function checkProtection(
   );
 
   await saveChecks(repo, {
-    [Check.BRANCH_PROTECTED]: enabled.length > 0,
-    [Check.APP_NOT_BLOCKED]: blocking.length === 0,
+    isProtected: enabled.length > 0,
+    canModify: blocking.length === 0,
   });
 }

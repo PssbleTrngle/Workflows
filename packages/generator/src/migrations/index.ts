@@ -3,7 +3,7 @@ import { format } from "prettier";
 import type { ConfigSchema } from "../config";
 import type { MetadataContext } from "../context";
 import { configPath } from "../files";
-import migerations_1_0 from "./1_0";
+import migrations_1_0 from "./1_0";
 
 type SchemaVersion = { major: number; minor: number };
 
@@ -29,7 +29,7 @@ export type Migration = (
 ) => Partial<ConfigSchema> | Promise<Partial<ConfigSchema>>;
 
 const migrations: Record<`${number}.${number}`, Migration[]> = {
-  "1.0": migerations_1_0,
+  "1.0": migrations_1_0,
 };
 
 export const migrateConfig: Migration = async (config, context) => {
@@ -40,7 +40,7 @@ export const migrateConfig: Migration = async (config, context) => {
     .flatMap(([_, migrations]) => migrations);
 
   context.logger.info(
-    `running ${neededMigrations.length} migerations for config`,
+    `running ${neededMigrations.length} migrations for config`,
     { repo: context.target },
   );
 

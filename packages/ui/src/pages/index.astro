@@ -1,57 +1,32 @@
 ---
-import type {
-  RepositoryStatusResult,
-  StatusResult,
-} from "@pssbletrngle/workflows-types/metadata";
-import Panel from "../components/Panel.astro";
+import Row from "@/components/Row.astro";
+import type { Page } from "@pssbletrngle/workflows-types";
+import type { Repository } from "@pssbletrngle/workflows-types/metadata";
 import Layout from "../layout.astro";
 
 const { api } = Astro.locals;
 
-// TODO validate?
-const page = Number.parseInt(Astro.url.searchParams.get("page") || "1");
-
-async function listStatuses(): Promise<RepositoryStatusResult[]> {
-  const entries = await api.request<StatusResult[]>(`status?page=${page}`);
-
-  const map: Record<string, Record<string, Omit<StatusResult, "search">>> = {};
-
-  entries.forEach(({ search, ...status }) => {
-    const repository = `${search.owner}/${search.repo}`;
-    if (!(repository in map)) map[repository] = {};
-    map[repository][search.branch] = status;
-  });
-
-  return Object.entries(map).map(([key, status]) => {
-    const [owner, repo] = key.split("/");
-    return {
-      status,
-      subject: { owner, repo },
-    };
-  });
-}
-
-const statuses = await listStatuses();
+const { entries: repositories } =
+  await api.request<Page<Repository>>("repository");
 ---
 
 <Layout>
-  <h1>Welcome</h1>
-  <ul>
-    {statuses.map((props) => <Panel {...props} />)}
+  <ul class="repositories">
+    {repositories.map((props) => <Row {...props} />)}
   </ul>
 </Layout>
 
 <style scoped>
-  ul {
+  .repositories {
     list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
 
-    width: 90vw;
-    max-width: 1600px;
+    display: grid;
 
-    gap: 20px;
-    padding: 10px;
+    grid-template:
+      "icon name branch status checks setup branchActions actions"
+      / 50px 1fr 250px 2em 4em 10em;
+
+    column-gap: 1em;
+    row-gap: 0.5em;
   }
 </style>

@@ -1,0 +1,100 @@
+---
+import { formatAgo } from "@/lib/time";
+import {
+  createId,
+  createPath,
+  createTopic,
+} from "@pssbletrngle/workflows-shared/topic";
+import type {
+  RepoSearch,
+  RepoSearchWithBranch,
+} from "@pssbletrngle/workflows-types";
+import type {
+  Branch,
+  TestResult,
+  TestStatus,
+} from "@pssbletrngle/workflows-types/metadata";
+import type { HTMLAttributes } from "astro/types";
+
+type Props = Branch &
+  HTMLAttributes<"li"> & {
+    repo: RepoSearch;
+  } & {
+    result: TestResult;
+  };
+
+function statusIcon(status: TestStatus): string {
+  switch (status) {
+    case "in_progress":
+      return "🏃‍♂️";
+    case "waiting":
+    case "queued":
+    case "pending":
+    case "requested":
+      return "⏳";
+
+    case "action_required":
+    case "timed_out":
+      return "⚠️";
+
+    case "failure":
+      return "🔥";
+
+    case "success":
+      return "✅";
+
+    default:
+      return "❓";
+  }
+}
+
+const { repo, ref, result, ...props } = Astro.props;
+
+const subject: RepoSearchWithBranch = { ...repo, branch: ref };
+
+const [, type = "?", version = "?"] = ref.split("/");
+
+const testStatus = result.conclusion ?? result.status;
+
+const url = `https://github.com/${subject.owner}/${subject.repo}/tree/${subject.branch}`;
+
+const date = new Date(result.at);
+---
+
+<li
+  hx-trigger={`sse:${createTopic("branch_updated", subject)}`}
+  hx-get={`/metadata/partial/${createPath(subject, "test-case")}`}
+  hx-swap="outerHTML"
+  class:list={["test-case", props.class]}
+  id={createId("test-case", subject)}
+  {...props}
+>
+  <a href={url}>{type}@{version}</a>
+  <span class="status" title={testStatus}>{statusIcon(testStatus)}</span>
+  <span title={`${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}>
+    {formatAgo(date)}
+  </span>
+</li>
+
+<style scoped>
+  .test-case {
+    background: var(--bg-2);
+
+    border-radius: 10px;
+    padding: 1em;
+
+    display: grid;
+    grid-template:
+      "ref status date"
+      / 1fr auto auto;
+
+    column-gap: 1em;
+
+    align-items: center;
+
+    .status {
+      user-select: none;
+      cursor: help;
+    }
+  }
+</style>

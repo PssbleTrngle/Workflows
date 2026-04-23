@@ -1,18 +1,16 @@
+import type { RepoSearch } from "@pssbletrngle/workflows-types";
+import { randomUUIDv7 } from "bun";
 import { json, Router } from "express";
 import { type App } from "octokit";
 import z from "zod";
+import config from "../config";
 import { cutoff } from "../error";
 import { installationContext } from "../installation";
 import validate from "../validation";
 import { authorize, type AuthenticatedResponse } from "./auth";
-import { getChecks, getStatus, getStatusesByRepository } from "./cache";
 import check from "./checks";
 import { eventDispatcher } from "./events";
-
-const paginationQuery = z.object({
-  page: z.coerce.number().int().positive().default(1),
-  pageSize: z.coerce.number().int().positive().default(20),
-});
+import repositoryRouter from "./routes/repository";
 
 export default function createApiRoutes(app: App) {
   const router = Router();
@@ -22,62 +20,58 @@ export default function createApiRoutes(app: App) {
 
   router.use("/sse", eventDispatcher.handler);
 
-  router.get(
-    "/:owner/:repo/status",
-    async (req, res: AuthenticatedResponse) => {
-      // TODO authorization guard
-      const status = await getStatusesByRepository(req.params);
-      res.json({ status });
-    },
-  );
+  router.use("/repository", repositoryRouter());
 
-  router.get(
-    "/:owner/:repo/:branch/status",
-    async (req, res: AuthenticatedResponse) => {
-      // TODO authorization guard
-      const [status, checks] = await Promise.all([
-        getStatus(req.params),
-        getChecks(req.params),
-      ]);
+  if (config.dev) {
+    router.get("/setup", async (_, res: AuthenticatedResponse) => {
+      const { octokit } = res.locals;
 
-      res.json({ status, checks });
-    },
-  );
+      // not used yet, could be used for tracing
+      const uuid = randomUUIDv7();
+      res.json({ message: "setup started", uuid });
 
-  router.get(
-    "/status",
-    validate({ query: paginationQuery }),
-    async (req, res: AuthenticatedResponse) => {
-      const { data } =
-        await res.locals.octokit.rest.repos.listForAuthenticatedUser({
-          per_page: req.query.pageSize,
-          sort: "pushed",
-          page: req.query.page,
-        });
+      for await (const { data: repositories } of octokit.paginate.iterator(
+        octokit.rest.repos.listForAuthenticatedUser,
+        { sort: "pushed" },
+      )) {
+        for (const repository of repositories) {
+          if (repository.fork) continue;
 
-      const statuses = await Promise.all(
-        data.map((it) =>
-          getStatusesByRepository({ repo: it.name, owner: it.owner.login }),
-        ),
-      );
-      res.json(statuses.flat());
-    },
-  );
+          const subject: RepoSearch = {
+            owner: repository.owner.login,
+            repo: repository.name,
+          };
 
-  const repoParams = z.object({
-    owner: z.string().nonempty(),
-    repo: z.string().nonempty(),
-    branch: z.string().nonempty().optional(),
-  });
+          try {
+            const context = await installationContext(app, subject);
+            await check(subject, context);
+          } catch {
+            // not installed on repository
+          }
+        }
+      }
+    });
+  }
 
   router.post(
     "/refresh",
-    validate({ body: repoParams }),
+    validate({
+      body: z.object({
+        owner: z.string().nonempty(),
+        repo: z.string().nonempty(),
+        branch: z.string().nonempty().optional(),
+      }),
+    }),
     async (req, res: AuthenticatedResponse) => {
       const context = await installationContext(app, req.body);
-      const status = await check(req.body, context);
 
-      res.json({ success: true, status });
+      // TODO authorization guard
+
+      // not used yet, could be used for tracing
+      const uuid = randomUUIDv7();
+      res.json({ message: "refresh started", uuid });
+
+      check(req.body, context);
     },
   );
 

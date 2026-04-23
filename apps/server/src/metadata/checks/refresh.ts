@@ -4,14 +4,14 @@ import type { InstallationContext } from "../auth";
 import generateMetadata from "../generator";
 
 export default async function refresh(
-  search: RepoSearchWithBranch,
+  subject: RepoSearchWithBranch,
   context: InstallationContext,
 ) {
   const user = await createGitUser(context);
 
   return await generateMetadata(
-    context.repository,
-    search.branch,
+    subject,
+    context.repository.clone_url,
     context.octokit,
     user,
   );

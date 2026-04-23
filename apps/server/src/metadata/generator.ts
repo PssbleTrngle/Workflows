@@ -5,17 +5,14 @@ import {
   type MetadataContext,
 } from "@pssbletrngle/github-meta-generator";
 import meta from "@pssbletrngle/github-meta-generator/meta";
-import type {
-  RepoSearchWithBranch,
-  Repository,
-} from "@pssbletrngle/workflows-types";
+import type { RepoSearchWithBranch } from "@pssbletrngle/workflows-types";
 import type { RepositoryStatus } from "@pssbletrngle/workflows-types/metadata";
 import type { Octokit } from "octokit";
 import type { ActionResult } from "../git";
 import { cloneAndModify, type GitUser } from "../git";
 import logger from "../logger";
 import { createMetadataContext } from "./branches";
-import { deleteCache, saveMetadata, saveStatus } from "./cache";
+import { deleteBranch, saveMeta, saveStatus } from "./database";
 
 export async function migrateMetadataConfig(
   repositoryPath: string,
@@ -43,60 +40,54 @@ export function metadataBranch(branch: string) {
 }
 
 export default async function generateMetadata(
-  repository: Repository,
-  branch: string,
+  subject: RepoSearchWithBranch,
+  cloneUrl: string,
   octokit: Octokit,
   user: GitUser,
 ) {
-  const repo: RepoSearchWithBranch = {
-    owner: repository.owner.login,
-    repo: repository.name,
-    branch,
-  };
-
   try {
-    const context = await createMetadataContext(octokit, repo);
+    const context = await createMetadataContext(octokit, subject);
 
     if (!context) {
-      deleteCache(repo);
+      deleteBranch(subject);
       return;
     }
 
-    await saveStatus(repo, "running");
+    await saveStatus(subject, "running");
 
     const checkout =
       context.config.strategy === "pull_request"
-        ? metadataBranch(branch)
+        ? metadataBranch(subject.branch)
         : undefined;
 
     const result = await cloneAndModify(
-      repository,
+      subject,
+      cloneUrl,
       user,
       [
         (path) => migrateMetadataConfig(path, context),
         (path) => updateMetadataFiles(path, context),
       ],
-      branch,
       checkout,
     );
 
     const doneState: RepositoryStatus = checkout ? "opened-pr" : "up-to-date";
 
-    await saveMetadata(repo, meta);
+    await saveMeta(subject, { ...meta, generatedAt: Date.now() });
 
     if (!result) {
-      await saveStatus(repo, doneState);
+      await saveStatus(subject, doneState);
       return;
     }
 
     if (checkout) {
       const search = {
-        ...repo,
+        ...subject,
         head: checkout,
       };
       const { data: openPRs } = await octokit.rest.pulls.list({
         ...search,
-        head: `${repo.owner}:${checkout}`,
+        head: `${subject.owner}:${checkout}`,
         state: "open",
       });
       if (openPRs.length) return;
@@ -110,13 +101,13 @@ export default async function generateMetadata(
       octokit.log.info("-> created pull request");
     }
 
-    await saveStatus(repo, doneState);
+    await saveStatus(subject, doneState);
 
-    octokit.log.info(`<- finished metafile update for ${repository.full_name}`);
+    octokit.log.info(`<- finished metafile update`, subject);
 
     return doneState;
   } catch (e) {
-    await saveStatus(repo, "failed");
+    await saveStatus(subject, "failed");
     throw e;
   }
 }

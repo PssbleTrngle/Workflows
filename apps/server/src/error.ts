@@ -1,4 +1,6 @@
 import type { ErrorRequestHandler, RequestHandler } from "express";
+import config from "./config";
+import logger from "./logger";
 
 export class ApiError extends Error {
   constructor(
@@ -14,6 +16,11 @@ export const errorHandler: ErrorRequestHandler = (error, _, res, next) => {
 
   const status = error instanceof ApiError ? error.status : 500;
   const message = error instanceof Error ? error.message : "an error occurred";
+
+  if (config.dev || status > 500) {
+    logger.error(error);
+  }
+
   res.status(status).json({ error: message });
 };
 

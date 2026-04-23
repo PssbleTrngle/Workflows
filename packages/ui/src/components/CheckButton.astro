@@ -1,0 +1,46 @@
+---
+import { type RepoSearch } from "@pssbletrngle/workflows-types";
+import StaggeredSelect from "./StaggeredSelect.astro";
+
+const dialogId = "check-repo-dialog";
+
+const { data: repos } =
+  await Astro.locals.octokit.rest.repos.listForAuthenticatedUser({
+    sort: "pushed",
+  });
+
+const options = repos.map<RepoSearch>((it) => ({
+  owner: it.owner.login,
+  repo: it.name,
+}));
+---
+
+<button command="show-modal" commandfor={dialogId}>Check Repository</button>
+
+<dialog id={dialogId}>
+  <form
+    hx-post="/metadata/action/check"
+    hx-swap="beforeend"
+    hx-target=".status-list"
+    method="dialog"
+  >
+    <StaggeredSelect class="selects" options={options} />
+    <button type="submit">Check</button>
+    <button type="button" command="close" commandfor={dialogId}>Close</button>
+  </form>
+</dialog>
+
+<style scoped>
+  form {
+    display: grid;
+    gap: 1em;
+
+    .selects {
+      grid-area: selects;
+    }
+
+    grid-template:
+      "selects selects"
+      "submit cancel";
+  }
+</style>

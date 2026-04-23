@@ -10,10 +10,11 @@
     "format": "biome format --write src"
   },
   "dependencies": {
-    "ioredis": "^5.10.0",
-    "@types/bun": "latest",
     "@pssbletrngle/workflows-configs": "workspace:*",
-    "@pssbletrngle/workflows-shared": "workspace:*"
+    "@pssbletrngle/workflows-shared": "workspace:*",
+    "@pssbletrngle/workflows-types": "workspace:*",
+    "@types/bun": "latest",
+    "mongoose": "^9.4.1"
   },
   "peerDependencies": {
     "typescript": "^5"
