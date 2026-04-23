@@ -6,4 +6,5 @@ export default {
   user: env("MONGO_USER") ?? "workflows",
   pass: env("MONGO_PASS") ?? "workflows",
   database: env("MONGO_DB") ?? "workflows",
+  authSource: env("MONGO_AUTH_SOURCE") ?? "admin",
 };
