@@ -23,6 +23,7 @@
       "packages/*"
    ],
    "dependencies": {
-      "@possible_triangle/tunnel-client": "^1.1.17"
+      "@possible_triangle/tunnel-client": "^1.1.17",
+      "@types/bun": "^1.3.13"
    }
 }
