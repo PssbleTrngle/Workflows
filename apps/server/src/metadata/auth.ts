@@ -69,6 +69,10 @@ function extractToken(req: Request) {
     return credentials;
   }
 
+  logger.debug("no authorization data received", {
+    header: req.headers,
+  });
+
   return null;
 }
 
