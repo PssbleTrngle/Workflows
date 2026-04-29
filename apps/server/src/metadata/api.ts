@@ -4,6 +4,7 @@ import { json, Router } from "express";
 import { type App } from "octokit";
 import z from "zod";
 import config from "../config";
+import corsMiddleware from "../cors";
 import { cutoff } from "../error";
 import { installationContext } from "../installation";
 import validate from "../validation";
@@ -78,6 +79,6 @@ export default function createApiRoutes(app: App) {
   router.use(cutoff);
 
   const apiRouter = Router();
-  apiRouter.use("/api", router);
+  apiRouter.use("/api", corsMiddleware, router);
   return apiRouter;
 }

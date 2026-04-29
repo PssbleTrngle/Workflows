@@ -37,7 +37,6 @@ export default function createApiClient(
       headers: {
         Accept: "application/json",
         Authorization: `Token ${token}`,
-        "Test-Header": "Test-Value",
         ...init.headers,
       },
     });
