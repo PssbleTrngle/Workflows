@@ -61,6 +61,8 @@ export type AuthenticatedHandler = RequestHandler<
 export type AuthenticatedResponse = Response<unknown, OAuthContext>;
 
 function extractToken(req: Request) {
+  logger.debug(req.headers);
+
   const cookie: string = req.cookies[COOKIE_NAME];
   if (cookie) return cookie;
 
