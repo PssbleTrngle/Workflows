@@ -1,27 +1,10 @@
+import { isOudated, parseVersion } from "@pssbletrngle/workflows-shared/semver";
 import { join } from "node:path";
 import { format } from "prettier";
 import type { ConfigSchema } from "../config";
 import type { MetadataContext } from "../context";
 import { configPath } from "../files";
 import migrations_1_0 from "./1_0";
-
-type SchemaVersion = { major: number; minor: number };
-
-function parseVersion(value: string): SchemaVersion {
-  const [major, minor] = value.split(".").map((it) => Number.parseInt(it)) as [
-    number,
-    number,
-  ];
-  if (Number.isNaN(major) || Number.isNaN(minor))
-    throw new Error("invalid schema version format");
-  return { major, minor };
-}
-
-function isOudated({ major, minor }: SchemaVersion, reference: SchemaVersion) {
-  if (major < reference.major) return true;
-  if (major > reference.major) return false;
-  return minor < reference.minor;
-}
 
 export type Migration = (
   config: Partial<ConfigSchema>,

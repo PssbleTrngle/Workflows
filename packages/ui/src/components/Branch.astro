@@ -14,6 +14,7 @@ import type {
   RepositoryStatus,
 } from "@pssbletrngle/workflows-types/metadata";
 import type { HTMLAttributes } from "astro/types";
+import GradleHelper from "./GradleHelper.astro";
 import Refresh from "./Refresh.astro";
 
 type Props = Branch &
@@ -79,7 +80,13 @@ const url = `https://github.com/${subject.owner}/${subject.repo}/tree/${subject.
       ))
     }
   </span>
-  {setup?.gradleHelper ? <span>v{setup.gradleHelper}</span> : <span />}
+  {
+    setup?.gradleHelper ? (
+      <GradleHelper current={setup.gradleHelper} />
+    ) : (
+      <span />
+    )
+  }
   <Refresh subject={subject} disabled={status === "running"} />
 </li>
 

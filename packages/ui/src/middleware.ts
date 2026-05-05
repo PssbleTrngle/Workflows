@@ -4,6 +4,8 @@ import createApiClient from "./lib/api";
 
 const COOKIE = "webhooks-session";
 
+const isDev = process.env.NODE_ENV === "development";
+
 function getProtocol(request: Request) {
   const forwarded = request.headers.get("x-forwarded-proto");
   if (forwarded) return `${forwarded}:`;
@@ -11,12 +13,24 @@ function getProtocol(request: Request) {
   return url.protocol;
 }
 
-const initializeContext = defineMiddleware(({ locals, request }, next) => {
-  const protocol = getProtocol(request);
+function getHost(request: Request) {
+  const forwarded = request.headers.get("x-forwarded-host");
+  if (forwarded) return forwarded;
   const host = request.headers.get("host");
-  if (!host) throw new Error("host header missing, cannot create api client");
-  const origin = `${protocol}//${host}`;
-  locals.origin = origin;
+  if (host) return host;
+
+  throw new Error("host header missing, cannot create api client");
+}
+
+function getOrigin(request: Request) {
+  if (isDev) return "http://localhost:4321";
+  const protocol = getProtocol(request);
+  const host = getHost(request);
+  return `${protocol}//${host}`;
+}
+
+const initializeContext = defineMiddleware(({ locals, request }, next) => {
+  locals.origin = getOrigin(request);
   return next();
 });
 
@@ -28,7 +42,9 @@ const authorize = defineMiddleware(({ locals, cookies }, next) => {
     return Response.json({ error: "cookie missing" }, { status: 401 });
   }
 
-  locals.octokit = new Octokit({ auth: token });
+  locals.octokit = new Octokit({
+    auth: token,
+  });
   locals.api = createApiClient(locals.origin, token);
 
   return next();

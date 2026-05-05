@@ -5,7 +5,8 @@
     "./config": "./src/config.ts",
     "./topic": "./src/topic.ts",
     "./util": "./src/util.ts",
-    "./lock": "./src/lock.ts"
+    "./lock": "./src/lock.ts",
+    "./semver": "./src/semver.ts"
   },
   "scripts": {
     "check-types": "tsc --noEmit",

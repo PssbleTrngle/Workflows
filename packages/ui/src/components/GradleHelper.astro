@@ -1,0 +1,46 @@
+---
+import { fetchLatestGradleHelper } from "@/lib/github";
+import { isOudated, parseVersion } from "@pssbletrngle/workflows-shared/semver";
+
+type Props = { current: string };
+
+const { current } = Astro.props;
+const latest = await fetchLatestGradleHelper(Astro.locals.octokit);
+
+const semver = parseVersion(current);
+const outdated = isOudated(semver, latest);
+const experimental = isOudated(latest, semver);
+
+const info = outdated
+  ? {
+      title: "oudated",
+      icon: "🪦",
+    }
+  : experimental
+    ? {
+        title: "unstable",
+        icon: "🧪",
+      }
+    : null;
+
+// TODO don't hard-code?
+const url = `https://github.com/PssbleTrngle/GradleHelper/tree/v${current}`;
+---
+
+<span>
+  <a href={url}>v{current}</a>
+  {
+    info && (
+      <span class="icon" title={info.title}>
+        {info.icon}
+      </span>
+    )
+  }
+</span>
+
+<style scoped>
+  .icon {
+    cursor: default;
+    user-select: help;
+  }
+</style>
