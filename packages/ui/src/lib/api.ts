@@ -30,7 +30,6 @@ export default function createApiClient(
   token: string,
 ): ApiClient {
   async function request<T>(endpoint: string, init: RequestInit = {}) {
-    console.log("using origin", origin);
     const url = new URL(endpoint, `${origin}/metadata/api/`);
 
     const response = await fetch(url, {

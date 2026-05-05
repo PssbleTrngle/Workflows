@@ -7,6 +7,7 @@ const COOKIE = "webhooks-session";
 const initializeContext = defineMiddleware(({ locals, request }, next) => {
   console.log("requesting at ", request.url);
   const { protocol } = new URL(request.url);
+  console.log(request.headers);
   const host = request.headers.get("host");
   if (!host) throw new Error("host header missing, cannot create api client");
   const origin = `${protocol}//${host}`;
