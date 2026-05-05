@@ -10,10 +10,12 @@
     "format": "biome format --write src"
   },
   "dependencies": {
-    "@types/bun": "latest",
-    "dockerode": "^4.0.9",
+    "@discordjs/builders": "^1.14.1",
     "@pssbletrngle/workflows-configs": "workspace:*",
-    "@types/dockerode": "^4.0.1"
+    "@types/bun": "latest",
+    "@types/dockerode": "^4.0.1",
+    "discord-api-types": "^0.38.47",
+    "dockerode": "^4.0.9"
   },
   "peerDependencies": {
     "typescript": "^5"

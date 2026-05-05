@@ -64,8 +64,6 @@ function extractToken(req: Request) {
   const cookie: string = req.cookies[COOKIE_NAME];
   if (cookie) return cookie;
 
-  logger.debug(req.headers);
-
   const [type, credentials] = req.headers.authorization?.split(" ") ?? [];
   if (type === "Token" && credentials) {
     return credentials;
