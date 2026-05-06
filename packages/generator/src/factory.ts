@@ -1,7 +1,7 @@
 import type { HelperDeclareSpec, RuntimeOptions } from "handlebars";
 import { sep as posixSep } from "node:path/posix";
 import { sep as winSep } from "node:path/win32";
-import { format } from "prettier";
+import { format, type BuiltInParserName } from "prettier";
 import { loadTemplate } from "../dist/templates";
 import type { Context, Generator, TemplateData } from "./generator";
 import helpers from "./helpers";
@@ -30,10 +30,12 @@ export default function createGenerator(
   {
     defaultData = {},
     header = true,
+    commentStyle,
     ...options
   }: {
     defaultData?: TemplateData;
     header?: boolean;
+    commentStyle?: BuiltInParserName;
   } & RuntimeOptions = {},
 ): Generator {
   return async (key, { glob, ...data }) => {
@@ -49,7 +51,7 @@ export default function createGenerator(
         },
       },
     );
-    if (header) generated = await withHeader(generated, parser);
+    if (header) generated = await withHeader(generated, commentStyle ?? parser);
     if (parser) return format(generated, { parser });
     return generated;
   };
