@@ -30,6 +30,8 @@ describe("minecraft workflow generation", () => {
     acceptor.expect(".github/ISSUE_TEMPLATE/config.yml").not.toBeUndefined();
     acceptor.expect("LICENSE.md").not.toBeUndefined();
 
+    acceptor.expect(".editorconfig").not.toBeUndefined();
+
     acceptor.expectNothingElse();
   });
 
@@ -45,6 +47,7 @@ describe("minecraft workflow generation", () => {
     acceptor.expect(".github/workflows/test.yml").not.toBeUndefined();
     acceptor.expect(".github/workflows/labeler.yml").not.toBeUndefined();
     acceptor.expect("LICENSE.md").not.toBeUndefined();
+    acceptor.expect(".editorconfig").not.toBeUndefined();
 
     acceptor.expectNothingElse();
   });
