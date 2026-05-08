@@ -22,6 +22,7 @@
     "prompts": "^2.4.2",
     "@pssbletrngle/workflows-configs": "workspace:*",
     "@pssbletrngle/workflows-shared": "workspace:*",
+    "@pssbletrngle/workflows-types": "workspace:*",
     "@types/prompts": "^2.4.9"
   },
   "peerDependencies": {

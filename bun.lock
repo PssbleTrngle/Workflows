@@ -23,6 +23,7 @@
         "@pssbletrngle/github-meta-generator": "workspace:*",
         "@pssbletrngle/workflows-configs": "workspace:*",
         "@pssbletrngle/workflows-shared": "workspace:*",
+        "@pssbletrngle/workflows-types": "workspace:*",
         "@types/bun": "latest",
         "@types/prompts": "^2.4.9",
         "prompts": "^2.4.2",
