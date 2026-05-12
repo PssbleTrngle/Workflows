@@ -1,0 +1,25 @@
+{
+  "name": "@pssbletrngle/issue-labeler",
+  "module": "src/main.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "cli": "bun run src/main.ts",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src",
+    "format": "biome format --write src",
+    "build": "bun build --outdir ./dist --target=bun --sourcemap=linked --env disable src/main.ts"
+  },
+  "peerDependencies": {
+    "@octokit/openapi-types": "^27.0.0",
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@pssbletrngle/workflows-configs": "workspace:*",
+    "@pssbletrngle/workflows-shared": "workspace:*",
+    "@pssbletrngle/workflows-types": "workspace:*",
+    "@types/bun": "latest",
+    "dotenv": "^17.2.3",
+    "octokit": "^5.0.5"
+  }
+}

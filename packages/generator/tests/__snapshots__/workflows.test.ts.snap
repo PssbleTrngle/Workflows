@@ -255,7 +255,7 @@ jobs:
           cache-read-only: \${{ github.event_name != 'push' }}
 
       - name: Build and upload
-        run: ./gradlew build publish
+        run: ./gradlew build upload
         env:
           CURSEFORGE_TOKEN: \${{ secrets.CURSEFORGE_TOKEN }}
           CHANGELOG: \${{ github.event.release.body }}
@@ -301,7 +301,7 @@ jobs:
           cache-read-only: \${{ github.event_name != 'push' }}
 
       - name: Build and upload
-        run: ./gradlew build publish
+        run: ./gradlew build upload
         env:
           MODRINTH_TOKEN: \${{ secrets.MODRINTH_TOKEN }}
           CHANGELOG: \${{ github.event.release.body }}
@@ -347,7 +347,7 @@ jobs:
           cache-read-only: \${{ github.event_name != 'push' }}
 
       - name: Build and upload
-        run: ./gradlew build publish
+        run: ./gradlew build upload
         env:
           CHANGELOG: \${{ github.event.release.body }}
           RELEASE_VERSION: \${{ github.event.release.tag_name }}
@@ -393,7 +393,7 @@ jobs:
           cache-read-only: \${{ github.event_name != 'push' }}
 
       - name: Build and upload
-        run: ./gradlew build publish
+        run: ./gradlew build upload
         env:
           CHANGELOG: \${{ github.event.release.body }}
           RELEASE_VERSION: \${{ github.event.release.tag_name }}

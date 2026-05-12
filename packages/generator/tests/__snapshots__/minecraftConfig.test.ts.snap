@@ -38,7 +38,7 @@ jobs:
           cache-read-only: \${{ github.event_name != 'push' }}
 
       - name: Build and upload
-        run: ./gradlew build publish
+        run: ./gradlew build upload
         env:
           MODRINTH_TOKEN: \${{ secrets.MODRINTH_TOKEN }}
           CURSEFORGE_TOKEN: \${{ secrets.CURSEFORGE_TOKEN }}

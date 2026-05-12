@@ -46,6 +46,21 @@
         "typescript": "^5",
       },
     },
+    "apps/labeler": {
+      "name": "@pssbletrngle/issue-labeler",
+      "dependencies": {
+        "@pssbletrngle/workflows-configs": "workspace:*",
+        "@pssbletrngle/workflows-shared": "workspace:*",
+        "@pssbletrngle/workflows-types": "workspace:*",
+        "@types/bun": "latest",
+        "dotenv": "^17.2.3",
+        "octokit": "^5.0.5",
+      },
+      "peerDependencies": {
+        "@octokit/openapi-types": "^27.0.0",
+        "typescript": "^5",
+      },
+    },
     "apps/server": {
       "name": "@pssbletrngle/workflows-server",
       "dependencies": {
@@ -511,6 +526,8 @@
     "@pssbletrngle/github-meta-generator": ["@pssbletrngle/github-meta-generator@workspace:packages/generator"],
 
     "@pssbletrngle/github-meta-generator-cli": ["@pssbletrngle/github-meta-generator-cli@workspace:apps/cli"],
+
+    "@pssbletrngle/issue-labeler": ["@pssbletrngle/issue-labeler@workspace:apps/labeler"],
 
     "@pssbletrngle/workflows-configs": ["@pssbletrngle/workflows-configs@workspace:packages/config"],
 

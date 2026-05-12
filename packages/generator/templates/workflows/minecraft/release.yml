@@ -26,7 +26,7 @@ jobs:
 
 
          - name: Build and upload
-           run: ./gradlew build publish
+           run: ./gradlew build upload
            env:
               {{#if upload.modrinth}}
               MODRINTH_TOKEN: {{ var 'secrets.MODRINTH_TOKEN' }}
