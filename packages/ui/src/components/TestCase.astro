@@ -5,23 +5,20 @@ import {
   createPath,
   createTopic,
 } from "@pssbletrngle/workflows-shared/topic";
+import { notNull } from "@pssbletrngle/workflows-shared/util";
 import type {
   RepoSearch,
   RepoSearchWithBranch,
 } from "@pssbletrngle/workflows-types";
 import type {
-  Branch,
-  TestResult,
+  TestedSetup,
   TestStatus,
 } from "@pssbletrngle/workflows-types/metadata";
 import type { HTMLAttributes } from "astro/types";
 
-type Props = Branch &
-  HTMLAttributes<"li"> & {
-    repo: RepoSearch;
-  } & {
-    result: TestResult;
-  };
+type Props = HTMLAttributes<"li"> & {
+  repo: RepoSearch;
+} & TestedSetup;
 
 function statusIcon(status: TestStatus): string {
   switch (status) {
@@ -48,17 +45,21 @@ function statusIcon(status: TestStatus): string {
   }
 }
 
-const { repo, ref, result, ...props } = Astro.props;
+const missingStatus: TestStatus = "missing";
 
-const subject: RepoSearchWithBranch = { ...repo, branch: ref };
+const { repo, setup, tests, ...props } = Astro.props;
 
-const [, type = "?", version = "?"] = ref.split("/");
-
-const testStatus = result.conclusion ?? result.status;
-
+const subject: RepoSearchWithBranch = { ...repo, branch: setup.ref };
 const url = `https://github.com/${subject.owner}/${subject.repo}/tree/${subject.branch}`;
 
-const date = new Date(result.at);
+const cases = Object.entries(tests)
+  .map(([key, result]) => {
+    if (!result) return { key, testStatus: missingStatus };
+    const testStatus = result.conclusion ?? result.status;
+    const date = new Date(result.at);
+    return { key, testStatus, date, link: result.link };
+  })
+  .filter(notNull);
 ---
 
 <li
@@ -69,11 +70,26 @@ const date = new Date(result.at);
   id={createId("test-case", subject)}
   {...props}
 >
-  <a href={url}>{type}@{version}</a>
-  <span class="status" title={testStatus}>{statusIcon(testStatus)}</span>
-  <span title={`${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}>
-    {formatAgo(date)}
-  </span>
+  <a href={url}>{setup.type}@{setup.version}</a>
+  {
+    cases.map(({ key, date, testStatus, link }) => (
+      <div>
+        <span class="status" title={`${key} ${testStatus}`}>
+          {statusIcon(testStatus)}
+        </span>
+        {date ? (
+          <a
+            href={link}
+            title={`${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}
+          >
+            {formatAgo(date)}
+          </a>
+        ) : (
+          <i>never</i>
+        )}
+      </div>
+    ))
+  }
 </li>
 
 <style scoped>
@@ -84,17 +100,19 @@ const date = new Date(result.at);
     padding: 1em;
 
     display: grid;
-    grid-template:
-      "ref status date"
-      / 1fr auto auto;
+    grid-template-columns: subgrid;
 
-    column-gap: 1em;
+    grid-column: span 3;
 
     align-items: center;
 
     .status {
       user-select: none;
       cursor: help;
+    }
+
+    i {
+      user-select: none;
     }
   }
 </style>

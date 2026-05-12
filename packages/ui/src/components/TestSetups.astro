@@ -1,0 +1,78 @@
+---
+import TestCase from "@/components/TestCase.astro";
+import type { RepoSearch } from "@pssbletrngle/workflows-types";
+import type {
+  TestedSetup,
+  TestSetup,
+} from "@pssbletrngle/workflows-types/metadata";
+
+export type Props = {
+  subject: RepoSearch;
+  setups: TestedSetup[];
+  groupBy?: keyof TestSetup;
+};
+
+const { subject, setups, groupBy = "type" } = Astro.props;
+
+const grouped = Object.groupBy(setups, (it) => it.setup[groupBy]);
+---
+
+<ul class="groups">
+  {
+    Object.entries(grouped).map(([key, cases]) => (
+      <section class="group">
+        <h2>{key}</h2>
+        <section class="header">
+          <span>setup</span>
+          <span>release</span>
+          <span>build</span>
+        </section>
+        <ul class="cases">
+          {cases?.map((props) => (
+            <TestCase repo={subject} {...props} />
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</ul>
+
+<style scoped>
+  .groups,
+  .cases {
+    list-style: none;
+    display: grid;
+    gap: 1em;
+    padding: 1em;
+  }
+
+  .groups {
+    grid-auto-flow: column;
+    align-items: start;
+
+    .group {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+
+      .header,
+      .cases {
+        display: grid;
+        column-gap: 2em;
+        grid-template-columns: subgrid;
+        grid-column: span 3;
+      }
+
+      .header {
+        text-align: center;
+        opacity: 0.5;
+      }
+
+      h2 {
+        grid-column: span 3;
+
+        text-transform: capitalize;
+        text-align: center;
+      }
+    }
+  }
+</style>

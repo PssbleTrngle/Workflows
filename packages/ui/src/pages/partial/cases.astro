@@ -1,0 +1,18 @@
+---
+import TestSetups from "@/components/TestSetups.astro";
+import { fetchTestSetups } from "@/lib/testResults";
+import type { RepoSearch } from "@pssbletrngle/workflows-types";
+import type { TestSetup } from "@pssbletrngle/workflows-types/metadata";
+
+const data = (await Astro.request.json()) as RepoSearch & {
+  groupBy: keyof TestSetup;
+};
+
+const { groupBy, ...subject } = data;
+
+const setups = await fetchTestSetups(subject, Astro.locals);
+
+export const partial = true;
+---
+
+<TestSetups subject={subject} setups={setups} groupBy={groupBy} />
