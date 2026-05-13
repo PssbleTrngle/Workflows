@@ -9,6 +9,11 @@ const subject: RepoSearch = { owner: "PssbleTrngle", repo: "dye_depot" };
 
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
+const { data: user } = await octokit.rest.users.getAuthenticated();
+
+console.info(`authenticated as ${user.login}`);
+console.info(`checking ${subject.owner}/${subject.repo}...`);
+
 const config = await fetchConfig(octokit, subject);
 if (!config) throw new Error("could not find labeler.yml config in repository");
 
@@ -30,7 +35,7 @@ for await (const { data: issues } of octokit.paginate.iterator(
 
       const missing = labels.filter((it) => !current.includes(it));
       if (missing.length > 0) {
-        console.log("updating labels for", issue.title);
+        console.info("  updating labels for", issue.title);
         await octokit.rest.issues.addLabels({
           ...subject,
           issue_number: issue.number,

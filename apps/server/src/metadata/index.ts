@@ -10,6 +10,7 @@ import logger from "../logger";
 import { createGitUser } from "../user";
 import createApiRoutes from "./api";
 import checkSetup from "./checks/setup";
+import checkViewers from "./checks/viewers";
 import {
   deleteBranch,
   deleteRepository,
@@ -114,7 +115,7 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
     await migrateRepository(from, to);
   });
 
-  hooks.on("repository.transferred", async ({ payload }) => {
+  hooks.on("repository.transferred", async ({ payload, octokit }) => {
     const to: RepoSearch = {
       owner: payload.repository.owner.login,
       repo: payload.repository.name,
@@ -134,6 +135,7 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
     logger.info("repository got transferred", { from, to });
 
     await migrateRepository(from, to);
+    await checkViewers(to, octokit);
   });
 
   hooks.on("repository.deleted", async ({ payload }) => {
@@ -162,8 +164,8 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
   });
 
   hooks.on("create", async ({ payload, octokit }) => {
-    if (payload.ref_type !== "branch") return;
-    const { repository, installation } = payload;
+    const { repository, installation, ref, ref_type } = payload;
+    if (ref_type !== "branch") return;
 
     if (!installation) {
       octokit.log.warn(`installation missing for ${repository.full_name}`);
@@ -171,18 +173,13 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
     }
 
     const subject: RepoSearchWithBranch = {
-      owner: payload.repository.owner.login,
-      repo: payload.repository.name,
-      branch: payload.ref,
+      owner: repository.owner.login,
+      repo: repository.name,
+      branch: ref,
     };
 
     const user = await createGitUser({ repository, installation, octokit });
-    await generateMetadata(
-      subject,
-      payload.repository.clone_url,
-      octokit,
-      user,
-    );
+    await generateMetadata(subject, repository.clone_url, octokit, user);
   });
 }
 
