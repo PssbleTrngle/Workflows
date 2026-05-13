@@ -137,6 +137,7 @@ jobs:
       - name: Analyze
         if: \${{ github.event_name == 'push' }}
         run: ./gradlew sonar
+        continue-on-error: true
         env:
           SONAR_TOKEN: \${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: \${{ secrets.SONAR_HOST_URL }}
