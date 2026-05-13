@@ -5,7 +5,7 @@ import { fetchConfig, matchLabels } from "./matcher";
 
 dotenv.config();
 
-const subject: RepoSearch = { owner: "N1nn1", repo: "dye_depot" };
+const subject: RepoSearch = { owner: "PssbleTrngle", repo: "dye_depot" };
 
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 

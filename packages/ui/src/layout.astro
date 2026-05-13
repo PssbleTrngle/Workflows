@@ -172,17 +172,19 @@ import Indicator from "./components/Indicator.astro";
   </style>
 </html>
 
-<script>
-  import "htmx-ext-json-enc";
-  import "htmx-ext-sse";
-  import "htmx.org";
+<head>
+  <script>
+    import "htmx-ext-json-enc";
+    import "htmx-ext-sse";
+    import "htmx.org";
 
-  document.body.addEventListener("htmx:beforeSwap", ({ detail }) => {
-    const override =
-      detail.requestConfig.elt.getAttribute("hx-target-override");
+    document.body.addEventListener("htmx:beforeSwap", ({ detail }) => {
+      const override =
+        detail.requestConfig.elt.getAttribute("hx-target-override");
 
-    if (override && document.querySelector(override)) {
-      detail.swapOverride = override;
-    }
-  });
-</script>
+      if (override && document.querySelector(override)) {
+        detail.swapOverride = override;
+      }
+    });
+  </script>
+</head>
