@@ -1,6 +1,7 @@
 import type { Meta } from "@pssbletrngle/github-meta-generator";
 import currentMeta from "@pssbletrngle/github-meta-generator/meta";
 import { Repositories } from "@pssbletrngle/workflows-persistance";
+import { notNull } from "@pssbletrngle/workflows-shared/util";
 import type { Branch } from "@pssbletrngle/workflows-types/metadata";
 import { type App } from "octokit";
 import check from ".";
@@ -24,11 +25,19 @@ export default async function onStartup(app: App) {
   const repositories = await Repositories.find();
 
   const withContexts = await Promise.all(
-    repositories.map(async (it) => {
-      const context = await installationContext(app, it);
-      return { ...it, context };
+    repositories.map(async (subject) => {
+      try {
+        const context = await installationContext(app, subject);
+        return { ...subject, context };
+      } catch (e) {
+        logger.error(
+          "unable to create installation context, was the app uninstalled?",
+          { subject, error: (e as Error).message },
+        );
+        return null;
+      }
     }),
-  );
+  ).then((it) => it.filter(notNull));
 
   await Promise.all(
     withContexts.map(async ({ context, ...subject }) => {
