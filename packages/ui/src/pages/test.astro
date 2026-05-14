@@ -24,7 +24,7 @@ const setups = await fetchTestSetups(subject, Astro.locals);
     <label for="groupBy">Group by:</label>
 
     <select
-      hx-post="/metadata/partial/cases"
+      hx-post="/partial/cases"
       name="groupBy"
       hx-trigger="change"
       hx-target="next .groups"

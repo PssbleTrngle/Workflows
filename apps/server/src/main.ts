@@ -29,7 +29,7 @@ server.get("/status", (_, response) => {
 });
 
 server.use(createNodeMiddleware(app));
-server.use("/metadata", await createMetadataMiddleware(app));
+server.use(await createMetadataMiddleware(app));
 
 server.use(cutoff);
 server.use(errorHandler);

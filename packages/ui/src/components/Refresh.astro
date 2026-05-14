@@ -14,7 +14,7 @@ const { subject, disabled, ...props } = Astro.props;
 ---
 
 <form
-  hx-post="/metadata/api/refresh"
+  hx-post="/api/refresh"
   hx-swap="none"
   hx-disabled-elt="find button"
   {...props}

@@ -23,7 +23,7 @@ const subject: RepoSearch = { owner, repo };
 <li
   {...props}
   hx-trigger={`sse:${createTopic("repository_updated", Astro.props)}`}
-  hx-get={`/metadata/partial/${createPath(Astro.props, "repository")}`}
+  hx-get={`/partial/${createPath(Astro.props, "repository")}`}
   hx-swap="outerHTML"
   class:list={["repository", props.class]}
   id={createId("repo", subject)}

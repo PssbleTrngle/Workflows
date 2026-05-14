@@ -10,12 +10,13 @@ services:
       - "8888:8888"
     env_file: apps/server/.env.local
     environment:
-      REDIS_HOST: redis
       RABBITMQ_URL: amqp://rabbitmq:5672
+      MONGO_HOST: mongo
+      STARTUP_CHECKS: "false"
     volumes:
       - ./apps/server/private-key.pem:/usr/private-key.pem
     depends_on:
-      redis:
+      mongo:
         condition: service_started
       rabbitmq:
         condition: service_started

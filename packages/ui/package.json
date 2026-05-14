@@ -13,11 +13,11 @@
   },
   "type": "module",
   "dependencies": {
-    "@astrojs/node": "10.0.5",
+    "@astrojs/node": "^10.1.1",
     "@pssbletrngle/workflows-configs": "workspace:*",
     "@pssbletrngle/workflows-shared": "workspace:*",
     "@pssbletrngle/workflows-types": "workspace:*",
-    "astro": "6.1.8",
+    "astro": "^6.3.3",
     "htmx-ext-json-enc": "^2.0.3",
     "htmx-ext-sse": "^2.2.4",
     "htmx.org": "^2.0.8",
@@ -25,6 +25,6 @@
     "typescript": "^5.9.3"
   },
   "devDependencies": {
-    "@astrojs/check": "0.9.8"
+    "@astrojs/check": "^0.9.9"
   }
 }

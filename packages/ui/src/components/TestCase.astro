@@ -64,7 +64,7 @@ const cases = Object.entries(tests)
 
 <li
   hx-trigger={`sse:${createTopic("branch_updated", subject)}`}
-  hx-get={`/metadata/partial/${createPath(subject, "test-case")}`}
+  hx-get={`/partial/${createPath(subject, "test-case")}`}
   hx-swap="outerHTML"
   class:list={["test-case", props.class]}
   id={createId("test-case", subject)}

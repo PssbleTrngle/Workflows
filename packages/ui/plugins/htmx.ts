@@ -13,8 +13,6 @@ document.body.addEventListener("htmx:beforeSwap", ({ detail }) => {
     detail.swapOverride = override;
   }
 });
-
-console.log('HTMX', htmx_0)
 `;
 
 export default <AstroIntegration>{

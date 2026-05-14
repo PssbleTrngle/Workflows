@@ -52,7 +52,7 @@ const url = `https://github.com/${subject.owner}/${subject.repo}/tree/${subject.
 
 <li
   hx-trigger={`sse:${createTopic("branch_updated", subject)}`}
-  hx-get={`/metadata/partial/${createPath(subject, "branch")}`}
+  hx-get={`/partial/${createPath(subject, "branch")}`}
   hx-swap="outerHTML"
   class:list={["branch", props.class]}
   id={createId("branch", subject)}

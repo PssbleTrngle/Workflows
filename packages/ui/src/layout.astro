@@ -13,7 +13,7 @@ import Indicator from "./components/Indicator.astro";
   <body
     hx-ext="json-enc-custom,response-targets,sse,json-enc"
     hx-indicator="#loading-indicator"
-    sse-connect="/metadata/api/sse"
+    sse-connect="/api/sse"
   >
     <Indicator />
     <main>

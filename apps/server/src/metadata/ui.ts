@@ -1,5 +1,5 @@
 import { handler } from "@pssbletrngle/workflows-ui";
-import { Router, type RequestHandler } from "express";
+import { Router, static as serveFiles, type RequestHandler } from "express";
 import type { App } from "octokit";
 import config from "../config";
 import { ApiError, errorHandler } from "../error";
@@ -21,7 +21,8 @@ function createCallback(app: App): RequestHandler {
     const { authentication } = await app.oauth.createToken({ code });
 
     await login(res, authentication);
-    res.redirect("/metadata");
+    // TODO save original url during authentication
+    res.redirect("/");
   };
 }
 
@@ -39,7 +40,10 @@ async function astroOrProxy(): Promise<RequestHandler> {
     return proxyUI();
   }
 
-  return handler;
+  const router = Router();
+  router.use(handler);
+  router.use(serveFiles("client"));
+  return router;
 }
 
 export default async function createUIMiddlware(app: App) {

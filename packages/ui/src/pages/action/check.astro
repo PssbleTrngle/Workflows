@@ -15,7 +15,7 @@ export const partial = true;
 
 <div
   hx-trigger={`sse:${createTopic("repository_updated", subject)}`}
-  hx-get={`/metadata/partial/${createPath(subject, "panel")}`}
+  hx-get={`/partial/${createPath(subject, "panel")}`}
   hx-swap="outerHTML"
   hx-target-override={`#${createId("repo", subject)}`}
 >

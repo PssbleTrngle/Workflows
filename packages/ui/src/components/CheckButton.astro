@@ -19,7 +19,7 @@ const options = repos.map<RepoSearch>((it) => ({
 
 <dialog id={dialogId}>
   <form
-    hx-post="/metadata/action/check"
+    hx-post="/action/check"
     hx-swap="beforeend"
     hx-target=".status-list"
     method="dialog"

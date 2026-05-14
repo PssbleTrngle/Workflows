@@ -19,7 +19,7 @@ export default defineConfig({
       },
       allowedHosts: [".workflows.somethingcatchy.net"],
       proxy: {
-        "/metadata/api": {
+        "/api": {
           target: "http://localhost:8888",
           changeOrigin: true,
           secure: false,
