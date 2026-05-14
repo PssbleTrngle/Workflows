@@ -38,9 +38,9 @@ export default async function onStartup(app: App) {
 
   const metas = withContexts.flatMap(({ owner, repo, branches, context }) =>
     branches.map((it) => {
-      const search = { owner, repo, branch: it.ref };
+      const subject = { owner, repo, branch: it.ref };
       const meta = it.generatorMeta;
-      return { search, meta, context };
+      return { subject, meta, context };
     }),
   );
 
@@ -48,7 +48,14 @@ export default async function onStartup(app: App) {
 
   logger.info(`found ${outdated.length} outdated branches`);
 
-  for (const { search, context } of outdated) {
-    await check(search, context);
+  for (const { subject, context } of outdated) {
+    try {
+      await check(subject, context);
+    } catch (e) {
+      logger.error("unable to run startup checks for branch", {
+        subject,
+        error: (e as Error).message,
+      });
+    }
   }
 }

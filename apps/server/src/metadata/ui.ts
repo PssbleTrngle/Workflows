@@ -22,6 +22,7 @@ function createCallback(app: App): RequestHandler {
 
     await login(res, authentication);
     // TODO save original url during authentication
+    // maybe using req.query.state?
     res.redirect("/");
   };
 }
