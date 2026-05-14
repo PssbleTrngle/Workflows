@@ -15,9 +15,7 @@ if (dev) {
 }
 
 // github uses the default redirect url configured in the app if none is provided
-const redirectUrl = dev
-  ? "https://dev.workflows.somethingcatchy.net/metadata/callback"
-  : undefined;
+const redirectUrl = dev ? "http://localhost:8888/metadata/callback" : undefined;
 
 export default {
   dev,

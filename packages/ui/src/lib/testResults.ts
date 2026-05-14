@@ -40,10 +40,10 @@ export async function fetchReleaseResults(
 export async function fetchBuildResults(octokit: Octokit, subject: RepoSearch) {
   const { data } = await octokit.rest.actions.listWorkflowRunsForRepo({
     ...subject,
-    per_page: 1,
+    branch: "infra",
   });
 
-  const [run] = data.workflow_runs;
+  const run = data.workflow_runs.find((it) => it.name === "Trigger Test");
 
   if (!run) return {};
 
