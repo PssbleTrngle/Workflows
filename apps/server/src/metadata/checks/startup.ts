@@ -25,14 +25,14 @@ export default async function onStartup(app: App) {
   const repositories = await Repositories.find();
 
   const withContexts = await Promise.all(
-    repositories.map(async (subject) => {
+    repositories.map(async (it) => {
       try {
-        const context = await installationContext(app, subject);
-        return { ...subject, context };
+        const context = await installationContext(app, it);
+        return { ...it, context };
       } catch (e) {
         logger.error(
           "unable to create installation context, was the app uninstalled?",
-          { subject, error: (e as Error).message },
+          { repo: it.repo, owner: it.owner, error: (e as Error).message },
         );
         return null;
       }
@@ -62,7 +62,7 @@ export default async function onStartup(app: App) {
       await check(subject, context);
     } catch (e) {
       logger.error("unable to run startup checks for branch", {
-        subject,
+        ...subject,
         error: (e as Error).message,
       });
     }

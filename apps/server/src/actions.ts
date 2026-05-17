@@ -26,11 +26,14 @@ function conclusionColor(
   }
 }
 
-const releaseMetadataSchema = z.object({
-  tag: z.string().nonempty(),
-  modrinthUrl: z.string().nonempty().optional(),
-  curseforgeUrl: z.string().nonempty().optional(),
-});
+const releaseMetadataSchema = z.record(
+  z.string().nonempty(),
+  z.object({
+    tag: z.string().nonempty(),
+    modrinthUrl: z.string().nonempty().optional(),
+    curseforgeUrl: z.string().nonempty().optional(),
+  }),
+);
 
 async function tryFetchRelease(
   octokit: Octokit,
@@ -72,7 +75,9 @@ async function fetchAttributes(
     }),
   );
 
-  return attributes;
+  const merged = attributes.reduce((a, b) => ({ ...a, ...b }));
+
+  return Object.values(merged);
 }
 
 export function registerActionsHooks(hooks: App["webhooks"]) {
