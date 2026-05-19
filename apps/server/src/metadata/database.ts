@@ -71,7 +71,7 @@ export async function getRepositoryBranch(
   context: AuthenticatedContext,
 ): Promise<Branch | null> {
   const repository = await getRepository(search, context);
-  const branch = repository?.branches.find((it) => it.ref === search.branch);
+  const branch = repository?.branches?.find((it) => it.ref === search.branch);
   return branch ?? null;
 }
 

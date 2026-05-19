@@ -47,7 +47,7 @@ export default async function onStartup(app: App) {
     }),
   );
 
-  const metas = withContexts.flatMap(({ subject, branches, context }) =>
+  const metas = withContexts.flatMap(({ subject, branches = [], context }) =>
     branches.map((it) => {
       const meta = it.generatorMeta;
       return { subject: { ...subject, branch: it.ref }, meta, context };
