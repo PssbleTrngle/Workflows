@@ -2,6 +2,7 @@ import type { Meta } from "@pssbletrngle/github-meta-generator";
 import currentMeta from "@pssbletrngle/github-meta-generator/meta";
 import { Repositories } from "@pssbletrngle/workflows-persistance";
 import { notNull } from "@pssbletrngle/workflows-shared/util";
+import type { RepoSearch } from "@pssbletrngle/workflows-types";
 import type { Branch } from "@pssbletrngle/workflows-types/metadata";
 import { type App } from "octokit";
 import check from ".";
@@ -25,14 +26,15 @@ export default async function onStartup(app: App) {
   const repositories = await Repositories.find();
 
   const withContexts = await Promise.all(
-    repositories.map(async (it) => {
+    repositories.map(async ({ owner, repo, ...rest }) => {
+      const subject: RepoSearch = { owner, repo };
       try {
-        const context = await installationContext(app, it);
-        return { ...it, context };
+        const context = await installationContext(app, subject);
+        return { ...rest, subject, context };
       } catch (e) {
         logger.error(
           "unable to create installation context, was the app uninstalled?",
-          { repo: it.repo, owner: it.owner, error: (e as Error).message },
+          { ...subject, error: (e as Error).message },
         );
         return null;
       }
@@ -40,16 +42,15 @@ export default async function onStartup(app: App) {
   ).then((it) => it.filter(notNull));
 
   await Promise.all(
-    withContexts.map(async ({ context, ...subject }) => {
+    withContexts.map(async ({ context, subject }) => {
       await checkViewers(subject, context.octokit);
     }),
   );
 
-  const metas = withContexts.flatMap(({ owner, repo, branches, context }) =>
+  const metas = withContexts.flatMap(({ subject, branches, context }) =>
     branches.map((it) => {
-      const subject = { owner, repo, branch: it.ref };
       const meta = it.generatorMeta;
-      return { subject, meta, context };
+      return { subject: { ...subject, branch: it.ref }, meta, context };
     }),
   );
 
