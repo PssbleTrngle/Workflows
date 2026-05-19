@@ -1,0 +1,18 @@
+---
+import BranchComponent from "@/components/Branch.astro";
+import {
+  createPath,
+  decodeRepoWithBranch,
+} from "@pssbletrngle/workflows-shared/topic";
+import type { Branch } from "@pssbletrngle/workflows-types/metadata";
+
+const subject = decodeRepoWithBranch(Astro.params);
+
+const branch = await Astro.locals.api.request<Branch>(
+  `repository/${createPath(subject)}`,
+);
+
+export const partial = true;
+---
+
+<BranchComponent repo={subject} {...branch} />

@@ -1,0 +1,16 @@
+---
+import Row from "@/components/Row.astro";
+import { createPath } from "@pssbletrngle/workflows-shared/topic";
+import type { RepoSearch } from "@pssbletrngle/workflows-types";
+import type { Repository } from "@pssbletrngle/workflows-types/metadata";
+
+const subject = Astro.params as RepoSearch;
+
+const repository = await Astro.locals.api.request<Repository>(
+  `repository/${createPath(subject)}`,
+);
+
+export const partial = true;
+---
+
+<Row {...repository} />

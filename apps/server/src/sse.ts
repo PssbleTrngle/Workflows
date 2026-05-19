@@ -21,7 +21,7 @@ export default function createEventDispatcher(): EventDispatcher {
     res.flushHeaders();
 
     const connection: Connection = {
-      send: (key, payload) => {
+      send: (key, payload = {}) => {
         res.write(`event: ${key}\n`);
         if (notNull(payload)) {
           const encoded = JSON.stringify(payload);

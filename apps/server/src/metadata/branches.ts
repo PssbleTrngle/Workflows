@@ -14,7 +14,9 @@ import logger from "../logger";
 
 export async function fetchBranches(octokit: Octokit, search: RepoSearch) {
   const { data } = await octokit.rest.repos.listBranches(search);
-  return data.map((it) => it.name);
+  return data
+    .map((it) => it.name)
+    .filter((it, _, values) => isMainBranch(it, values));
 }
 
 async function fetchConfig(octokit: Octokit, search: RepoSearchWithBranch) {
@@ -23,7 +25,7 @@ async function fetchConfig(octokit: Octokit, search: RepoSearchWithBranch) {
   return JSON.parse(data);
 }
 
-function isMainBranch(branch: string, { branches }: MetadataContext) {
+function isMainBranch(branch: string, branches: string[]) {
   if (branch === "main" && !branches.includes("develop")) {
     return true;
   }
@@ -58,6 +60,6 @@ export async function createMetadataContext(
 
   const context: MetadataContext = { ...migrationContext, config };
 
-  if (isMainBranch(target.branch, context)) return context;
+  if (isMainBranch(target.branch, context.branches)) return context;
   return null;
 }

@@ -1,4 +1,4 @@
-import type { RepoSearchWithBranch } from "@pssbletrngle/workflows-types";
+import { decodeRepoWithBranch } from "@pssbletrngle/workflows-shared/topic";
 import { Router } from "express";
 import { ApiError } from "../../error";
 import type { AuthenticatedResponse } from "../auth";
@@ -12,14 +12,9 @@ export default function repositoryRouter() {
   const router = Router();
 
   router.get(
-    "/:owner/:repo/*branch",
+    "/:owner/:repo/:branch",
     async (req, res: AuthenticatedResponse) => {
-      const { branch, ...rest } = req.params;
-      const subject: RepoSearchWithBranch = {
-        ...rest,
-        branch: branch.join("/"),
-      };
-
+      const subject = decodeRepoWithBranch(req.params);
       const repositoryBranch = await getRepositoryBranch(subject, res.locals);
       if (!repositoryBranch)
         throw new ApiError("repository branch not found", 404);

@@ -62,17 +62,18 @@ export async function getRepository(
 ): Promise<Repository | null> {
   return await Repositories.findOne({
     ...search,
+    branches: { $ne: [] },
     $and: [authFilter(context)],
   });
 }
 
 export async function getRepositoryBranch(
-  search: RepoSearchWithBranch,
+  { owner, repo, branch }: RepoSearchWithBranch,
   context: AuthenticatedContext,
 ): Promise<Branch | null> {
-  const repository = await getRepository(search, context);
-  const branch = repository?.branches?.find((it) => it.ref === search.branch);
-  return branch ?? null;
+  const repository = await getRepository({ owner, repo }, context);
+  const match = repository?.branches?.find((it) => it.ref === branch);
+  return match ?? null;
 }
 
 //export type RepositoryFilter = {
