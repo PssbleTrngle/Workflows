@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import type { Request, RequestHandler, Response } from "express";
 import type { ParamsDictionary, Query } from "express-serve-static-core";
 import { Octokit } from "octokit";
+import { generateState } from "../auth/states";
 import { ApiError } from "../error";
 import logger from "../logger";
 
@@ -87,7 +88,8 @@ function createHandler(strategy: AuthenticationStrategy): AuthenticatedHandler {
 
     if (strategy === "redirect") {
       logger.debug("starting login flow");
-      res.redirect("/api/github/oauth/login");
+      const state = generateState({ returnTo: req.path });
+      res.redirect(`/api/github/oauth/login?state=${state}`);
     } else {
       throw new ApiError("requires login", 401);
     }

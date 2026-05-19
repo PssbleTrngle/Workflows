@@ -1,6 +1,7 @@
 import { handler } from "@pssbletrngle/workflows-ui";
 import { Router, static as serveFiles, type RequestHandler } from "express";
 import type { App } from "octokit";
+import { validateState } from "../auth/states";
 import config from "../config";
 import { ApiError, errorHandler } from "../error";
 import logger from "../logger";
@@ -8,7 +9,7 @@ import { authorize, login } from "./auth";
 
 function createCallback(app: App): RequestHandler {
   return async (req, res) => {
-    const { code, error } = req.query;
+    const { code, error, state } = req.query;
 
     if (typeof error === "string") {
       throw new ApiError(error, 400);
@@ -18,12 +19,16 @@ function createCallback(app: App): RequestHandler {
       throw new ApiError(`parameter 'code' is required`, 400);
     }
 
+    if (typeof state !== "string") {
+      throw new ApiError(`parameter 'state' is required`, 400);
+    }
+
+    const metadata = validateState(state);
+
     const { authentication } = await app.oauth.createToken({ code });
 
     await login(res, authentication);
-    // TODO save original url during authentication
-    // maybe using req.query.state?
-    res.redirect("/");
+    res.redirect(metadata.returnTo ?? "/");
   };
 }
 
