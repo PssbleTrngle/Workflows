@@ -6,7 +6,7 @@ import {
 } from "@pssbletrngle/workflows-notifications";
 import type { RepoSearch } from "@pssbletrngle/workflows-types";
 import { parse as parsePath } from "node:path";
-import { RequestError, type App, type Octokit } from "octokit";
+import { type App, type Octokit } from "octokit";
 import z from "zod";
 import { getIcon } from "./metadata/checks/icon";
 
@@ -35,22 +35,31 @@ const releaseMetadataSchema = z.record(
   }),
 );
 
-async function tryFetchRelease(
+async function fetchRelease(
   octokit: Octokit,
   subject: RepoSearch,
   tag: string | undefined,
 ) {
   if (!tag) return null;
 
+  const { data } = await octokit.rest.repos.getReleaseByTag({
+    ...subject,
+    tag,
+  });
+  return data;
+}
+
+async function tryFetchRelease(
+  octokit: Octokit,
+  subject: RepoSearch,
+  tags: string[],
+) {
   try {
-    const { data } = await octokit.rest.repos.getReleaseByTag({
-      ...subject,
-      tag,
-    });
-    return data;
-  } catch (e) {
-    if (e instanceof RequestError && e.status === 404) return null;
-    throw e;
+    return await Promise.any(
+      tags.map((tag) => fetchRelease(octokit, subject, tag)),
+    );
+  } catch {
+    return null;
   }
 }
 
@@ -149,7 +158,11 @@ export function registerActionsHooks(hooks: App["webhooks"]) {
           });
         }
 
-        const release = await tryFetchRelease(octokit, subject, tag);
+        const tagCandidates: string[] = [tag];
+        if (workflow_run.head_branch && workflow_run.event === "release")
+          tagCandidates.push(workflow_run.head_branch);
+
+        const release = await tryFetchRelease(octokit, subject, tagCandidates);
 
         const branchUrl = workflow_run.head_branch
           ? `${repository.html_url}/tree/${workflow_run.head_branch}`

@@ -1,4 +1,4 @@
-import { type RequestHandler } from "express";
+import { text, type RequestHandler } from "express";
 import { createHmac } from "node:crypto";
 import config from "./config";
 import { proxyUI } from "./metadata/ui";
@@ -10,16 +10,32 @@ function generateHash(from: string, type: string) {
   return `${type}=${hex}`;
 }
 
-const forgeSignature: RequestHandler = async (request, _, next) => {
+function generateSignatureHeaders(payload: unknown) {
+  if (typeof payload !== "string")
+    throw new Error("body not parsed using text()");
+  return {
+    "x-hub-signature-256": generateHash(payload, "sha256"),
+    "x-hub-signature": generateHash(payload, "sha1"),
+  };
+}
+
+const parseText = text({ type: "*/*" });
+const generateSignature: RequestHandler = async (req, res, next) => {
+  if (req.headers["generate-signatures"] === "true") {
+    return parseText(req, res, () => {
+      res.json(generateSignatureHeaders(req.body));
+    });
+  }
+
+  return next();
+};
+
+const forgeSignature: RequestHandler = async (req, _, next) => {
   // this does only work if the express.text({ type: '*/*' }) middlware is used
   // which breaks other things again
 
-  if (request.method === "POST" && request.body) {
-    request.headers["x-hub-signature-256"] = generateHash(
-      request.body,
-      "sha256",
-    );
-    request.headers["x-hub-signature"] = generateHash(request.body, "sha1");
+  if (req.method === "POST" && req.body) {
+    Object.assign(req.headers, generateSignatureHeaders(req.body));
   }
 
   return next();
@@ -43,5 +59,5 @@ async function devUIProxy(): Promise<RequestHandler> {
 }
 
 export async function createDevMiddleware() {
-  return [forgeSignature, await devUIProxy()];
+  return [generateSignature, forgeSignature, await devUIProxy()];
 }
