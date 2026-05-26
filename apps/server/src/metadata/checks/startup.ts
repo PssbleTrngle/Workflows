@@ -26,11 +26,11 @@ export default async function onStartup(app: App) {
   const repositories = await Repositories.find();
 
   const withContexts = await Promise.all(
-    repositories.map(async ({ owner, repo, ...rest }) => {
+    repositories.map(async ({ owner, repo, branches = [] }) => {
       const subject: RepoSearch = { owner, repo };
       try {
         const context = await installationContext(app, subject);
-        return { ...rest, subject, context };
+        return { branches, subject, context };
       } catch (e) {
         logger.error(
           "unable to create installation context, was the app uninstalled?",
@@ -47,7 +47,7 @@ export default async function onStartup(app: App) {
     }),
   );
 
-  const metas = withContexts.flatMap(({ subject, branches = [], context }) =>
+  const metas = withContexts.flatMap(({ subject, branches, context }) =>
     branches.map((it) => {
       const meta = it.generatorMeta;
       return { subject: { ...subject, branch: it.ref }, meta, context };
@@ -56,9 +56,6 @@ export default async function onStartup(app: App) {
 
   const outdated = metas.filter((it) => isOutdated(it.meta, currentMeta));
 
-  logger.debug(
-    `searching for outdated branches across ${metas.length} subjects`,
-  );
   logger.info(`found ${outdated.length} outdated branches`);
 
   for (const { subject, context } of outdated) {
