@@ -3,7 +3,7 @@ import helpers from "./helpers";
 import partials from "./partials";
 
 const defaultData = {
-  javaVersion: 21,
+  javaVersion: 26,
 };
 
 export const generateWorkflow = createGenerator("workflows", {

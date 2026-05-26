@@ -48,7 +48,7 @@ jobs:
 
       - uses: actions/setup-java@v4
         with:
-          java-version: 21
+          java-version: 26
           distribution: temurin
 
       - uses: gradle/actions/setup-gradle@v4
@@ -115,7 +115,7 @@ jobs:
 
       - uses: actions/setup-java@v4
         with:
-          java-version: 21
+          java-version: 26
           distribution: temurin
 
       - uses: gradle/actions/setup-gradle@v4
@@ -199,7 +199,7 @@ jobs:
 
       - uses: actions/setup-java@v4
         with:
-          java-version: 21
+          java-version: 26
           distribution: temurin
 
       - uses: gradle/actions/setup-gradle@v4
@@ -248,7 +248,7 @@ jobs:
 
       - uses: actions/setup-java@v4
         with:
-          java-version: 21
+          java-version: 26
           distribution: temurin
 
       - uses: gradle/actions/setup-gradle@v4
@@ -301,7 +301,7 @@ jobs:
 
       - uses: actions/setup-java@v4
         with:
-          java-version: 21
+          java-version: 26
           distribution: temurin
 
       - uses: gradle/actions/setup-gradle@v4
@@ -354,7 +354,7 @@ jobs:
 
       - uses: actions/setup-java@v4
         with:
-          java-version: 21
+          java-version: 26
           distribution: temurin
 
       - uses: gradle/actions/setup-gradle@v4
@@ -407,7 +407,7 @@ jobs:
 
       - uses: actions/setup-java@v4
         with:
-          java-version: 21
+          java-version: 26
           distribution: temurin
 
       - uses: gradle/actions/setup-gradle@v4
