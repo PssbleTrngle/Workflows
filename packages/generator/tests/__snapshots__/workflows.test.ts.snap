@@ -57,7 +57,7 @@ jobs:
           dependency-graph: generate-and-submit
 
       - name: Test
-        run: ./gradlew build check
+        run: ./gradlew build check --stacktrace
 
       - uses: actions/upload-artifact@v4
         if: \${{ inputs.upload }}
@@ -132,7 +132,7 @@ jobs:
           restore-keys: \${{ runner.os }}-sonar
 
       - name: Test
-        run: ./gradlew build check
+        run: ./gradlew build check --stacktrace
 
       - name: Analyze
         if: \${{ github.event_name == 'push' }}
@@ -208,7 +208,7 @@ jobs:
           dependency-graph: generate-and-submit
 
       - name: Test
-        run: ./gradlew build check
+        run: ./gradlew build check --stacktrace
 
       - uses: actions/upload-artifact@v4
         if: \${{ inputs.upload }}

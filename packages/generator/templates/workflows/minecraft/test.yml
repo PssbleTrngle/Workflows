@@ -51,7 +51,7 @@ jobs:
       {{/if}}
 
       - name: Test
-        run: ./gradlew build check
+        run: ./gradlew build check --stacktrace
 
       {{#if sonar}}
       - name: Analyze
