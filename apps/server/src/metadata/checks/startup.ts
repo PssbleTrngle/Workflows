@@ -56,6 +56,9 @@ export default async function onStartup(app: App) {
 
   const outdated = metas.filter((it) => isOutdated(it.meta, currentMeta));
 
+  logger.debug(
+    `searching for outdated branches across ${metas.length} subjects`,
+  );
   logger.info(`found ${outdated.length} outdated branches`);
 
   for (const { subject, context } of outdated) {
