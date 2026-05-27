@@ -41,10 +41,25 @@ describe("minecaft release workflows", () => {
         mockContext({
           upload: {
             [upload]: true,
+            strategy: "release",
           },
         }),
       );
       expect(generated).toMatchSnapshot(`release workflow with ${upload}`);
+    });
+  });
+
+  describe("minecaft release on push workflow", () => {
+    it(`generates release on push workflow`, async () => {
+      const generated = await generateWorkflow(
+        ["minecraft", "release.yml"],
+        mockContext({
+          upload: {
+            strategy: "push",
+          },
+        }),
+      );
+      expect(generated).toMatchSnapshot("release workflow on push");
     });
   });
 });

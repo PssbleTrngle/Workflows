@@ -1,10 +1,23 @@
 name: Release
 on:
+   {{#if (eq upload.strategy "release") }}
    release:
       types: [published]
+   {{else if (eq upload.strategy "push") }}
+   push:
+      branches: 
+         - "main"
+         - "main/**"
+   {{/if}}
 
 env:
    CI: true
+
+{{#if (eq upload.strategy "push") }}
+concurrency:
+  group: {{ var 'github.workflow' }}-{{ var 'github.ref' }}
+  cancel-in-progress: true
+{{/if}}
 
 jobs:
    build:
@@ -34,8 +47,13 @@ jobs:
               {{#if upload.curseforge}}
               CURSEFORGE_TOKEN: {{ var 'secrets.CURSEFORGE_TOKEN' }}
               {{/if}}
+              {{#if (eq upload.strategy "release")}}
               CHANGELOG: {{ var 'github.event.release.body' }}
               RELEASE_VERSION: {{ var 'github.event.release.tag_name' }}
+              {{else if (eq upload.strategy "push") }}
+              CHANGELOG: automated patch release
+              PATCH_VERSION: {{ var 'github.run_number' }}
+              {{/if}}
               {{#if upload.github}}
               GITHUB_TOKEN: {{ var 'secrets.GITHUB_TOKEN' }}
               {{/if}}

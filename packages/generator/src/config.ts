@@ -45,6 +45,10 @@ const uploadSchema = z.object({
     .boolean()
     .default(false)
     .describe(`publish to @pssbletrngle's maven registry`),
+  strategy: z
+    .enum(["release", "push"])
+    .default("release")
+    .describe("when to trigger a release"),
 });
 
 const minecraftSchema = z

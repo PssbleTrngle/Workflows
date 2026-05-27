@@ -430,3 +430,61 @@ jobs:
           retention-days: 1
 "
 `;
+
+exports[`minecaft release workflows minecaft release on push workflow generates release on push workflow: release workflow on push 1`] = `
+"# <meta>
+#    <source>@pssbletrngle/github-meta-generator</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>abcdef</hash>
+# </meta>
+
+name: Release
+on:
+  push:
+    branches:
+      - "main"
+      - "main/**"
+
+env:
+  CI: true
+
+concurrency:
+  group: \${{ github.workflow }}-\${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: 26
+          distribution: temurin
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: \${{ github.event_name != 'push' }}
+
+      - name: Build and upload
+        run: ./gradlew build upload
+        env:
+          CHANGELOG: automated patch release
+          PATCH_VERSION: \${{ github.run_number }}
+
+      - name: Publish Release Metadata
+        uses: actions/upload-artifact@v7
+        with:
+          archive: false
+          path: build/release.json
+          retention-days: 1
+"
+`;
