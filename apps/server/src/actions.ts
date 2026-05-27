@@ -84,6 +84,7 @@ async function fetchAttributes(
     }),
   );
 
+  if (attributes.length === 0) return [];
   const merged = attributes.reduce((a, b) => ({ ...a, ...b }));
 
   return Object.values(merged);
