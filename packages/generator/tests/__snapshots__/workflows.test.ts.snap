@@ -479,6 +479,8 @@ jobs:
         env:
           CHANGELOG: automated patch release
           PATCH_VERSION: \${{ github.run_number }}
+          NEXUS_USER: \${{ secrets.NEXUS_USER }}
+          NEXUS_TOKEN: \${{ secrets.NEXUS_TOKEN }}
 
       - name: Publish Release Metadata
         uses: actions/upload-artifact@v7

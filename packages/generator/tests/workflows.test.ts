@@ -55,6 +55,7 @@ describe("minecaft release workflows", () => {
         ["minecraft", "release.yml"],
         mockContext({
           upload: {
+            nexus: true,
             strategy: "push",
           },
         }),

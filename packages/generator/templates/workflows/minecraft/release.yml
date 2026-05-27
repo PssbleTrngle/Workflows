@@ -50,7 +50,8 @@ jobs:
               {{#if (eq upload.strategy "release")}}
               CHANGELOG: {{ var 'github.event.release.body' }}
               RELEASE_VERSION: {{ var 'github.event.release.tag_name' }}
-              {{else if (eq upload.strategy "push") }}
+              {{/if}}
+              {{#if (eq upload.strategy "push") }}
               CHANGELOG: automated patch release
               PATCH_VERSION: {{ var 'github.run_number' }}
               {{/if}}
