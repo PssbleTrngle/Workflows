@@ -2,7 +2,7 @@ import type { RepoSearchWithBranch } from "@pssbletrngle/workflows-types";
 import type { Octokit } from "octokit";
 import { getFileContent } from "../../files";
 import logger from "../../logger";
-import { saveSetup } from "../database";
+import { Respositories } from "../database";
 
 const GRADLE_HELPER_REGEX =
   /id\s*\("com\.possible-triangle\.helper"\)\s*version\s*\("([\d.]+)"\)/;
@@ -22,5 +22,5 @@ export default async function checkSetup(
 
   logger.debug(`detected gradle helper setup with version ${gradleHelper}`);
 
-  await saveSetup(subject, { gradleHelper });
+  await Respositories.saveSetup(subject, { gradleHelper });
 }

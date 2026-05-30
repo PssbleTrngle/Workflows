@@ -1,6 +1,6 @@
 import type { RepoSearch } from "@pssbletrngle/workflows-types";
 import type { Octokit } from "octokit";
-import { updateRepository } from "../database";
+import { Respositories } from "../database";
 
 export async function getIcon(octokit: Octokit, search: RepoSearch) {
   const paths = [".idea/icon.svg", ".idea/icon.png"];
@@ -25,5 +25,5 @@ export async function getIcon(octokit: Octokit, search: RepoSearch) {
 
 export default async function checkIcon(subject: RepoSearch, octokit: Octokit) {
   const icon = await getIcon(octokit, subject);
-  await updateRepository(subject, { icon });
+  await Respositories.update(subject, { icon });
 }

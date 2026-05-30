@@ -11,12 +11,7 @@ import { createGitUser } from "../user";
 import createApiRoutes from "./api";
 import checkSetup from "./checks/setup";
 import checkViewers from "./checks/viewers";
-import {
-  deleteBranch,
-  deleteRepository,
-  migrateRepository,
-  saveStatus,
-} from "./database";
+import { Respositories } from "./database";
 import generateMetadata, { metadataBranch } from "./generator";
 import createUIMiddlware from "./ui";
 
@@ -96,7 +91,10 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
       ref: `heads/${pull_request.head.ref}`,
     });
 
-    saveStatus({ ...search, branch: pull_request.base.ref }, "up-to-date");
+    Respositories.saveStatus(
+      { ...search, branch: pull_request.base.ref },
+      "up-to-date",
+    );
   });
 
   hooks.on("repository.renamed", async ({ payload }) => {
@@ -112,7 +110,7 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
 
     logger.info("repository got renamed", { from, to });
 
-    await migrateRepository(from, to);
+    await Respositories.migrate(from, to);
   });
 
   hooks.on("repository.transferred", async ({ payload, octokit }) => {
@@ -134,7 +132,7 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
 
     logger.info("repository got transferred", { from, to });
 
-    await migrateRepository(from, to);
+    await Respositories.migrate(from, to);
     await checkViewers(to, octokit);
   });
 
@@ -146,7 +144,7 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
 
     logger.info("repository got deleted", { repo });
 
-    await deleteRepository(repo);
+    await Respositories.delete(repo);
   });
 
   hooks.on("delete", async ({ payload }) => {
@@ -160,7 +158,7 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
 
     logger.info("branch got deleted", { subject });
 
-    await deleteBranch(subject);
+    await Respositories.deleteBranch(subject);
   });
 
   hooks.on("create", async ({ payload, octokit }) => {

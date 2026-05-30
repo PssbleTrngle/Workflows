@@ -1,10 +1,12 @@
 import type { AstroIntegration } from "astro";
+import "htmx.org/dist/htmx";
 
-const libs = ["htmx.org", "htmx-ext-json-enc", "htmx-ext-sse"];
+const script = /* typescript */ `
+// TODO waiting for https://github.com/bigskysoftware/htmx-extensions/issues/128
+// import 'htmx.org';
+// import 'htmx-ext-sse';
+// import 'htmx-ext-form-json';
 
-const imports = libs.map((it) => `import '${it}'`);
-
-const hooks = /* typescript */ `
 document.body.addEventListener("htmx:beforeSwap", ({ detail }) => {
   const override =
     detail.requestConfig.elt.getAttribute("hx-target-override");
@@ -13,13 +15,25 @@ document.body.addEventListener("htmx:beforeSwap", ({ detail }) => {
     detail.swapOverride = override;
   }
 });
+
+document.body.addEventListener("htmx:beforeOnLoad", ({ detail }) => {
+  const method =
+    detail.requestConfig.elt.getAttribute("method");
+
+    if(method === "dialog") {
+       const dialog = detail.requestConfig.elt.closest('dialog');
+       if(dialog) {
+        dialog.close();
+       }
+    }
+  });
 `;
 
 export default <AstroIntegration>{
   name: "htmx",
   hooks: {
     "astro:config:setup": ({ injectScript }) => {
-      injectScript("page", [...imports, hooks].join("\n"));
+      injectScript("page", script);
     },
   },
 };

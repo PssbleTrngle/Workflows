@@ -1,6 +1,6 @@
 import { defineMiddleware, sequence } from "astro:middleware";
 import { Octokit } from "octokit";
-import createApiClient from "./lib/api";
+import createApiClient, { ApiError } from "./lib/api";
 
 const COOKIE = "webhooks-session";
 
@@ -50,4 +50,16 @@ const authorize = defineMiddleware(({ locals, cookies }, next) => {
   return next();
 });
 
-export const onRequest = sequence(initializeContext, authorize);
+const handleErrors = defineMiddleware(async (astro, next) => {
+  try {
+    return await next();
+  } catch (e) {
+    if (e instanceof ApiError && e.status === 404) {
+      return astro.rewrite("/404");
+    }
+
+    throw e;
+  }
+});
+
+export const onRequest = sequence(initializeContext, authorize, handleErrors);

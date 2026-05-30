@@ -1,0 +1,17 @@
+---
+import CreateNotifier from "@/components/CreateNotifier.astro";
+import NotifierRow from "@/components/NotifierRow.astro";
+import Layout from "@/layout.astro";
+import type { Page } from "@pssbletrngle/workflows-types";
+import type { Notifier } from "@pssbletrngle/workflows-types/metadata";
+
+const notifiers = await Astro.locals.api.request<Page<Notifier>>("notifier");
+---
+
+<Layout>
+  <CreateNotifier />
+
+  <ul>
+    {notifiers.entries.map((it) => <NotifierRow {...it} />)}
+  </ul>
+</Layout>

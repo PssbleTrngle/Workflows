@@ -18,13 +18,14 @@
     "@pssbletrngle/workflows-shared": "workspace:*",
     "@pssbletrngle/workflows-types": "workspace:*",
     "astro": "^6.3.3",
-    "htmx-ext-json-enc": "^2.0.3",
+    "htmx-ext-form-json": "^1.0.10",
     "htmx-ext-sse": "^2.2.4",
     "htmx.org": "^2.0.8",
     "octokit": "^5.0.5",
     "typescript": "^5.9.3"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.9"
+    "@astrojs/check": "^0.9.9",
+    "@typescript-eslint/parser": "^8.59.4"
   }
 }

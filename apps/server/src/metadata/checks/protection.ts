@@ -2,7 +2,7 @@ import { notNull } from "@pssbletrngle/workflows-shared/util";
 import type { RepoSearchWithBranch } from "@pssbletrngle/workflows-types";
 import type { Octokit } from "octokit";
 import logger from "../../logger";
-import { saveChecks } from "../database";
+import { Respositories } from "../database";
 
 const BLOCKING_RULE_TYPES = ["pull_request", "required_status_checks"];
 
@@ -39,7 +39,7 @@ export default async function checkProtection(
       !current_user_can_bypass,
   );
 
-  await saveChecks(repo, {
+  await Respositories.saveChecks(repo, {
     isProtected: enabled.length > 0,
     canModify: blocking.length === 0,
   });

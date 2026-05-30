@@ -1,0 +1,15 @@
+---
+import type { Notifier } from "@pssbletrngle/workflows-types/metadata";
+
+export type Props = Notifier;
+
+const { name } = Astro.props;
+---
+
+<li>
+  <span>{name}</span>
+  <a href={`/webhooks/edit/${name}`}>
+    <button>✏️</button>
+  </a>
+  <button hx-delete={`/api/notifier/${name}`}>🗑️</button>
+</li>

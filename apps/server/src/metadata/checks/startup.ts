@@ -1,6 +1,5 @@
 import type { Meta } from "@pssbletrngle/github-meta-generator";
 import currentMeta from "@pssbletrngle/github-meta-generator/meta";
-import { Repositories } from "@pssbletrngle/workflows-persistance";
 import { notNull } from "@pssbletrngle/workflows-shared/util";
 import type { RepoSearch } from "@pssbletrngle/workflows-types";
 import type { Branch } from "@pssbletrngle/workflows-types/metadata";
@@ -10,6 +9,7 @@ import config from "../../config";
 import { setupGitCloneDir } from "../../git";
 import { installationContext } from "../../installation";
 import logger from "../../logger";
+import { Respositories } from "../database";
 import checkViewers from "./viewers";
 
 function isOutdated(saved: Branch["generatorMeta"], current: Meta) {
@@ -23,7 +23,7 @@ export default async function onStartup(app: App) {
 
   if (!config.startupCheck) return;
 
-  const repositories = await Repositories.find();
+  const repositories = await Respositories.findAll();
 
   const withContexts = await Promise.all(
     repositories.map(async ({ owner, repo, branches = [] }) => {

@@ -1,0 +1,21 @@
+---
+import NotifierForm from "@/components/form/NotifierForm.astro";
+import Layout from "@/layout.astro";
+import type { Notifier } from "@pssbletrngle/workflows-types/metadata";
+
+const current = await Astro.locals.api.request<Notifier>(
+  `notifier/${Astro.params.name}`,
+);
+---
+
+<Layout>
+  <a href="/webhooks">
+    <button>Back</button>
+  </a>
+
+  <NotifierForm
+    hx-put={`/api/notifier/${current.name}`}
+    value={current}
+    hx-swap="none"
+  />
+</Layout>

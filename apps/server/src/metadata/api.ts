@@ -11,6 +11,7 @@ import validate from "../validation";
 import { authorize, type AuthenticatedResponse } from "./auth";
 import check from "./checks";
 import { eventDispatcher } from "./events";
+import notifierRouter from "./routes/notifier";
 import repositoryRouter from "./routes/repository";
 
 export default function createApiRoutes(app: App) {
@@ -22,6 +23,7 @@ export default function createApiRoutes(app: App) {
   router.use("/sse", eventDispatcher.handler);
 
   router.use("/repository", repositoryRouter());
+  router.use("/notifier", notifierRouter());
 
   if (config.dev) {
     router.get("/setup", async (_, res: AuthenticatedResponse) => {

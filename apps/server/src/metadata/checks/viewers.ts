@@ -1,6 +1,6 @@
 import type { RepoSearch } from "@pssbletrngle/workflows-types";
 import type { Octokit } from "octokit";
-import { updateRepository } from "../database";
+import { Respositories } from "../database";
 
 export default async function checkViewers(
   subject: RepoSearch,
@@ -8,5 +8,5 @@ export default async function checkViewers(
 ) {
   const { data: users } = await octokit.rest.repos.listCollaborators(subject);
   const userIds = users.map((it) => it.login);
-  await updateRepository(subject, { visibleTo: userIds });
+  await Respositories.update(subject, { visibleTo: userIds });
 }

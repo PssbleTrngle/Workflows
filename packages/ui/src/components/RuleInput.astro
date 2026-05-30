@@ -1,0 +1,36 @@
+---
+import type { RepositoryRule } from "@pssbletrngle/workflows-types/metadata";
+
+export type Props = { value?: RepositoryRule; path: string };
+
+const { value, path } = Astro.props;
+---
+
+<section>
+  <input
+    type="text"
+    placeholder="Repository Name"
+    name={`${path}[repo]`}
+    value={value?.repo}
+  />
+  <input
+    type="text"
+    placeholder="Repository Owner"
+    name={`${path}[owner]`}
+    value={value?.owner}
+  />
+  <input
+    type="text"
+    placeholder="Branch"
+    name={`${path}[branch]`}
+    value={value?.branch}
+  />
+</section>
+
+<style scoped>
+  section {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1em;
+  }
+</style>

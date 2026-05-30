@@ -1,0 +1,11 @@
+---
+import NotifierForm from "./form/NotifierForm.astro";
+
+const dialogId = "create-notifier";
+---
+
+<button command="show-modal" commandfor={dialogId}>Create Notifier</button>
+
+<dialog id={dialogId}>
+  <NotifierForm method="dialog" hx-post="/api/notifier" />
+</dialog>

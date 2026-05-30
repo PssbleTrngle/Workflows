@@ -1,0 +1,43 @@
+---
+import type { Notifier } from "@pssbletrngle/workflows-types/metadata";
+import type { HTMLAttributes } from "astro/types";
+import RuleInput from "../RuleInput.astro";
+import AddRuleButton from "./AddRuleButton.astro";
+
+export type Props = HTMLAttributes<"form"> & {
+  value?: Notifier;
+};
+
+const { value, ...props } = Astro.props;
+---
+
+<form hx-disabled-elt="find button" empty-as-null="true" {...props}>
+  <input name="name" placeholder="Name" type="text" value={value?.name} />
+
+  <label>Rules</label>
+
+  {value?.rules.map((it, i) => <RuleInput value={it} path={`rules[${i}]`} />)}
+
+  <AddRuleButton path="rules" index={value?.exclude.length} />
+
+  <label>Exclude</label>
+
+  {
+    value?.exclude.map((it, i) => (
+      <RuleInput value={it} path={`exclude[${i}]`} />
+    ))
+  }
+
+  <AddRuleButton path="exclude" index={value?.exclude.length} />
+
+  <button type="submit">Save</button>
+</form>
+
+<style scoped>
+  form {
+    display: grid;
+    gap: 1em;
+
+    width: min(800px, 95vw);
+  }
+</style>

@@ -1,2 +1,3 @@
 export * from "./connection";
-export * from "./documents/repository";
+export * from "./repository/notifier";
+export * from "./repository/repository";

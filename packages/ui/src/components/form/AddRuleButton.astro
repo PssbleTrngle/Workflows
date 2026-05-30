@@ -1,0 +1,14 @@
+---
+export type Props = { path: string; index?: number };
+
+const { path, index = 0 } = Astro.props;
+---
+
+<button
+  hx-get={`/partial/inputs/rule?path=${path}&index=${index}`}
+  preload="preload:init"
+  hx-disabled-elt="this"
+  hx-swap="outerHTML"
+>
+  add {path}
+</button>

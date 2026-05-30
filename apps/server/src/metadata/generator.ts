@@ -12,7 +12,7 @@ import type { ActionResult } from "../git";
 import { cloneAndModify, type GitUser } from "../git";
 import logger from "../logger";
 import { createMetadataContext } from "./branches";
-import { deleteBranch, saveMeta, saveStatus } from "./database";
+import { Respositories } from "./database";
 
 export async function migrateMetadataConfig(
   repositoryPath: string,
@@ -49,11 +49,11 @@ export default async function generateMetadata(
     const context = await createMetadataContext(octokit, subject);
 
     if (!context) {
-      deleteBranch(subject);
+      await Respositories.deleteBranch(subject);
       return;
     }
 
-    await saveStatus(subject, "running");
+    await Respositories.saveStatus(subject, "running");
 
     const checkout =
       context.config.strategy === "pull_request"
@@ -73,10 +73,10 @@ export default async function generateMetadata(
 
     const doneState: RepositoryStatus = checkout ? "opened-pr" : "up-to-date";
 
-    await saveMeta(subject, { ...meta, generatedAt: Date.now() });
+    await Respositories.saveMeta(subject, { ...meta, generatedAt: Date.now() });
 
     if (!result) {
-      await saveStatus(subject, doneState);
+      await Respositories.saveStatus(subject, doneState);
       return;
     }
 
@@ -101,13 +101,13 @@ export default async function generateMetadata(
       octokit.log.info("-> created pull request");
     }
 
-    await saveStatus(subject, doneState);
+    await Respositories.saveStatus(subject, doneState);
 
     octokit.log.info(`<- finished metafile update`, subject);
 
     return doneState;
   } catch (e) {
-    await saveStatus(subject, "failed");
+    await Respositories.saveStatus(subject, "failed");
     throw e;
   }
 }
