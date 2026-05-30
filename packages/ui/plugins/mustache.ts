@@ -1,5 +1,4 @@
 import type { AstroIntegration } from "astro";
-import "htmx.org/dist/htmx";
 
 const script = /* javascript */ `
 import mustache from 'mustache'
