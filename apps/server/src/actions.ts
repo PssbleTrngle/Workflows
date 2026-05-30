@@ -1,7 +1,6 @@
 import type { WebhookEventDefinition } from "@octokit/webhooks/types";
 import {
   ButtonStyle,
-  sendEmbeds,
   type Button,
 } from "@pssbletrngle/workflows-notifications";
 import type { RepoSearch } from "@pssbletrngle/workflows-types";
@@ -9,6 +8,7 @@ import { parse as parsePath } from "node:path";
 import { type App, type Octokit } from "octokit";
 import z from "zod";
 import { getIcon } from "./metadata/checks/icon";
+import notifications from "./notifications";
 
 function conclusionColor(
   conclusion: WebhookEventDefinition<"check-run-completed">["check_run"]["conclusion"],
@@ -170,7 +170,7 @@ export function registerActionsHooks(hooks: App["webhooks"]) {
           : repository.html_url;
         const url = release?.html_url ?? branchUrl;
 
-        await sendEmbeds(
+        await notifications.sendEmbeds(
           key,
           {
             author,
@@ -182,7 +182,7 @@ export function registerActionsHooks(hooks: App["webhooks"]) {
           buttons,
         );
       } else {
-        await sendEmbeds(key, {
+        await notifications.sendEmbeds(key, {
           author,
           title: "Release failed",
           color,

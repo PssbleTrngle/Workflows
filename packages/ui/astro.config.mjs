@@ -2,11 +2,12 @@
 import node from "@astrojs/node";
 import { defineConfig } from "astro/config";
 import htmx from "./plugins/htmx";
+import mustache from "./plugins/mustache";
 
 // https://astro.build/config
 export default defineConfig({
   output: "server",
-  integrations: [htmx],
+  integrations: [htmx, mustache],
   adapter: node({
     mode: "middleware",
   }),

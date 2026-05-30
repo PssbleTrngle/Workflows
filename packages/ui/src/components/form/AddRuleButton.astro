@@ -1,14 +1,15 @@
 ---
-export type Props = { path: string; index?: number };
+type NumberOrOperation = number | `++${string}`;
 
-const { path, index = 0 } = Astro.props;
+export type Props = { path: string; index?: NumberOrOperation };
+
+const { path, index } = Astro.props;
 ---
 
 <button
-  hx-get={`/partial/inputs/rule?path=${path}&index=${index}`}
-  preload="preload:init"
-  hx-disabled-elt="this"
+  hx-template="rule-input-template"
   hx-swap="outerHTML"
+  hx-data={JSON.stringify({ path, index })}
 >
-  add {path}
+  Add {path}
 </button>

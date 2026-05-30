@@ -26,15 +26,10 @@ import Indicator from "./components/Indicator.astro";
       src="https://cdn.jsdelivr.net/gh/Emtyloc/json-enc-custom@v0.1.8/json-enc-custom.js"
       crossorigin="anonymous"></script>
 
-    <script
-      is:inline
-      src="https://unpkg.com/htmx.org/dist/ext/preload.js"
-      crossorigin="anonymous"></script>
-
     <title>Workflows Dashboard</title>
   </head>
   <body
-    hx-ext="sse,json-enc-custom,preload"
+    hx-ext="sse,json-enc-custom"
     hx-indicator="#loading-indicator"
     sse-connect="/api/sse"
   >

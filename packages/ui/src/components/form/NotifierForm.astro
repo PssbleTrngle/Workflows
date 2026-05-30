@@ -1,8 +1,12 @@
 ---
 import type { Notifier } from "@pssbletrngle/workflows-types/metadata";
 import type { HTMLAttributes } from "astro/types";
-import RuleInput from "../RuleInput.astro";
+import RuleInput from "./RuleInput.astro";
 import AddRuleButton from "./AddRuleButton.astro";
+import RulesInput from "./RulesInput.astro";
+import WebhooksInput from "./WebhooksInput.astro";
+import WebhookInput from "./WebhookInput.astro";
+import AddWebhookButton from "./AddWebhookButton.astro";
 
 export type Props = HTMLAttributes<"form"> & {
   value?: Notifier;
@@ -14,21 +18,19 @@ const { value, ...props } = Astro.props;
 <form hx-disabled-elt="find button" empty-as-null="true" {...props}>
   <input name="name" placeholder="Name" type="text" value={value?.name} />
 
-  <label>Rules</label>
+  <RulesInput path="rules" value={value?.rules} />
+  <RulesInput path="exclude" value={value?.exclude} />
+  <WebhooksInput value={value?.discordWebhooks} />
 
-  {value?.rules.map((it, i) => <RuleInput value={it} path={`rules[${i}]`} />)}
+  <template id="rule-input-template">
+    <RuleInput path="{{ path }}[{{ index }}]" />
+    <AddRuleButton path="{{ path }}" index="++{{ index }}" />
+  </template>
 
-  <AddRuleButton path="rules" index={value?.exclude.length} />
-
-  <label>Exclude</label>
-
-  {
-    value?.exclude.map((it, i) => (
-      <RuleInput value={it} path={`exclude[${i}]`} />
-    ))
-  }
-
-  <AddRuleButton path="exclude" index={value?.exclude.length} />
+  <template id="webhook-input-template">
+    <WebhookInput path="{{ index }}" />
+    <AddWebhookButton index="++{{ index }}" />
+  </template>
 
   <button type="submit">Save</button>
 </form>
@@ -41,3 +43,68 @@ const { value, ...props } = Astro.props;
     width: min(800px, 95vw);
   }
 </style>
+
+<script>
+  window.htmx.defineExtension("mustache-extra", {
+    init: (htmxApi) => {
+      function resolveOperation(input: unknown) {
+        if (typeof input !== "string") return input;
+        const operation = input.slice(0, 2);
+        const value = Number.parseInt(input.slice(2));
+
+        switch (operation) {
+          case "++":
+            return value + 1;
+          case "--":
+            return value - 1;
+          default:
+            return input;
+        }
+      }
+
+      function getData(element: Element) {
+        const encoded = element.getAttribute("hx-data");
+        if (!encoded) return {};
+        return JSON.parse(encoded);
+      }
+
+      function initialize(element: Element) {
+        const templateId = element.getAttribute("hx-template")!!;
+        const templateElement = document.getElementById(templateId);
+
+        if (!templateElement) {
+          console.warn(`unable to find template with ID '${templateId}'`);
+          return;
+        }
+
+        element.addEventListener("click", (event) => {
+          event.preventDefault();
+
+          const target: Node = htmxApi.getTarget(element);
+          const template = templateElement.innerHTML;
+          const data = getData(element);
+          const resolvedData = Object.fromEntries(
+            Object.entries(data).map(([key, value]) => [
+              key,
+              resolveOperation(value),
+            ]),
+          );
+
+          const rendered = window.mustache.render(template, resolvedData);
+
+          const parentNode = target.parentNode;
+
+          const swapSpec = htmxApi.getSwapSpecification(element);
+          htmxApi.swap(target, rendered, swapSpec);
+          if (parentNode) check(parentNode);
+        });
+      }
+
+      function check(element: ParentNode) {
+        element.querySelectorAll("[hx-template]").forEach(initialize);
+      }
+
+      check(document);
+    },
+  });
+</script>

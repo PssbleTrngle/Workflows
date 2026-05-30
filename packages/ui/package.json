@@ -17,10 +17,12 @@
     "@pssbletrngle/workflows-configs": "workspace:*",
     "@pssbletrngle/workflows-shared": "workspace:*",
     "@pssbletrngle/workflows-types": "workspace:*",
+    "@types/mustache": "^4.2.6",
     "astro": "^6.3.3",
     "htmx-ext-form-json": "^1.0.10",
     "htmx-ext-sse": "^2.2.4",
     "htmx.org": "^2.0.8",
+    "mustache": "^4.2.0",
     "octokit": "^5.0.5",
     "typescript": "^5.9.3"
   },

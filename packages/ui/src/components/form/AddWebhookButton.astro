@@ -1,0 +1,15 @@
+---
+type NumberOrOperation = number | `++${string}`;
+
+export type Props = { index?: NumberOrOperation };
+
+const { index } = Astro.props;
+---
+
+<button
+  hx-template="webhook-input-template"
+  hx-swap="outerHTML"
+  hx-data={JSON.stringify({ index })}
+>
+  Add webhook
+</button>

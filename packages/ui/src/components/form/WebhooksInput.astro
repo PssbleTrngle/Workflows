@@ -1,0 +1,14 @@
+---
+import AddWebhookButton from "./AddWebhookButton.astro";
+import WebhookInput from "./WebhookInput.astro";
+
+export type Props = { value?: string[] };
+
+const { value = [] } = Astro.props;
+---
+
+<label>Webhooks</label>
+
+{value.map((it, i) => <WebhookInput value={it} index={i.toString()} />)}
+
+<AddWebhookButton index={value.length} />

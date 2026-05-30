@@ -6,15 +6,17 @@ import {
   createEventBus,
   type UpdateContainersCommand,
 } from "@pssbletrngle/workflows-events";
-import { sendEmbeds } from "@pssbletrngle/workflows-notifications";
+import createNotifications from "@pssbletrngle/workflows-notifications";
 import { requireEnv } from "@pssbletrngle/workflows-shared/config";
 import { createLock } from "@pssbletrngle/workflows-shared/lock";
+
+const notifications = await createNotifications({ database: false });
 
 function notifyUpdate(
   { name, tag, keys }: UpdateContainersCommand,
   containers: ContainerDisplay[],
 ) {
-  return sendEmbeds(["docker", ...keys], {
+  return notifications.sendEmbeds(["docker", ...keys], {
     title: `Updated ${name}`,
     description: [
       `Found ${containers.length} matching container(s)`,

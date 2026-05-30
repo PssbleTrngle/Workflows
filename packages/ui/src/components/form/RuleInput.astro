@@ -6,7 +6,7 @@ export type Props = { value?: RepositoryRule; path: string };
 const { value, path } = Astro.props;
 ---
 
-<section>
+<section class="rule-input">
   <input
     type="text"
     placeholder="Repository Name"
@@ -25,12 +25,14 @@ const { value, path } = Astro.props;
     name={`${path}[branch]`}
     value={value?.branch}
   />
+
+  <button hx-on:click="this.closest('.rule-input').remove()">🗑️</button>
 </section>
 
 <style scoped>
-  section {
+  .rule-input {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr) 100px;
     gap: 1em;
   }
 </style>

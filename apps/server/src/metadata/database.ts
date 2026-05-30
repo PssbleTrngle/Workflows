@@ -8,5 +8,5 @@ import { eventDispatcher } from "./events";
 
 await connectDatabase(logger);
 
-export const Respositories = new RepositoryRepository(eventDispatcher, logger);
-export const Notifiers = new NotifierRepository(eventDispatcher, logger);
+export const Respositories = new RepositoryRepository(logger, eventDispatcher);
+export const Notifiers = new NotifierRepository(logger, eventDispatcher);

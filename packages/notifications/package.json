@@ -12,6 +12,8 @@
   "dependencies": {
     "@discordjs/builders": "^1.14.1",
     "@pssbletrngle/workflows-configs": "workspace:*",
+    "@pssbletrngle/workflows-persistance": "workspace:*",
+    "@pssbletrngle/workflows-types": "workspace:*",
     "@types/bun": "latest",
     "@types/dockerode": "^4.0.1",
     "discord-api-types": "^0.38.47",

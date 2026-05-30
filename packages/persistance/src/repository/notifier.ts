@@ -11,8 +11,8 @@ type MongoError = Error & {
 
 export class NotifierRepository {
   constructor(
-    private readonly events: NotifierEventConsumer,
-    private readonly logger: Logger,
+    private readonly logger?: Logger,
+    private readonly events?: NotifierEventConsumer,
   ) {}
 
   private authFilter(user: OAuthUser | undefined): QueryFilter<Notifier> {
@@ -33,7 +33,7 @@ export class NotifierRepository {
       values,
     );
     if (modifiedCount > 0) {
-      this.events.sendNotifierUpdate(name, user.userId);
+      this.events?.sendNotifierUpdate(name, user.userId);
       return true;
     }
 
@@ -50,7 +50,7 @@ export class NotifierRepository {
         ...this.authFilter(user),
       });
 
-      this.events.sendNotifierUpdate(values.name, user.userId);
+      this.events?.sendNotifierUpdate(values.name, user.userId);
 
       return inserted;
     } catch (ex) {
@@ -66,7 +66,7 @@ export class NotifierRepository {
     });
   }
 
-  async findAll(user: OAuthUser): Promise<Notifier[]> {
+  async findAll(user?: OAuthUser): Promise<Notifier[]> {
     return await Notifiers.find(this.authFilter(user), undefined);
   }
 

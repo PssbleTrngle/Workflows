@@ -1,0 +1,21 @@
+---
+import type { RepositoryRule } from "@pssbletrngle/workflows-types/metadata";
+import AddRuleButton from "./AddRuleButton.astro";
+import RuleInput from "./RuleInput.astro";
+
+export type Props = { value?: RepositoryRule[]; path: string };
+
+const { value = [], path } = Astro.props;
+---
+
+<label>{path}</label>
+
+{value.map((it, i) => <RuleInput value={it} path={`${path}[${i}]`} />)}
+
+<AddRuleButton path={path} index={value.length} />
+
+<style scoped>
+  label {
+    text-transform: capitalize;
+  }
+</style>

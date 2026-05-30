@@ -20,3 +20,8 @@ interface HTMLElementEventMap {
   "htmx:beforeSwap": BeforeSwapEvent;
   "htmx:beforeOnLoad": BeforeOnLoadEvent;
 }
+
+interface Window {
+  mustache: import("mustache");
+  htmx: import("htmx.org");
+}

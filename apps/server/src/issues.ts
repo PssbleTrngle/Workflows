@@ -1,6 +1,6 @@
-import { sendEmbeds } from "@pssbletrngle/workflows-notifications";
 import type { App } from "octokit";
 import logger from "./logger";
+import notifications from "./notifications";
 
 const enum ItemStatus {
   BACKLOG = "19a9db19",
@@ -61,7 +61,7 @@ export function registerIssuesHooks(hooks: App["webhooks"]) {
       ],
     });
 
-    await sendEmbeds("issues", {
+    await notifications.sendEmbeds("issues", {
       author: {
         name: "Issue Assigned",
       },

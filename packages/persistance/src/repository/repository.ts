@@ -18,8 +18,8 @@ import { Repositories } from "../documents/repository";
 
 export class RepositoryRepository {
   constructor(
-    private readonly events: RepositoryEventConsumer,
-    private readonly logger: Logger,
+    private readonly logger?: Logger,
+    private readonly events?: RepositoryEventConsumer,
   ) {}
 
   private authFilter(
@@ -38,7 +38,7 @@ export class RepositoryRepository {
     values: Omit<Partial<Repository>, "branches" | keyof WithTimestamps>,
   ) {
     await Repositories.updateOne(subject, values, { upsert: true });
-    this.events.sendRepositoryUpdate(subject);
+    this.events?.sendRepositoryUpdate(subject);
   }
 
   async addViewer(subject: RepoSearch, userId: string) {
@@ -120,7 +120,7 @@ export class RepositoryRepository {
       );
     }
 
-    this.events.sendBranchUpdate(subject);
+    this.events?.sendBranchUpdate(subject);
   }
 
   async saveStatus(subject: RepoSearchWithBranch, status: RepositoryStatus) {
@@ -151,7 +151,7 @@ export class RepositoryRepository {
     });
 
     if (result.modifiedCount > 0) {
-      this.logger.debug("deleting cache for branch", subject);
+      this.logger?.debug("deleting cache for branch", subject);
     }
   }
 }

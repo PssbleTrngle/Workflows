@@ -1,0 +1,24 @@
+---
+export type Props = { value?: string; path: string };
+
+const { value, path } = Astro.props;
+---
+
+<section class="webhook-input">
+  <input
+    type="url"
+    placeholder="Webhook URL"
+    name={`discordWebhooks[${path}]`}
+    value={value}
+  />
+
+  <button hx-on:click="this.closest('.webhook-input').remove()">🗑️</button>
+</section>
+
+<style scoped>
+  .webhook-input {
+    display: grid;
+    grid-template-columns: 1fr 100px;
+    gap: 1em;
+  }
+</style>
