@@ -1,5 +1,4 @@
 import type { AstroIntegration } from "astro";
-import "htmx.org/dist/htmx";
 
 const script = /* javascript */ `
 // TODO waiting for https://github.com/bigskysoftware/htmx-extensions/issues/128
