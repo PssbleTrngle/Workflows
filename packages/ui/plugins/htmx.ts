@@ -1,7 +1,7 @@
 import type { AstroIntegration } from "astro";
 import "htmx.org/dist/htmx";
 
-const script = /* typescript */ `
+const script = /* javascript */ `
 // TODO waiting for https://github.com/bigskysoftware/htmx-extensions/issues/128
 // import 'htmx.org';
 // import 'htmx-ext-sse';

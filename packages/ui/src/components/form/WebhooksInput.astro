@@ -9,6 +9,6 @@ const { value = [] } = Astro.props;
 
 <label>Webhooks</label>
 
-{value.map((it, i) => <WebhookInput value={it} index={i.toString()} />)}
+{value.map((it, i) => <WebhookInput value={it} path={i.toString()} />)}
 
 <AddWebhookButton index={value.length} />

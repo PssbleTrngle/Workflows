@@ -1,4 +1,4 @@
-import createNotifications from "@pssbletrngle/workflows-notifications";
+import { createNotifications } from "@pssbletrngle/workflows-notifications";
 
 const version = process.env.APP_VERSION || "0.0.0-dev";
 

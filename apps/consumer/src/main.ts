@@ -6,7 +6,7 @@ import {
   createEventBus,
   type UpdateContainersCommand,
 } from "@pssbletrngle/workflows-events";
-import createNotifications from "@pssbletrngle/workflows-notifications";
+import { createNotifications } from "@pssbletrngle/workflows-notifications";
 import { requireEnv } from "@pssbletrngle/workflows-shared/config";
 import { createLock } from "@pssbletrngle/workflows-shared/lock";
 

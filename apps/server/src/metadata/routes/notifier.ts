@@ -31,7 +31,8 @@ export default function notifierRouter() {
 
   router.put(
     "/:name",
-    validate({ body: inputSchema }),
+    // TODO I hate this
+    validate<{ name: string }, typeof inputSchema>({ body: inputSchema }),
     async (req, res: AuthenticatedResponse) => {
       const success = await Notifiers.update(
         req.params.name,

@@ -2,7 +2,9 @@ import type { WebhookEventDefinition } from "@octokit/webhooks/types";
 import {
   ButtonStyle,
   type Button,
+  type ReleaseNotifaction,
 } from "@pssbletrngle/workflows-notifications";
+import { notNull } from "@pssbletrngle/workflows-shared/util";
 import type { RepoSearch } from "@pssbletrngle/workflows-types";
 import { parse as parsePath } from "node:path";
 import { type App, type Octokit } from "octokit";
@@ -26,13 +28,15 @@ function conclusionColor(
   }
 }
 
+const moduleMetadataSchema = z.object({
+  tag: z.string().nonempty(),
+  modrinthUrl: z.string().nonempty().optional(),
+  curseforgeUrl: z.string().nonempty().optional(),
+});
+
 const releaseMetadataSchema = z.record(
   z.string().nonempty(),
-  z.object({
-    tag: z.string().nonempty(),
-    modrinthUrl: z.string().nonempty().optional(),
-    curseforgeUrl: z.string().nonempty().optional(),
-  }),
+  moduleMetadataSchema,
 );
 
 async function fetchRelease(
@@ -63,11 +67,15 @@ async function tryFetchRelease(
   }
 }
 
+type ModuleReleaseAttributes = {
+  key?: string;
+} & z.infer<typeof moduleMetadataSchema>;
+
 async function fetchAttributes(
   octokit: Octokit,
   subject: RepoSearch,
   runId: number,
-) {
+): Promise<ModuleReleaseAttributes[]> {
   const { data } = await octokit.rest.actions.listWorkflowRunArtifacts({
     ...subject,
     run_id: runId,
@@ -87,7 +95,7 @@ async function fetchAttributes(
   if (attributes.length === 0) return [];
   const merged = attributes.reduce((a, b) => ({ ...a, ...b }));
 
-  return Object.values(merged);
+  return Object.entries(merged).map(([key, value]) => ({ key, ...value }));
 }
 
 export function registerActionsHooks(hooks: App["webhooks"]) {
@@ -120,7 +128,9 @@ export function registerActionsHooks(hooks: App["webhooks"]) {
       }
     }
 
-    for (const { tag, curseforgeUrl, modrinthUrl } of attributes) {
+    const grouped = Object.groupBy(attributes, (it) => it.tag);
+
+    for (const [tag, modules = []] of Object.entries(grouped)) {
       const color = conclusionColor(workflow_run.conclusion);
 
       const icon_url = icon?.endsWith(".png")
@@ -132,32 +142,41 @@ export function registerActionsHooks(hooks: App["webhooks"]) {
         icon_url,
       };
 
-      const key = [
-        "workflow",
-        repository.owner.login,
-        workflow_run.conclusion!,
-      ];
+      const key: ReleaseNotifaction = {
+        type: "release",
+        conclusion: workflow_run.conclusion ?? undefined,
+        subject,
+      };
 
       if (workflow_run.conclusion === "success") {
-        const buttons: Button[] = [];
+        const buttonBars = modules.map(
+          ({ key, modrinthUrl, curseforgeUrl }) => {
+            const buttons: Button[] = [];
 
-        if (modrinthUrl) {
-          buttons.push({
-            label: "Modrinth",
-            style: ButtonStyle.Link,
-            url: modrinthUrl,
-            emoji: { id: "1040805511538421890" },
-          });
-        }
+            const distinctKey = modules.length > 1 ? key : null;
+            const label = ["Download", distinctKey].filter(notNull).join(" ");
 
-        if (curseforgeUrl) {
-          buttons.push({
-            label: "CurseForge",
-            style: ButtonStyle.Link,
-            url: curseforgeUrl,
-            emoji: { id: "1249535868365180948" },
-          });
-        }
+            if (modrinthUrl) {
+              buttons.push({
+                label: `${label} from Modrinth`,
+                style: ButtonStyle.Link,
+                url: modrinthUrl,
+                emoji: { id: "1040805511538421890" },
+              });
+            }
+
+            if (curseforgeUrl) {
+              buttons.push({
+                label: `${label} from CurseForge`,
+                style: ButtonStyle.Link,
+                url: curseforgeUrl,
+                emoji: { id: "1249535868365180948" },
+              });
+            }
+
+            return buttons;
+          },
+        );
 
         const tagCandidates: string[] = [tag];
         if (workflow_run.head_branch && workflow_run.event === "release")
@@ -179,7 +198,7 @@ export function registerActionsHooks(hooks: App["webhooks"]) {
             color,
             url,
           },
-          buttons,
+          buttonBars,
         );
       } else {
         await notifications.sendEmbeds(key, {

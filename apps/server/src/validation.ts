@@ -4,9 +4,9 @@ import type { infer as inferType, ZodType } from "zod";
 
 export default function validate<
   ReqParams,
-  BodySchema extends ZodType,
-  QuerySchema extends ZodType,
-  LocalsObj extends Dictionary,
+  BodySchema extends ZodType = ZodType,
+  QuerySchema extends ZodType = ZodType,
+  LocalsObj extends Dictionary = Dictionary,
 >(schemas: {
   query?: QuerySchema;
   body?: BodySchema;
