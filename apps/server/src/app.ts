@@ -1,3 +1,4 @@
+import { Worker, isMainThread } from "node:worker_threads";
 import { App } from "octokit";
 import { registerActionsHooks } from "./actions";
 import config from "./config";
@@ -16,12 +17,17 @@ const app = new App({
   log: logger,
 });
 
-registerMetadataHooks(app.webhooks);
-registerReleasesHooks(app.webhooks);
-registerIssuesHooks(app.webhooks);
-registerActionsHooks(app.webhooks);
-registerSpotlessHooks(app.webhooks);
+if (isMainThread) {
+  registerMetadataHooks(app.webhooks);
+  registerReleasesHooks(app.webhooks);
+  registerIssuesHooks(app.webhooks);
+  registerActionsHooks(app.webhooks);
+  registerSpotlessHooks(app.webhooks);
 
-await onStartup(app);
+  new Worker(new URL(import.meta.url));
+} else {
+  logger.debug("running startup actions in background...");
+  await onStartup(app);
+}
 
 export default app;
