@@ -49,6 +49,10 @@ const uploadSchema = z.object({
     .enum(["release", "push"])
     .default("release")
     .describe("when to trigger a release"),
+  snapshots: z
+    .boolean()
+    .default(true)
+    .describe(`publish snapshots on repository push`),
 });
 
 const minecraftSchema = z

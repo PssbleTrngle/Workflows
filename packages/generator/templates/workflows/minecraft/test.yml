@@ -2,12 +2,6 @@ name: Test
 
 on:
    workflow_dispatch:
-    inputs:
-      upload:
-        description: "Upload Artifact"
-        default: false
-        required: true
-        type: boolean
    
    pull_request:
       types: [opened, synchronize]
@@ -42,7 +36,7 @@ jobs:
 
       {{#if sonar}}
       - name: Cache SonarQube packages
-        if: {{ var 'github.event_name == \'push\'' }}
+        if: {{ var 'github.event_name != \'pull_request\'' }}
         uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
@@ -50,12 +44,25 @@ jobs:
           restore-keys: {{ var 'runner.os' }}-sonar
       {{/if}}
 
+      {{#if upload.snapshots}}
+      - uses: PssbleTrngle/find-release@v1
+        if: {{ var 'github.event_name != \'pull_request\'' }}
+        id: action
+        with:
+          type: draft
+          token: {{ var 'secrets.GITHUB_TOKEN' }}
+      {{/if}}
+
       - name: Test
         run: ./gradlew build check --stacktrace
+      {{#if upload.snapshots}}
+        env:
+          RELEASE_VERSION: {{ var 'steps.action.outputs.tag' }}
+      {{/if}}
 
       {{#if sonar}}
       - name: Analyze
-        if: {{ var 'github.event_name == \'push\'' }}
+        if: {{ var 'github.event_name != \'pull_request\'' }}
         run: ./gradlew sonar
         continue-on-error: true
         env:
@@ -64,8 +71,16 @@ jobs:
           GITHUB_DEPENDENCY_GRAPH_ENABLED: false
       {{/if}}
 
-      - uses: actions/upload-artifact@v4
-        if: {{ var 'inputs.upload' }}
-        with:
-          name: build
-          path: "**/build/libs/*.jar"
+      {{#if upload.snapshots}}
+      - name: Publish -SNAPSHOT version
+        if: {{ var 'steps.action.outputs.matched' }}
+        run: ./gradlew publish
+        continue-on-error: true
+        env:
+          {{#if upload.nexus}}
+          NEXUS_USER: {{ var 'secrets.NEXUS_USER' }}
+          NEXUS_TOKEN: {{ var 'secrets.NEXUS_TOKEN' }}
+          {{/if}}
+          RELEASE_VERSION: {{ var 'steps.action.outputs.tag' }}
+          SNAPSHOT: true
+      {{/if}}

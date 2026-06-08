@@ -1,8 +1,8 @@
 import createGenerator from "../factory";
 
 const defaultData = {
-  loaders: [],
-  versions: [],
+  loaders: [] as string[],
+  versions: [] as string[],
 };
 
 export const generateIssueTemplate = createGenerator("issueTemplates", {

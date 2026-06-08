@@ -49,18 +49,44 @@ describe("minecaft release workflows", () => {
     });
   });
 
-  describe("minecaft release on push workflow", () => {
-    it(`generates release on push workflow`, async () => {
-      const generated = await generateWorkflow(
-        ["minecraft", "release.yml"],
-        mockContext({
-          upload: {
-            nexus: true,
-            strategy: "push",
-          },
-        }),
-      );
-      expect(generated).toMatchSnapshot("release workflow on push");
-    });
+  it(`generates release on push workflow`, async () => {
+    const generated = await generateWorkflow(
+      ["minecraft", "release.yml"],
+      mockContext({
+        upload: {
+          nexus: true,
+          strategy: "push",
+        },
+      }),
+    );
+    expect(generated).toMatchSnapshot("release workflow on push");
+  });
+
+  it(`test workflow with snapshot release`, async () => {
+    const generated = await generateWorkflow(
+      ["minecraft", "test.yml"],
+      mockContext({
+        upload: {
+          nexus: true,
+          snapshots: true,
+        },
+      }),
+    );
+    expect(generated).toMatchSnapshot("snapshot release workflow");
+  });
+  it(`test workflow will not publish snapshots with push strategy`, async () => {
+    const generated = await generateWorkflow(
+      ["minecraft", "test.yml"],
+      mockContext({
+        upload: {
+          nexus: true,
+          snapshots: true,
+          strategy: "push",
+        },
+      }),
+    );
+    expect(generated).toMatchSnapshot(
+      "snapshot release workflow with push strategy",
+    );
   });
 });

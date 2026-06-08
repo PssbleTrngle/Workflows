@@ -12,12 +12,6 @@ name: Test
 
 on:
   workflow_dispatch:
-    inputs:
-      upload:
-        description: "Upload Artifact"
-        default: false
-        required: true
-        type: boolean
 
   pull_request:
     types: [opened, synchronize]
@@ -58,12 +52,6 @@ jobs:
 
       - name: Test
         run: ./gradlew build check --stacktrace
-
-      - uses: actions/upload-artifact@v4
-        if: \${{ inputs.upload }}
-        with:
-          name: build
-          path: "**/build/libs/*.jar"
 "
 `;
 
@@ -79,12 +67,6 @@ name: Test
 
 on:
   workflow_dispatch:
-    inputs:
-      upload:
-        description: "Upload Artifact"
-        default: false
-        required: true
-        type: boolean
 
   pull_request:
     types: [opened, synchronize]
@@ -124,7 +106,7 @@ jobs:
           dependency-graph: generate-and-submit
 
       - name: Cache SonarQube packages
-        if: \${{ github.event_name == 'push' }}
+        if: \${{ github.event_name != 'pull_request' }}
         uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
@@ -135,19 +117,13 @@ jobs:
         run: ./gradlew build check --stacktrace
 
       - name: Analyze
-        if: \${{ github.event_name == 'push' }}
+        if: \${{ github.event_name != 'pull_request' }}
         run: ./gradlew sonar
         continue-on-error: true
         env:
           SONAR_TOKEN: \${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: \${{ secrets.SONAR_HOST_URL }}
           GITHUB_DEPENDENCY_GRAPH_ENABLED: false
-
-      - uses: actions/upload-artifact@v4
-        if: \${{ inputs.upload }}
-        with:
-          name: build
-          path: "**/build/libs/*.jar"
 "
 `;
 
@@ -163,12 +139,6 @@ name: Test
 
 on:
   workflow_dispatch:
-    inputs:
-      upload:
-        description: "Upload Artifact"
-        default: false
-        required: true
-        type: boolean
 
   pull_request:
     types: [opened, synchronize]
@@ -209,12 +179,6 @@ jobs:
 
       - name: Test
         run: ./gradlew build check --stacktrace
-
-      - uses: actions/upload-artifact@v4
-        if: \${{ inputs.upload }}
-        with:
-          name: build
-          path: "**/build/libs/*.jar"
 "
 `;
 
@@ -431,7 +395,7 @@ jobs:
 "
 `;
 
-exports[`minecaft release workflows minecaft release on push workflow generates release on push workflow: release workflow on push 1`] = `
+exports[`minecaft release workflows generates release on push workflow: release workflow on push 1`] = `
 "# <meta>
 #    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>0.0.0-dev</version>
@@ -488,5 +452,134 @@ jobs:
           archive: false
           path: build/release.json
           retention-days: 1
+"
+`;
+
+exports[`minecaft release workflows test workflow with snapshot release: snapshot release workflow 1`] = `
+"# <meta>
+#    <source>@pssbletrngle/github-meta-generator</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>abcdef</hash>
+# </meta>
+
+name: Test
+
+on:
+  workflow_dispatch:
+
+  pull_request:
+    types: [opened, synchronize]
+
+  push:
+    branches:
+      - "main"
+      - "main/**"
+
+env:
+  CI: true
+
+concurrency:
+  group: \${{ github.workflow }}-\${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: 26
+          distribution: temurin
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: \${{ github.event_name != 'push' }}
+          dependency-graph: generate-and-submit
+
+      - uses: PssbleTrngle/find-release@v1
+        if: \${{ github.event_name != 'pull_request' }}
+        id: action
+        with:
+          type: draft
+          token: \${{ secrets.GITHUB_TOKEN }}
+
+      - name: Test
+        run: ./gradlew build check --stacktrace
+        env:
+          RELEASE_VERSION: \${{ steps.action.outputs.tag }}
+
+      - name: Publish -SNAPSHOT version
+        if: \${{ steps.action.outputs.matched }}
+        run: ./gradlew publish
+        continue-on-error: true
+        env:
+          NEXUS_USER: \${{ secrets.NEXUS_USER }}
+          NEXUS_TOKEN: \${{ secrets.NEXUS_TOKEN }}
+          RELEASE_VERSION: \${{ steps.action.outputs.tag }}
+          SNAPSHOT: true
+"
+`;
+
+exports[`minecaft release workflows test workflow will not publish snapshots with push strategy: snapshot release workflow with push strategy 1`] = `
+"# <meta>
+#    <source>@pssbletrngle/github-meta-generator</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>abcdef</hash>
+# </meta>
+
+name: Test
+
+on:
+  workflow_dispatch:
+
+  pull_request:
+    types: [opened, synchronize]
+
+  push:
+    branches:
+      - "main"
+      - "main/**"
+
+env:
+  CI: true
+
+concurrency:
+  group: \${{ github.workflow }}-\${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: 26
+          distribution: temurin
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: \${{ github.event_name != 'push' }}
+          dependency-graph: generate-and-submit
+
+      - name: Test
+        run: ./gradlew build check --stacktrace
 "
 `;

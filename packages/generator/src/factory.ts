@@ -25,32 +25,33 @@ function createHelpers({ glob }: Context): HelperDeclareSpec {
   };
 }
 
-export default function createGenerator(
+export type Transformer<T> = (input: T) => T;
+
+export default function createGenerator<T extends TemplateData = TemplateData>(
   folder: string,
   {
     defaultData = {},
     header = true,
     commentStyle,
+    transform = (it) => it,
     ...options
   }: {
     defaultData?: TemplateData;
     header?: boolean;
     commentStyle?: BuiltInParserName;
+    transform?: Transformer<T>;
   } & RuntimeOptions = {},
 ): Generator {
   return async (key, { glob, ...data }) => {
     const { template, parser } = await loadTemplate(folder, ...key);
-    let generated = template(
-      { ...defaultData, ...data },
-      {
-        ...options,
-        helpers: {
-          ...helpers,
-          ...options.helpers,
-          ...createHelpers({ glob }),
-        },
+    let generated = template(transform({ ...defaultData, ...(data as T) }), {
+      ...options,
+      helpers: {
+        ...helpers,
+        ...options.helpers,
+        ...createHelpers({ glob }),
       },
-    );
+    });
     if (header) generated = await withHeader(generated, commentStyle ?? parser);
     if (parser) return format(generated, { parser });
     return generated;
