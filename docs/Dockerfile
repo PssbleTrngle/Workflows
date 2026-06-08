@@ -17,7 +17,6 @@ ARG edit_url
 ENV EDIT_URL=$edit_url
 
 COPY docs/src src
-COPY docs/overrides overrides
 COPY docs/mkdocs.yml .
 COPY .git .git
 RUN mkdocs build
