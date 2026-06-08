@@ -518,7 +518,7 @@ jobs:
           RELEASE_VERSION: \${{ steps.action.outputs.tag }}
 
       - name: Publish -SNAPSHOT version
-        if: \${{ steps.action.outputs.matched }}
+        if: \${{ fromJSON(steps.action.outputs.matched) }}
         run: ./gradlew publish
         continue-on-error: true
         env:

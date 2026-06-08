@@ -73,7 +73,7 @@ jobs:
 
       {{#if upload.snapshots}}
       - name: Publish -SNAPSHOT version
-        if: {{ var 'steps.action.outputs.matched' }}
+        if: {{ var 'fromJSON(steps.action.outputs.matched)' }}
         run: ./gradlew publish
         continue-on-error: true
         env:
