@@ -1,0 +1,52 @@
+name: Build Container
+
+on:
+   push:
+      branches: [main]
+      paths:
+         - docs/**
+
+env:
+   REGISTRY: ghcr.io
+
+concurrency:
+   group: ${{ github.workflow }}-${{ github.ref }}
+   cancel-in-progress: true
+
+jobs:
+   docker:
+      runs-on: ubuntu-latest
+      permissions:
+         contents: read
+         packages: write
+      steps:
+         - name: Checkout repository
+           uses: actions/checkout@v6
+           with:
+              submodules: true
+
+         - name: Log in to the Container registry
+           uses: docker/login-action@v4
+           with:
+              registry: ${{ env.REGISTRY }}
+              username: ${{ github.actor }}
+              password: ${{ secrets.GITHUB_TOKEN }}
+
+         - name: Extract metadata (tags, labels) for Docker
+           id: meta
+           uses: docker/metadata-action@v6
+           with:
+              images: ${{ env.REGISTRY }}/${{ github.repository }}-docs
+
+         - name: Build and push Docker image
+           uses: docker/build-push-action@v7
+           with:
+              context: .
+              file: docs/Dockerfile
+              push: true
+              tags: ${{ steps.meta.outputs.tags }}
+              labels: ${{ steps.meta.outputs.labels }}
+              build-args: |
+                 repo_url=https://github.com/${{ github.repository }}
+                 site_url=${{ secrets.SITE_URL }}
+                 edit_url=edit/${{ github.ref_name }}/docs/src/

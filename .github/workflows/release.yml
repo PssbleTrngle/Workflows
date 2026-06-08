@@ -3,9 +3,11 @@ name: Publish Docker Images
 on:
    workflow_dispatch:
    push:
-      branches: [ main ]
+      branches: [main]
+      paths-ignore:
+         - docs/**
    release:
-      types: [ published ]
+      types: [published]
 
 concurrency:
    group: ${{ github.workflow }}-${{ github.ref }}
@@ -20,7 +22,7 @@ jobs:
    docker:
       strategy:
          matrix:
-            app: [ server, consumer ]
+            app: [server, consumer]
       permissions:
          contents: read
          packages: write

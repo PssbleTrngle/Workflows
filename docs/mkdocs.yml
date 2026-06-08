@@ -1,0 +1,72 @@
+site_name: Workflows Docs
+edit_uri: !ENV [EDIT_URL]
+site_url: !ENV [SITE_URL, "http://localhost:8000"]
+repo_url: !ENV [REPO_URL]
+
+docs_dir: src
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: deep purple
+    accent: amber
+
+  logo: assets/icon.svg
+  favicon: assets/icon.svg
+
+  features:
+    - content.action.edit
+    - content.code.copy
+    - navigation.tabs
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.sections
+    - navigation.expand
+    - navigation.indexes
+    - toc.integrate
+    - navigation.top
+    - content.tooltips
+
+extra:
+  version:
+    provider: mike
+
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/PssbleTrngle
+
+    - icon: fontawesome/brands/bluesky
+      link: https://bsky.app/profile/possible-triangle.bsky.social
+
+    - icon: fontawesome/brands/discord
+      link: http://discord.com/users/175899702431055872
+
+markdown_extensions:
+  - attr_list
+  - md_in_html
+  - tables
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - abbr
+  - pymdownx.snippets
+
+plugins:
+  - search
+  - awesome-nav
+  - markdownextradata:
+  - git-revision-date-localized:
+      enabled: !ENV [CI, false]
+  - social:
+      enabled: !ENV [CI, false]
+  - site-urls:
+      prefix: "/"
+
+extra_css:
+  - styles/extra.css
+# extra_javascript:
+#   - scripts/favicon.js
