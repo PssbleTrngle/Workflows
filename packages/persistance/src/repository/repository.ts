@@ -1,4 +1,9 @@
-import { mapKeys } from "@pssbletrngle/workflows-shared/util";
+import {
+  mapKeys,
+  mapValues,
+  notNull,
+  uniq,
+} from "@pssbletrngle/workflows-shared/util";
 import type {
   RepoSearch,
   RepoSearchWithBranch,
@@ -9,9 +14,11 @@ import type { RepositoryEventConsumer } from "@pssbletrngle/workflows-types/even
 import type { Logger } from "@pssbletrngle/workflows-types/logger";
 import type {
   Branch,
+  BranchSetup,
   Checks,
   Repository,
   RepositoryStatus,
+  Setup,
 } from "@pssbletrngle/workflows-types/metadata";
 import type { QueryFilter } from "mongoose";
 import { Repositories } from "../documents/repository";
@@ -91,6 +98,27 @@ export class RepositoryRepository {
     );
   }
 
+  async findSetup(search: RepoSearch, user?: AuthenticatedUser) {
+    const repo = await this.find(search, user);
+    if (!repo) return null;
+    const setups = repo.branches.map((it) => it.setup).filter(notNull);
+    const merged: Setup = {
+      gradleHelper: [],
+      loaders: [],
+      type: [],
+      versions: [],
+    };
+
+    setups.forEach((it) => {
+      if (it.type) merged.type.push(it.type);
+      if (it.gradleHelper) merged.gradleHelper.push(it.gradleHelper);
+      if (it.loaders) merged.loaders.push(...it.loaders);
+      if (it.versions) merged.versions.push(...it.versions);
+    });
+
+    return mapValues(merged, uniq) as Setup;
+  }
+
   async migrate(from: RepoSearch, to: RepoSearch) {
     await Repositories.updateMany(from, to);
   }
@@ -131,7 +159,7 @@ export class RepositoryRepository {
     await this.updateBranch(subject, { checks });
   }
 
-  async saveSetup(subject: RepoSearchWithBranch, setup: Branch["setup"]) {
+  async saveSetup(subject: RepoSearchWithBranch, setup: BranchSetup) {
     await this.updateBranch(subject, { setup });
   }
 

@@ -101,15 +101,25 @@ const resolvedSchema = schema.superRefine((data, context) => {
   });
 });
 
+export type Resolved<T> = {
+  [K in keyof T]: Exclude<T[K], "detect">;
+};
+
 export type ConfigType = ConfigSchema["type"];
 
-export function validateConfig(
+interface ConfigValidator {
+  (input: unknown): ConfigSchema;
+  (input: unknown, allowDetected: true): ConfigSchema;
+  (input: unknown, allowDetected: false): Resolved<ConfigSchema>;
+}
+
+export const validateConfig = ((
   input: unknown,
   allowDetected: boolean = true,
-): ConfigSchema {
+) => {
   if (allowDetected) return schema.parse(input);
   return resolvedSchema.parse(input);
-}
+}) as ConfigValidator;
 
 export const configSchema = z.toJSONSchema(schema, {
   override: ({ jsonSchema, path }) => {

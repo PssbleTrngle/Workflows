@@ -2,6 +2,20 @@ import type { DateTime, WithTimestamps } from "..";
 import type { Checks } from "./checks";
 import type { RepositoryStatus } from "./status";
 
+export type BranchSetup = {
+  type?: string;
+  loaders?: string[];
+  versions?: string[];
+  gradleHelper?: string;
+};
+
+export type Setup = {
+  type: string[];
+  loaders: string[];
+  versions: string[];
+  gradleHelper: string[];
+};
+
 export type Branch = {
   ref: string;
   generatorMeta?: {
@@ -11,12 +25,7 @@ export type Branch = {
   };
   status?: RepositoryStatus;
   checks?: Checks;
-  setup?: {
-    type?: string;
-    loaders?: string[];
-    versions?: string[];
-    gradleHelper?: string;
-  };
+  setup?: BranchSetup;
 };
 
 export type Repository = WithTimestamps & {

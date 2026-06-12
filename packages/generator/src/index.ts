@@ -2,11 +2,12 @@ export {
   configSchema,
   DETECT_KEY,
   packageManagerSchema,
-  validateConfig,
+  ConfigValidator as validateConfig,
 } from "./config";
 export type {
   ConfigSchema,
   MinecraftConfigSchema,
+  Resolved,
   WebConfigSchema,
 } from "./config";
 export { generateConfig } from "./configs/generate";

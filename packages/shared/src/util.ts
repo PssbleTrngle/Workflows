@@ -25,3 +25,8 @@ export function mapValues<T, R>(
     Object.entries(from).map(([key, value]) => [key, mapper(value, key)]),
   );
 }
+
+export function contentsSame<T>(a: T[], b: T[]) {
+  if (a.length !== b.length) return false;
+  return a.every((it) => b.includes(it));
+}

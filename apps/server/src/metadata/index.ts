@@ -1,4 +1,3 @@
-import type { WebhookEventDefinition } from "@octokit/webhooks/types";
 import { configPath } from "@pssbletrngle/github-meta-generator";
 import type {
   GithubRepository,
@@ -9,20 +8,13 @@ import type { App } from "octokit";
 import logger from "../logger";
 import { createGitUser } from "../user";
 import createApiRoutes from "./api";
-import checkSetup from "./checks/setup";
+import { fileChanged } from "./checks/commit";
+import checkIcon, { ICON_PATHS } from "./checks/icon";
+import { checkGradleSetup } from "./checks/setup";
 import checkViewers from "./checks/viewers";
 import { Respositories } from "./database";
 import generateMetadata, { metadataBranch } from "./generator";
 import createUIMiddlware from "./ui";
-
-function fileChanged(
-  commits: WebhookEventDefinition<"push">["commits"],
-  path: string,
-) {
-  return commits.some(({ added, removed, modified }) => {
-    return [added, removed, modified].flat().includes(path);
-  });
-}
 
 export async function registerMetadataHooks(hooks: App["webhooks"]) {
   hooks.onError((error) => {
@@ -64,7 +56,11 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
     }
 
     if (fileChanged(commits, "settings.gradle.kts")) {
-      await checkSetup(subject, octokit);
+      await checkGradleSetup(subject, octokit);
+    }
+
+    if (fileChanged(commits, ...ICON_PATHS)) {
+      await checkIcon(subject, octokit);
     }
   });
 

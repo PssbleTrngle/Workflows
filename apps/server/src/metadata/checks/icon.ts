@@ -2,12 +2,12 @@ import type { RepoSearch } from "@pssbletrngle/workflows-types";
 import type { Octokit } from "octokit";
 import { Respositories } from "../database";
 
-export async function getIcon(octokit: Octokit, search: RepoSearch) {
-  const paths = [".idea/icon.svg", ".idea/icon.png"];
+export const ICON_PATHS = [".idea/icon.svg", ".idea/icon.png"];
 
+export async function getIcon(octokit: Octokit, search: RepoSearch) {
   try {
     const { data } = await Promise.any(
-      paths.map((path) =>
+      ICON_PATHS.map((path) =>
         octokit.rest.repos.getContent({
           ...search,
           path,

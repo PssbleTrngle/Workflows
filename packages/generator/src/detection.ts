@@ -4,6 +4,7 @@ import {
   validateConfig,
 } from "@pssbletrngle/github-meta-generator";
 import { uniq } from "@pssbletrngle/workflows-shared/util";
+import type { ConfigSchema, Resolved } from "./config";
 import type { MetadataContext } from "./context";
 
 function detect(branches: string[], pattern: RegExp): string[] {
@@ -31,7 +32,7 @@ export default async function detectProperties({
   branches,
   target,
   logger,
-}: MetadataContext) {
+}: MetadataContext): Promise<Resolved<ConfigSchema>> {
   if (config.type === "web") {
     if (config.manager === DETECT_KEY) {
       const { packageManager } = await Bun.file("package.json").json();

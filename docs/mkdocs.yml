@@ -63,6 +63,8 @@ plugins:
       enabled: !ENV [CI, false]
   - social:
       enabled: !ENV [CI, false]
+      cards_layout_options:
+        description: GitHub App supporting various workflows for minecraft projects including tests, releases and notifications
   - site-urls:
       prefix: "/"
 

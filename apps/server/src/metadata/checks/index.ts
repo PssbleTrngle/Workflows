@@ -8,7 +8,8 @@ import { fetchBranches } from "../branches";
 import checkIcon from "./icon";
 import checkProtection from "./protection";
 import refresh from "./refresh";
-import checkSetup from "./setup";
+import { checkGradleSetup, checkProjectSetup } from "./setup";
+import updateTopics from "./topics";
 import checkViewers from "./viewers";
 
 async function runChecks(promises: Promise<unknown>[]) {
@@ -30,7 +31,8 @@ async function branchChecks(
   await runChecks([
     refresh(subject, context),
     checkProtection(subject, context.octokit),
-    checkSetup(subject, context.octokit),
+    checkGradleSetup(subject, context.octokit),
+    checkProjectSetup(subject, context.octokit),
   ]);
 }
 
@@ -52,6 +54,8 @@ async function checkRepository(
       return branchChecks({ ...subject, branch }, context);
     }),
   );
+
+  await updateTopics(subject, context.octokit);
 }
 
 export default async function check(
