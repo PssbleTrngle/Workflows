@@ -9,6 +9,8 @@ const { version = "0.0.0-dev", name } = await Bun.file(
 const metadata: Meta = {
   version,
   source: name,
+  buildAt: Date.now(),
+  commit: process.env["GIT_COMMIT_SHA"],
 };
 
 const out = getOutput("meta.json");

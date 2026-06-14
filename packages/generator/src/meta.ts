@@ -6,6 +6,8 @@ import { loadTemplate } from "../dist/templates";
 export type Meta = {
   version: string;
   source: string;
+  buildAt?: number;
+  commit?: string;
 };
 
 function commentOut(lines: string[], style?: BuiltInParserName): string[] {

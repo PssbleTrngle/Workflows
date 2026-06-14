@@ -54,6 +54,8 @@ jobs:
 
          - name: Update release properties
            run: bun run packages/scripts/prerelease.ts
+           env:
+              GIT_COMMIT_SHA: ${{ github.sha }}
 
          - name: Build and push Docker image
            uses: docker/build-push-action@v6

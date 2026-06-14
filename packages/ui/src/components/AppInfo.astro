@@ -1,0 +1,59 @@
+---
+import { formatAgo } from "@/lib/time";
+import { notNull } from "@pssbletrngle/workflows-shared/util";
+import type { AppInfo } from "@pssbletrngle/workflows-types";
+
+const { repository, version, commit, url, ...info } =
+  await Astro.locals.api.request<AppInfo>("info");
+
+const link = commit ? `${repository.url}/tree/${commit}` : repository.url;
+
+const buildAt = notNull(info.buildAt) ? new Date(info.buildAt) : null;
+const buildAgo = buildAt && formatAgo(buildAt);
+const buildTooltip = buildAt?.toLocaleString();
+---
+
+<section>
+  {
+    buildAgo && (
+      <span class="time" title={buildTooltip}>
+        build {buildAgo}
+      </span>
+    )
+  }
+  <span class="version">{repository.repo}@<a href={link}>{version}</a></span>
+  <span class="icons">
+    <a title="Repository" href={repository.url}>G</a>
+    <a title="GitHub App" href={url}>A</a>
+  </span>
+</section>
+
+<style scoped>
+  section {
+    display: grid;
+    grid-template: "time version icons" / 1fr 1fr 1fr;
+    gap: 1em;
+    height: 3em;
+    padding-inline: 1em;
+    align-items: center;
+
+    .time {
+      grid-area: time;
+      cursor: help;
+    }
+
+    .version {
+      text-align: center;
+      grid-area: version;
+    }
+
+    .icons {
+      grid-area: icons;
+      text-align: end;
+
+      a:not(:last-child) {
+        padding-right: 0.5em;
+      }
+    }
+  }
+</style>

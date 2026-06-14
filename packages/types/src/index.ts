@@ -31,3 +31,13 @@ export type RepoSearchWithBranch = {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Dictionary<K extends string = string> = Record<K, any>;
+
+export type AppInfo = {
+  version: string;
+  buildAt?: number;
+  commit?: string;
+  url: string;
+  repository: RepoSearch & {
+    url: string;
+  };
+};
