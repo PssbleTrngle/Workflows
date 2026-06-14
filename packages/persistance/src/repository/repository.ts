@@ -160,7 +160,10 @@ export class RepositoryRepository {
   }
 
   async saveSetup(subject: RepoSearchWithBranch, setup: BranchSetup) {
-    await this.updateBranch(subject, { setup });
+    await this.updateBranch(
+      subject,
+      mapKeys(setup, (it) => `setup.${it}`),
+    );
   }
 
   async saveMeta(

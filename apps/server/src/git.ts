@@ -169,6 +169,11 @@ export async function cloneAndModify<T extends [...Action[]]>(
   actions: T,
   checkout?: string,
 ): Promise<ActionResults<T>> {
+  if (!config.executeGitCommands) {
+    logger.warn("skipping git command as it is disabled");
+    return actions.map(() => false) as ActionResults<T>;
+  }
+
   const repositoryPath = await clone(subject, cloneUrl, user.token, "abort");
 
   try {

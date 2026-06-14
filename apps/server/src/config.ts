@@ -42,4 +42,5 @@ export default {
     level: env("LOG_LEVEL") ?? "info",
   },
   startupCheck: boolEnv("STARTUP_CHECKS") ?? true,
+  executeGitCommands: boolEnv("EXECUTE_GIT") ?? true,
 };

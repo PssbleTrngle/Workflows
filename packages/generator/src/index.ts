@@ -2,7 +2,7 @@ export {
   configSchema,
   DETECT_KEY,
   packageManagerSchema,
-  ConfigValidator as validateConfig,
+  validateConfig,
 } from "./config";
 export type {
   ConfigSchema,

@@ -32,7 +32,7 @@ const schema = new mongoose.Schema<Repository>(
           isProtected: { type: Boolean },
         },
         setup: {
-          type: { type: [{ type: String }] },
+          type: { type: String },
           loaders: [{ type: String }],
           versions: [{ type: String }],
           gradleHelper: { type: String },

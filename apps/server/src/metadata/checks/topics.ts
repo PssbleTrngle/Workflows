@@ -44,7 +44,10 @@ export default async function updateTopics(
   const next = uniq([...keep, ...detected]);
 
   if (contentsSame(next, current.names)) {
-    logger.debug("topics stayed the same, not updating", subject);
+    logger.debug("topics stayed the same, not updating", {
+      ...subject,
+      topics: next,
+    });
     return;
   }
 
