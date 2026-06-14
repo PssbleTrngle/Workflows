@@ -4,7 +4,7 @@ import { notNull } from "@pssbletrngle/workflows-shared/util";
 import type { RepoSearch } from "@pssbletrngle/workflows-types";
 import type { Branch } from "@pssbletrngle/workflows-types/metadata";
 import { type App } from "octokit";
-import check from ".";
+import check, { checkRepositoryOnly } from ".";
 import config from "../../config";
 import { setupGitCloneDir } from "../../git";
 import { installationContext } from "../../installation";
@@ -67,5 +67,9 @@ export default async function onStartup(app: App) {
         error: (e as Error).message,
       });
     }
+  }
+
+  for (const { context, subject } of withContexts) {
+    await checkRepositoryOnly(subject, context);
   }
 }

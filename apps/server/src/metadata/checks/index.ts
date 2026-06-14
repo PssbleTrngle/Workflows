@@ -36,6 +36,18 @@ async function branchChecks(
   ]);
 }
 
+export async function checkRepositoryOnly(
+  subject: RepoSearch,
+  context: InstallationContext,
+) {
+  await runChecks([
+    checkIcon(subject, context.octokit),
+    checkViewers(subject, context.octokit),
+  ]);
+
+  await updateTopics(subject, context.octokit);
+}
+
 async function checkRepository(
   subject: RepoSearch,
   context: InstallationContext,
@@ -44,18 +56,13 @@ async function checkRepository(
 
   const branches = await fetchBranches(context.octokit, subject);
 
-  await runChecks([
-    checkIcon(subject, context.octokit),
-    checkViewers(subject, context.octokit),
-  ]);
-
   await Promise.all(
     branches.map((branch) => {
       return branchChecks({ ...subject, branch }, context);
     }),
   );
 
-  await updateTopics(subject, context.octokit);
+  await checkRepositoryOnly(subject, context);
 }
 
 export default async function check(
