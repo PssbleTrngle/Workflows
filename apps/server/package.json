@@ -36,6 +36,7 @@
     "express": "^5.1.0",
     "http-proxy-middleware": "^3.0.5",
     "octokit": "^5.0.5",
+    "sharp": "^0.35.1",
     "winston": "^3.19.0",
     "zod": "^4.1.12"
   }

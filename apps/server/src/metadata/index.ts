@@ -7,14 +7,12 @@ import type {
 import type { App } from "octokit";
 import logger from "../logger";
 import { createGitUser } from "../user";
-import createApiRoutes from "./api";
 import { fileChanged } from "./checks/commit";
 import checkIcon, { ICON_PATHS } from "./checks/icon";
 import { checkGradleSetup } from "./checks/setup";
 import checkViewers from "./checks/viewers";
 import { Respositories } from "./database";
 import generateMetadata, { metadataBranch } from "./generator";
-import createUIMiddlware from "./ui";
 
 export async function registerMetadataHooks(hooks: App["webhooks"]) {
   hooks.onError((error) => {
@@ -175,11 +173,4 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
     const user = await createGitUser({ repository, installation, octokit });
     await generateMetadata(subject, repository.clone_url, octokit, user);
   });
-}
-
-export async function createMetadataMiddleware(app: App) {
-  const uiMiddlware = await createUIMiddlware(app);
-  const apiMiddleware = createApiRoutes(app);
-
-  return [apiMiddleware, uiMiddlware];
 }

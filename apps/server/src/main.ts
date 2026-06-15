@@ -5,7 +5,9 @@ import app from "./app";
 import config from "./config";
 import { cutoff, errorHandler } from "./error";
 import logger from "./logger";
-import { createMetadataMiddleware } from "./metadata";
+import apiRouter from "./metadata/api";
+import filesRouter from "./metadata/routes/files";
+import createUIMiddlware from "./metadata/ui";
 
 const server = express();
 
@@ -29,7 +31,9 @@ server.get("/status", (_, response) => {
 });
 
 server.use(createNodeMiddleware(app));
-server.use(await createMetadataMiddleware(app));
+server.use("/api", apiRouter(app));
+server.use("/files", filesRouter());
+server.use(await createUIMiddlware(app));
 
 server.use(cutoff);
 server.use(errorHandler);

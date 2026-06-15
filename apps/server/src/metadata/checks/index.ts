@@ -2,6 +2,7 @@ import type {
   RepoSearch,
   RepoSearchWithBranch,
 } from "@pssbletrngle/workflows-types";
+import config from "../../config";
 import logger from "../../logger";
 import type { InstallationContext } from "../auth";
 import { fetchBranches } from "../branches";
@@ -17,7 +18,9 @@ async function runChecks(promises: Promise<unknown>[]) {
 
   for (const result of results) {
     if (result.status === "rejected") {
-      logger.error((result.reason as Error).message);
+      const error = result.reason as Error;
+      logger.error(error.message);
+      if (config.dev) logger.error(error.stack);
     }
   }
 }

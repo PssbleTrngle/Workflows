@@ -32,6 +32,7 @@ export type Repository = WithTimestamps & {
   owner: string;
   repo: string;
   icon?: string | null;
+  thumbnail?: Buffer | null;
   visibleTo: string[];
   branches: Branch[];
 };

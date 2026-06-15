@@ -9,7 +9,7 @@ import type { RepoSearch } from "@pssbletrngle/workflows-types";
 import { parse as parsePath } from "node:path";
 import { type App, type Octokit } from "octokit";
 import z from "zod";
-import { getIcon } from "./metadata/checks/icon";
+import { Respositories } from "./metadata/database";
 import notifications from "./notifications";
 
 function conclusionColor(
@@ -98,6 +98,13 @@ async function fetchAttributes(
   return Object.entries(merged).map(([key, value]) => ({ key, ...value }));
 }
 
+async function getIcon(subject: RepoSearch) {
+  const repo = await Respositories.find(subject);
+  if (!repo?.icon) return null;
+  // maybe not hardcode this
+  return new URL(repo?.icon, "https://workflows.somethingcatchy.net");
+}
+
 export function registerActionsHooks(hooks: App["webhooks"]) {
   hooks.on("workflow_run.completed", async ({ payload, octokit }) => {
     const { workflow_run, repository } = payload;
@@ -117,7 +124,7 @@ export function registerActionsHooks(hooks: App["webhooks"]) {
 
     const [attributes, icon] = await Promise.all([
       fetchAttributes(octokit, subject, workflow_run.id),
-      getIcon(octokit, subject),
+      getIcon(subject),
     ]);
 
     if (attributes.length === 0) {
@@ -133,9 +140,7 @@ export function registerActionsHooks(hooks: App["webhooks"]) {
     for (const [tag, modules = []] of Object.entries(grouped)) {
       const color = conclusionColor(workflow_run.conclusion);
 
-      const icon_url = icon?.endsWith(".png")
-        ? icon
-        : repository.owner.avatar_url;
+      const icon_url = icon ?? repository.owner.avatar_url;
 
       const author = {
         name: repository.name,

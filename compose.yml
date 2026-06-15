@@ -17,3 +17,8 @@ services:
       MONGO_INITDB_DATABASE: workflows
     ports:
       - 27017:27017
+    volumes:
+      - mongo:/data/db
+
+volumes:
+  mongo:

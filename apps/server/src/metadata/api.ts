@@ -15,8 +15,10 @@ import infoRouter from "./routes/info";
 import notifierRouter from "./routes/notifier";
 import repositoryRouter from "./routes/repository";
 
-export default function createApiRoutes(app: App) {
+export default function apiRouter(app: App) {
   const router = Router();
+
+  router.use(corsMiddleware);
 
   router.use(...authorize("fail"));
   router.use(json());
@@ -81,8 +83,5 @@ export default function createApiRoutes(app: App) {
   );
 
   router.use(cutoff);
-
-  const apiRouter = Router();
-  apiRouter.use("/api", corsMiddleware, router);
-  return apiRouter;
+  return router;
 }

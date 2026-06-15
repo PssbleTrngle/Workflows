@@ -9,6 +9,7 @@ const schema = new mongoose.Schema<Repository>(
     owner: { type: String, required: true },
     repo: { type: String, required: true },
     icon: { type: String },
+    thumbnail: { type: Buffer },
     visibleTo: [{ type: String }],
     branches: [
       {
