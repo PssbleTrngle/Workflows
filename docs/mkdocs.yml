@@ -27,6 +27,7 @@ theme:
     - toc.integrate
     - navigation.top
     - content.tooltips
+    - content.code.annotate
 
 extra:
   social:
@@ -51,6 +52,7 @@ markdown_extensions:
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - abbr
   - pymdownx.snippets
+  - pymdownx.blocks.caption
 
 plugins:
   - search

@@ -19,6 +19,7 @@ html {
   }
 
   .inline-icon {
+    border-radius: 0.2em;
     display: inline-block;
     height: 1.6em;
     margin-bottom: -0.4em;
