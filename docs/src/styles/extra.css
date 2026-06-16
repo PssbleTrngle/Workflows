@@ -17,11 +17,12 @@ html {
       align-items: center;
     }
   }
-}
 
-.md-tooltip {
-  top: inherit;
-  left: inherit;
-  margin-left: 12px;
-  margin-top: 7px;
+  .inline-icon {
+    display: inline-block;
+    height: 1.6em;
+    margin-bottom: -0.4em;
+    margin-left: 0.2em;
+    margin-right: 0.1em;
+  }
 }
