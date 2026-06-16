@@ -1,8 +1,7 @@
 import type { RepoSearch } from "@pssbletrngle/workflows-types";
-import { Readable } from "node:stream";
 import type { Octokit } from "octokit";
-import sharp from "sharp";
 import { getFile } from "../../files";
+import logger from "../../logger";
 import { Respositories } from "../database";
 
 export const ICON_PATHS = [".idea/icon.svg", ".idea/icon.png"];
@@ -18,11 +17,9 @@ export async function getIcon(octokit: Octokit, subject: RepoSearch) {
 }
 
 export async function createThumbnails(url: string) {
-  const { body } = await fetch(url);
-  if (!body) throw new Error("unable to downlod icon");
-  const input = Readable.fromWeb(body);
-  const transformer = sharp().resize(128, 128).webp();
-  return input.pipe(transformer).toBuffer();
+  const response = await fetch(url);
+  const input = await response.blob();
+  return input.image().resize(128, 128).webp().toBuffer();
 }
 
 export default async function checkIcon(subject: RepoSearch, octokit: Octokit) {
@@ -31,10 +28,12 @@ export default async function checkIcon(subject: RepoSearch, octokit: Octokit) {
 
   if (!url) {
     await Respositories.update(subject, { thumbnail: null, icon: null });
+    logger.debug("deleted icon", subject);
     return;
   }
 
   const thumbnail = await createThumbnails(url);
   const icon = `/files/${subject.owner}/${subject.repo}/thumbnail.webp`;
+  logger.debug("updated icon", subject);
   await Respositories.update(subject, { thumbnail, icon });
 }

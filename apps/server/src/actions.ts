@@ -102,7 +102,10 @@ async function getIcon(subject: RepoSearch) {
   const repo = await Respositories.find(subject);
   if (!repo?.icon) return null;
   // maybe not hardcode this
-  return new URL(repo?.icon, "https://workflows.somethingcatchy.net");
+  return new URL(
+    repo?.icon,
+    "https://workflows.somethingcatchy.net",
+  ).toString();
 }
 
 export function registerActionsHooks(hooks: App["webhooks"]) {
