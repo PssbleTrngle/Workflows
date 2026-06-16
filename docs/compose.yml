@@ -8,3 +8,4 @@ services:
       - ./:/docs
     ports:
       - 8000:8000
+    entrypoint: ["sh", "setup.sh"]
