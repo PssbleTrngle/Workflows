@@ -12,7 +12,7 @@ import createUIMiddlware from "./metadata/ui";
 const server = express();
 
 server.use((request, _, next) => {
-  logger.debug(`${request.method} -> ${request.originalUrl}`);
+  logger.silly(`${request.method} -> ${request.originalUrl}`);
   return next();
 });
 
