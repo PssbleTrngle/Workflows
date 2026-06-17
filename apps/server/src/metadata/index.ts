@@ -32,8 +32,10 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
       throw new Error(`owner missing for repository ${repository.full_name}`);
 
     const [, branch] = /^refs\/heads\/(.+)$/.exec(ref) ?? [];
-    if (!branch)
-      throw new Error(`unable to decode branch name from ref '${ref}'`);
+    if (!branch) {
+      logger.debug(`push is not a branch: ${ref}`);
+      return;
+    }
 
     const subject: RepoSearchWithBranch = {
       owner: repository.owner.login,
