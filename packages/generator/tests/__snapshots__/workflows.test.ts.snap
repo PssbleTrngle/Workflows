@@ -45,7 +45,7 @@ jobs:
           java-version: 26
           distribution: temurin
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
         with:
           cache-read-only: \${{ github.event_name != 'push' }}
           dependency-graph: generate-and-submit
@@ -100,7 +100,7 @@ jobs:
           java-version: 26
           distribution: temurin
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
         with:
           cache-read-only: \${{ github.event_name != 'push' }}
           dependency-graph: generate-and-submit
@@ -172,7 +172,7 @@ jobs:
           java-version: 26
           distribution: temurin
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
         with:
           cache-read-only: \${{ github.event_name != 'push' }}
           dependency-graph: generate-and-submit
@@ -215,7 +215,7 @@ jobs:
           java-version: 26
           distribution: temurin
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
         with:
           cache-read-only: \${{ github.event_name != 'push' }}
 
@@ -268,7 +268,7 @@ jobs:
           java-version: 26
           distribution: temurin
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
         with:
           cache-read-only: \${{ github.event_name != 'push' }}
 
@@ -321,7 +321,7 @@ jobs:
           java-version: 26
           distribution: temurin
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
         with:
           cache-read-only: \${{ github.event_name != 'push' }}
 
@@ -374,7 +374,7 @@ jobs:
           java-version: 26
           distribution: temurin
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
         with:
           cache-read-only: \${{ github.event_name != 'push' }}
 
@@ -434,7 +434,7 @@ jobs:
           java-version: 26
           distribution: temurin
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
         with:
           cache-read-only: \${{ github.event_name != 'push' }}
 
@@ -500,7 +500,7 @@ jobs:
           java-version: 26
           distribution: temurin
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
         with:
           cache-read-only: \${{ github.event_name != 'push' }}
           dependency-graph: generate-and-submit
@@ -574,7 +574,7 @@ jobs:
           java-version: 26
           distribution: temurin
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
         with:
           cache-read-only: \${{ github.event_name != 'push' }}
           dependency-graph: generate-and-submit
