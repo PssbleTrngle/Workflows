@@ -37,11 +37,18 @@ const name = requireEnv("CONSUMER_NAME");
 const events = await createEventBus(`consumer_${name}`);
 const lock = createLock();
 
-await events.subscribe("update_containers", (event) =>
-  lock.withAquired(async () => {
-    const containers = await updateContainers(event.name, event.tag);
+await events.subscribe("update_containers", async (event) => {
+  console.info(`-> received update event for ${event.name}:${event.tag}`);
+  const beforeLock = performance.now();
 
-    console.info(`-> received update event for ${event.name}:${event.tag}`);
+  await lock.withAquired(async () => {
+    const beforeUpdate = performance.now();
+    console.debug(`  aquired locked in ${beforeUpdate - beforeLock}ms`);
+
+    const containers = await updateContainers(event.name, event.tag);
+    const endTime = performance.now();
+
+    console.info(`  update took ${endTime - beforeUpdate}ms`);
 
     if (!containers) {
       console.info(`<- no containers found`);
@@ -53,5 +60,7 @@ await events.subscribe("update_containers", (event) =>
     );
 
     await notifyUpdate(event, containers);
-  }),
-);
+  });
+
+  console.log("<- releasing lock");
+});
