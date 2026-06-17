@@ -17,19 +17,23 @@ import type {
   BranchSetup,
   Checks,
   Repository,
+  RepositoryFilter,
   RepositoryStatus,
   Setup,
 } from "@pssbletrngle/workflows-types/metadata";
 import type { QueryFilter } from "mongoose";
 import { Repositories } from "../documents/repository";
+import { MongoRepository } from "./mongo";
 
-export class RepositoryRepository {
+export class RepositoryRepository extends MongoRepository<Repository> {
   constructor(
     private readonly logger?: Logger,
     private readonly events?: RepositoryEventConsumer,
-  ) {}
+  ) {
+    super(Repositories);
+  }
 
-  private authFilter(
+  protected authFilter(
     user: AuthenticatedUser | undefined,
   ): QueryFilter<Repository> {
     if (!user) return {};
@@ -84,17 +88,33 @@ export class RepositoryRepository {
     return match ?? null;
   }
 
-  //export type RepositoryFilter = {
-  //
-  //}
+  private filterQueries(filter: RepositoryFilter) {
+    const filters: QueryFilter<Repository>[] = [];
 
-  async findAll(user?: AuthenticatedUser): Promise<Repository[]> {
+    if (filter.version)
+      filters.push({ "branches.setup.versions": filter.version });
+    if (filter.loader)
+      filters.push({ "branches.setup.loaders": filter.loader });
+    if (filter.gradleHelper)
+      filters.push({ "branches.setup.gradleHelper": filter.gradleHelper });
+    if (filter.owner) filters.push({ owner: filter.owner });
+    // TODO
+    // if (filter.failedChecks) filters.push({ owner: filter.owner });
+
+    return filters;
+  }
+
+  async findAll(
+    user?: AuthenticatedUser,
+    filter: RepositoryFilter = {},
+  ): Promise<Repository[]> {
     return await Repositories.find(
       {
         branches: { $ne: [] },
-        $and: [this.authFilter(user)],
+        $and: [this.authFilter(user), ...this.filterQueries(filter)],
       },
       undefined,
+      { sort: { updatedAt: -1 } },
     );
   }
 
@@ -117,6 +137,17 @@ export class RepositoryRepository {
     });
 
     return mapValues(merged, uniq) as Setup;
+  }
+
+  async createFilterValues(user?: AuthenticatedUser) {
+    const [owner, gradleHelper, loader, version] = await Promise.all([
+      this.groupField<string>("owner", user),
+      this.groupField<string>("branches[].setup.gradleHelper", user),
+      this.groupField<string>("branches[].setup.loaders[]", user),
+      this.groupField<string>("branches[].setup.versions[]", user),
+    ]);
+
+    return { owner, gradleHelper, loader, version };
   }
 
   async migrate(from: RepoSearch, to: RepoSearch) {

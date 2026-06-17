@@ -1,0 +1,45 @@
+---
+import Row from "@/components/Row.astro";
+import { mapValues, notNull } from "@pssbletrngle/workflows-shared/util";
+import type { Page } from "@pssbletrngle/workflows-types";
+import type {
+  Branch,
+  Repository,
+  RepositoryFilter,
+} from "@pssbletrngle/workflows-types/metadata";
+
+const filter = (await Astro.request.json()) as RepositoryFilter;
+
+const { entries: matches } = await Astro.locals.api.submit<Page<Repository>>(
+  "repository/search",
+  mapValues(filter, (it) => it ?? undefined),
+);
+
+// TODO to in api route already?
+const branchFilter = (branch: Branch) => {
+  const checks = Object.values(branch.checks ?? {});
+  if (filter.loader && !branch.setup?.loaders?.includes(filter.loader))
+    return false;
+  if (filter.version && !branch.setup?.versions?.includes(filter.version))
+    return false;
+  if (filter.gradleHelper && branch.setup?.gradleHelper !== filter.gradleHelper)
+    return false;
+  if (
+    notNull(filter.failedChecks) &&
+    checks.every((it) => it) === filter.failedChecks
+  )
+    return false;
+  return true;
+};
+
+const filtered = matches
+  .map((it) => {
+    const branches = it.branches.filter(branchFilter);
+    return { ...it, branches };
+  })
+  .filter((it) => it.branches.length > 0);
+
+export const partial = true;
+---
+
+{filtered.map((props) => <Row {...props} />)}

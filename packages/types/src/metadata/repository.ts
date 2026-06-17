@@ -36,3 +36,11 @@ export type Repository = WithTimestamps & {
   visibleTo: string[];
   branches: Branch[];
 };
+
+export type RepositoryFilter = {
+  owner?: string;
+  gradleHelper?: string;
+  loader?: string;
+  version?: string;
+  failedChecks?: boolean;
+};

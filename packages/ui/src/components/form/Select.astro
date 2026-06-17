@@ -1,0 +1,31 @@
+---
+export type Props = {
+  name: string;
+  id?: string;
+  options: string[];
+  allowNull?: boolean;
+  selected?: string;
+};
+
+const { name, allowNull, options, id = name, selected, ...props } = Astro.props;
+---
+
+<label for={id}>
+  <slot />
+</label>
+<select name={name} id={id} {...props}>
+  {
+    allowNull && (
+      <option selected={!selected} value="">
+        choose...
+      </option>
+    )
+  }
+  {
+    options.map((it) => (
+      <option value={it} selected={selected === it}>
+        {it}
+      </option>
+    ))
+  }
+</select>

@@ -5,7 +5,7 @@ import { isOudated, parseVersion } from "@pssbletrngle/workflows-shared/semver";
 type Props = { current: string };
 
 const { current } = Astro.props;
-const latest = await fetchLatestGradleHelper(Astro.locals.octokit);
+const { version: latest } = await fetchLatestGradleHelper(Astro.locals.octokit);
 
 const semver = parseVersion(current);
 const outdated = isOudated(semver, latest);

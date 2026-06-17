@@ -1,4 +1,5 @@
 ---
+import RepoFilter from "@/components/RepoFilter.astro";
 import Row from "@/components/Row.astro";
 import type { Page } from "@pssbletrngle/workflows-types";
 import type { Repository } from "@pssbletrngle/workflows-types/metadata";
@@ -11,6 +12,8 @@ const { entries: repositories } =
 ---
 
 <Layout>
+  <RepoFilter />
+
   <ul class="repositories">
     {repositories.map((props) => <Row {...props} />)}
   </ul>
@@ -28,5 +31,6 @@ const { entries: repositories } =
 
     column-gap: 1em;
     row-gap: 0.5em;
+    padding: 0;
   }
 </style>

@@ -36,7 +36,9 @@ import Indicator from "./components/Indicator.astro";
   >
     <Indicator />
     <main>
-      <slot />
+      <section>
+        <slot />
+      </section>
     </main>
 
     <footer>
@@ -70,6 +72,7 @@ import Indicator from "./components/Indicator.astro";
       padding: 1em 0;
       display: grid;
       justify-content: center;
+      align-items: start;
 
       min-height: calc(100dvh - 5em);
     }
