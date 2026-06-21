@@ -24,7 +24,7 @@ export async function getRepo(path: string): Promise<RepoSearch> {
   const match = output
     .text()
     .trim()
-    .match(/\/(\w+)\/(\w+)(?!\.git)?$/);
+    .match(/\/(\w+)\/(\w+)(?:\.git)?$/);
 
   if (!match) throw new Error("unable to extract repository from remote");
 
