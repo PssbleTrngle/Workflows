@@ -1,5 +1,3 @@
 import createGenerator from "./factory";
 
-export const generatePrettierConfig = createGenerator("prettier", {
-  commentStyle: "json",
-});
+export const generatePrettierConfig = createGenerator("prettier");

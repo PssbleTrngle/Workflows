@@ -209,15 +209,13 @@ exports[`bun-lib workflow generation generates everything: tsconfig.json 1`] = `
 `;
 
 exports[`bun-lib workflow generation generates prettier config: .prettierrc 1`] = `
-"// <meta>
-//    <source>@pssbletrngle/github-meta-generator</source>
-//    <version>0.0.0-dev</version>
-//    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
-//    <hash>abcdef</hash>
-// </meta>
+"# <meta>
+#    <source>@pssbletrngle/github-meta-generator</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>abcdef</hash>
+# </meta>
 
-{
-   "$schema": "https://json.schemastore.org/prettierrc",
-   "tabWidth": 2
-}"
+tabWidth: 2
+"
 `;

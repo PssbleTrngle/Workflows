@@ -67,6 +67,6 @@ describe("bun-lib workflow generation", () => {
 
     await generateWithConfig(mockContext(config), acceptor);
 
-    acceptor.expect(".prettierrc").toMatchSnapshot(".prettierrc");
+    acceptor.expect(".prettierrc.yaml").toMatchSnapshot(".prettierrc");
   });
 });
