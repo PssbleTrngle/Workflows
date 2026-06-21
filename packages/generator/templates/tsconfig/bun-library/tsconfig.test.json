@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "composite": true,
     // Environment setup & latest features
     "lib": [
       "ESNext"
@@ -27,15 +28,9 @@
     "noPropertyAccessFromIndexSignature": false,
     "declaration": true,
     "sourceMap": true,
-    "rootDir": "./src",
-    "outDir": "./dist"
+    "rootDir": ".",
   },
   "include": [
-    "src"
-  ],
-  "references": [
-    {
-      "path": "./tsconfig.test.json"
-    }
+    "test"
   ]
 }

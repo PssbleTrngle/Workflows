@@ -24,6 +24,7 @@ describe("bun-lib workflow generation", () => {
       .toMatchSnapshot("semantic-release.yml");
 
     acceptor.expect("tsconfig.json").toMatchSnapshot("tsconfig.json");
+    acceptor.expect("tsconfig.test.json").toMatchSnapshot("tsconfig.test.json");
 
     acceptor.expectNothingElse();
   });
