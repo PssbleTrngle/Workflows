@@ -10,13 +10,21 @@ export type Meta = {
   commit?: string;
 };
 
+const jsonLike: BuiltInParserName[] = ["json", "typescript", "json5", "jsonc"];
+
 function commentOut(lines: string[], style?: BuiltInParserName): string[] {
+  if (!style) return lines;
+
   if (style === "yaml") {
     return lines.map((it) => `# ${it}`);
   }
 
   if (style === "markdown") {
     return ["<!---", ...lines, "-->"];
+  }
+
+  if (jsonLike.includes(style)) {
+    return lines.map((it) => `// ${it}`);
   }
 
   return lines;

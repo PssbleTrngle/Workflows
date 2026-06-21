@@ -1,0 +1,5 @@
+{
+  "$schema": "http://localhost:8888/schema/config.json",
+  "$version": "1.0",
+  "type": "bun-library"
+}

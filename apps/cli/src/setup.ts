@@ -53,6 +53,11 @@ const minecraftPrompts: PromptObject<keyof MinecraftConfigSchema>[] = [
       return Object.fromEntries(choices.map((key) => [key, true]));
     },
   },
+  {
+    type: "toggle",
+    name: "configs",
+    message: "Generate labeler config?",
+  },
 ];
 
 const webPrompts: PromptObject<keyof WebConfigSchema>[] = [
@@ -79,11 +84,6 @@ const commonPrompts: PromptObject<keyof ConfigSchema>[] = [
     type: "toggle",
     name: "workflows",
     message: "Generate workflows?",
-  },
-  {
-    type: "toggle",
-    name: "configs",
-    message: "Generate configs?",
   },
   {
     type: "select",

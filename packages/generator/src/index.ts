@@ -20,4 +20,6 @@ export { generateLicenses } from "./licenses/generate";
 export { isGenerated, type Meta } from "./meta";
 export { migrateConfig, migrateConfigFile, type Migration } from "./migrations";
 export type { Options } from "./options";
+export { generatePrettierConfig } from "./prettier";
+export { generateTsConfig } from "./tsconfig";
 export { generateWorkflow } from "./workflows/generate";

@@ -4,7 +4,7 @@ import mockContext from "./providers/context";
 
 describe("minecraft test workflows", () => {
   it("generates test workflow without sonar", async () => {
-    const generated = await generateWorkflow(
+    const generated = await generateWorkflow.run(
       ["minecraft", "test.yml"],
       mockContext(),
     );
@@ -12,7 +12,7 @@ describe("minecraft test workflows", () => {
   });
 
   it("generates test workflow with sonar", async () => {
-    const generated = await generateWorkflow(
+    const generated = await generateWorkflow.run(
       ["minecraft", "test.yml"],
       mockContext({
         sonar: true,
@@ -22,7 +22,7 @@ describe("minecraft test workflows", () => {
   });
 
   it("generates test workflow with loader branches", async () => {
-    const generated = await generateWorkflow(
+    const generated = await generateWorkflow.run(
       ["minecraft", "test.yml"],
       mockContext({
         loaders: ["neoforge", "fabric"],
@@ -36,7 +36,7 @@ describe("minecaft release workflows", () => {
   const uploads = ["curseforge", "modrinth", "github", "nexus"];
   uploads.forEach((upload) => {
     it(`generates release workflow with ${upload}`, async () => {
-      const generated = await generateWorkflow(
+      const generated = await generateWorkflow.run(
         ["minecraft", "release.yml"],
         mockContext({
           upload: {
@@ -50,7 +50,7 @@ describe("minecaft release workflows", () => {
   });
 
   it(`generates release on push workflow`, async () => {
-    const generated = await generateWorkflow(
+    const generated = await generateWorkflow.run(
       ["minecraft", "release.yml"],
       mockContext({
         upload: {
@@ -63,7 +63,7 @@ describe("minecaft release workflows", () => {
   });
 
   it(`test workflow with snapshot release`, async () => {
-    const generated = await generateWorkflow(
+    const generated = await generateWorkflow.run(
       ["minecraft", "test.yml"],
       mockContext({
         upload: {
@@ -75,7 +75,7 @@ describe("minecaft release workflows", () => {
     expect(generated).toMatchSnapshot("snapshot release workflow");
   });
   it(`test workflow will not publish snapshots with push strategy`, async () => {
-    const generated = await generateWorkflow(
+    const generated = await generateWorkflow.run(
       ["minecraft", "test.yml"],
       mockContext({
         upload: {

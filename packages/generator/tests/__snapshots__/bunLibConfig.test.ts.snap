@@ -1,0 +1,223 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`bun-lib workflow generation generates everything: test.yml 1`] = `
+"# <meta>
+#    <source>@pssbletrngle/github-meta-generator</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>abcdef</hash>
+# </meta>
+
+name: Test
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize]
+  push:
+    branches: [main]
+
+concurrency:
+  group: \${{ github.workflow }}-\${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Run tests
+        run: bun run test:ci
+"
+`;
+
+exports[`bun-lib workflow generation generates everything: release.yml 1`] = `
+"# <meta>
+#    <source>@pssbletrngle/github-meta-generator</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>abcdef</hash>
+# </meta>
+
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      rc:
+        type: boolean
+        default: false
+      version:
+        type: string
+        required: true
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Update version
+        uses: jossef/action-set-json-field@v2
+        with:
+          file: package.json
+          field: version
+          value: \${{ github.event.inputs.version }}
+
+      - run: bun run build
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+          package-manager-cache: false
+
+      - if: \${{ github.event.inputs.rc }}
+        run: npm publish --no-git-checks --provenance --access public --tag rc
+
+      - if: \${{ !github.event.inputs.rc }}
+        run: npm publish --no-git-checks --provenance --access public
+"
+`;
+
+exports[`bun-lib workflow generation generates everything: pre-release.yml 1`] = `
+"# <meta>
+#    <source>@pssbletrngle/github-meta-generator</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>abcdef</hash>
+# </meta>
+
+name: Trigger Prerelease
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: PssbleTrngle/find-release@v1
+        if: \${{ github.event_name != 'pull_request' }}
+        id: action
+        with:
+          type: draft
+          token: $
+
+      - uses: benc-uk/workflow-dispatch@v1
+        if: toJson(steps.action.outputs.matched)
+        with:
+          workflow: release.yml
+          inputs: '{ "rc": true, "version": "\${{ steps.action.outputs.tag }}-rc.\${{ github.run_number }}" }'
+"
+`;
+
+exports[`bun-lib workflow generation generates everything: semantic-release.yml 1`] = `
+"# <meta>
+#    <source>@pssbletrngle/github-meta-generator</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>abcdef</hash>
+# </meta>
+
+name: Trigger Semantic Release
+
+permissions:
+  contents: read
+  actions: write
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: release.yml
+          inputs: '{ "version": "\${{ github.event.release.tag_name }}" }'
+"
+`;
+
+exports[`bun-lib workflow generation generates everything: tsconfig.json 1`] = `
+"// <meta>
+//    <source>@pssbletrngle/github-meta-generator</source>
+//    <version>0.0.0-dev</version>
+//    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+//    <hash>abcdef</hash>
+// </meta>
+
+{
+  "compilerOptions": {
+    // Environment setup & latest features
+    "lib": ["ESNext"],
+    "target": "ESNext",
+    "module": "Preserve",
+    "moduleDetection": "force",
+    "jsx": "react-jsx",
+    "allowJs": true,
+    "types": ["bun"],
+    // Bundler mode
+    "moduleResolution": "bundler",
+    "verbatimModuleSyntax": true,
+    // Best practices
+    "strict": true,
+    "skipLibCheck": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    // Some stricter flags (disabled by default)
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "declaration": true,
+    "sourceMap": true,
+    "rootDir": ".",
+    "outDir": "./dist"
+  },
+  "include": ["src", "test"]
+}
+"
+`;
+
+exports[`bun-lib workflow generation generates prettier config: .prettierrc 1`] = `
+"// <meta>
+//    <source>@pssbletrngle/github-meta-generator</source>
+//    <version>0.0.0-dev</version>
+//    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+//    <hash>abcdef</hash>
+// </meta>
+
+{
+   "$schema": "https://json.schemastore.org/prettierrc",
+   "tabWidth": 2
+}"
+`;

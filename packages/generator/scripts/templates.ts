@@ -40,6 +40,8 @@ function parserOf(file: string): BuiltInParserName | null {
       return "yaml";
     case ".md":
       return "markdown";
+    case ".json":
+      return "json";
     default:
       return null;
   }

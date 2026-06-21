@@ -2,7 +2,7 @@ import type { HelperDeclareSpec, RuntimeOptions } from "handlebars";
 import { sep as posixSep } from "node:path/posix";
 import { sep as winSep } from "node:path/win32";
 import { format, type BuiltInParserName } from "prettier";
-import { loadTemplate } from "../dist/templates";
+import { listTemplates, loadTemplate } from "../dist/templates";
 import type { Context, Generator, TemplateData } from "./generator";
 import helpers from "./helpers";
 import { withHeader } from "./meta";
@@ -42,7 +42,7 @@ export default function createGenerator<T extends TemplateData = TemplateData>(
     transform?: Transformer<T>;
   } & RuntimeOptions = {},
 ): Generator {
-  return async (key, { glob, ...data }) => {
+  const run: Generator["run"] = async (key, { glob, ...data }) => {
     const { template, parser } = await loadTemplate(folder, ...key);
     let generated = template(transform({ ...defaultData, ...(data as T) }), {
       ...options,
@@ -56,4 +56,8 @@ export default function createGenerator<T extends TemplateData = TemplateData>(
     if (parser) return format(generated, { parser });
     return generated;
   };
+
+  const list: Generator["list"] = (key: string) => listTemplates(folder, key);
+
+  return { run, list };
 }

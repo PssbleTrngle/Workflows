@@ -16,9 +16,7 @@ const commonSchema = z.object({
     .boolean()
     .default(true)
     .describe("generate issue templates"),
-  configs: z.boolean().default(true).describe("generate config files"),
   license: z.boolean().default(true).describe("generate a license"),
-  editorconfig: z.boolean().default(true).describe("generate an editorconfig"),
   assignee: z
     .string()
     .nonempty()
@@ -69,6 +67,14 @@ const minecraftSchema = z
       .boolean()
       .default(false)
       .describe("does this project include sonarqube"),
+    configs: z
+      .boolean()
+      .default(true)
+      .describe("generate labeler.yml config file"),
+    editorconfig: z
+      .boolean()
+      .default(true)
+      .describe("generate an editorconfig"),
   })
   .and(commonSchema);
 
@@ -81,11 +87,24 @@ const webSchema = z
   })
   .and(commonSchema);
 
-const schema = webSchema.or(minecraftSchema);
+const bunLibrarySchema = z
+  .object({
+    type: z.literal("bun-library"),
+    tsconfig: z.boolean().default(true).describe("generate tsconfig.json"),
+    formatter: z
+      .enum(["prettier", "biome"])
+      .or(z.literal(false))
+      .default(false)
+      .describe("formatter libary"),
+  })
+  .and(commonSchema);
+
+const schema = webSchema.or(minecraftSchema).or(bunLibrarySchema);
 
 export type CommonSchema = z.infer<typeof commonSchema>;
 export type MinecraftConfigSchema = z.infer<typeof minecraftSchema>;
 export type WebConfigSchema = z.infer<typeof webSchema>;
+export type BunLibConfigSchema = z.infer<typeof bunLibrarySchema>;
 export type ConfigSchema = z.infer<typeof schema>;
 
 const resolvedSchema = schema.superRefine((data, context) => {

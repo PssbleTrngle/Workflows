@@ -5,7 +5,7 @@ import optionsProvider from "./providers/minecraftOptions";
 describe("minecaft issue labeler", () => {
   for (const [key, options] of optionsProvider()) {
     it(`generates labeler config ${key}`, async () => {
-      const generated = await generateConfig(
+      const generated = await generateConfig.run(
         ["minecraft", "labeler.yml"],
         options,
       );

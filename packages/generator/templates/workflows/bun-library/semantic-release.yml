@@ -1,0 +1,19 @@
+name: Trigger Semantic Release
+
+permissions:
+  contents: read
+  actions: write
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: release.yml
+          inputs: '{ "version": "{{ var 'github.event.release.tag_name' }}" }'

@@ -5,7 +5,7 @@ import { createGlobMock } from "./providers/context";
 
 describe("minecraft licenses", () => {
   it(`generates LICENSE.md`, async () => {
-    const generated = await generateLicenses(["minecraft", "LICENSE.md"], {
+    const generated = await generateLicenses.run(["minecraft", "LICENSE.md"], {
       owner: "Username",
       glob: createGlobMock({
         "**/src/main/resources/assets": ["src/main/resources/assets"],
@@ -15,7 +15,7 @@ describe("minecraft licenses", () => {
   });
 
   it(`generates LICENSE.md with loader subdirectories`, async () => {
-    const generated = await generateLicenses(["minecraft", "LICENSE.md"], {
+    const generated = await generateLicenses.run(["minecraft", "LICENSE.md"], {
       owner: "Username",
       loaders: ["neoforge", "fabric"],
       glob: createGlobMock({
@@ -30,7 +30,7 @@ describe("minecraft licenses", () => {
   });
 
   it(`generates LICENSE.md within simple directory`, async () => {
-    const generated = await generateLicenses(["minecraft", "LICENSE.md"], {
+    const generated = await generateLicenses.run(["minecraft", "LICENSE.md"], {
       owner: "Username",
       loaders: ["neoforge", "fabric"],
       glob: globFixtureDirectory("minecraft", "examples", "simple"),
@@ -41,7 +41,7 @@ describe("minecraft licenses", () => {
   });
 
   it(`generates LICENSE.md within multiloader directory`, async () => {
-    const generated = await generateLicenses(["minecraft", "LICENSE.md"], {
+    const generated = await generateLicenses.run(["minecraft", "LICENSE.md"], {
       owner: "Username",
       glob: globFixtureDirectory("minecraft", "examples", "multiloader"),
     });

@@ -5,7 +5,7 @@ import optionsProvider from "./providers/minecraftOptions";
 describe("minecraft bug templates", () => {
   for (const [key, options] of optionsProvider()) {
     it(`generates bug template ${key}`, async () => {
-      const generated = await generateIssueTemplate(
+      const generated = await generateIssueTemplate.run(
         ["minecraft", "bug_report.yml"],
         options,
       );

@@ -4,7 +4,7 @@ import mockContext from "./providers/context";
 
 describe("minecraft editorconfig", () => {
   it(`generates .editorconfig`, async () => {
-    const generated = await generateEditorConfig(
+    const generated = await generateEditorConfig.run(
       ["minecraft", ".editorconfig"],
       mockContext(),
     );
