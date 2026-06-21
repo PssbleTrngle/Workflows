@@ -127,7 +127,7 @@ jobs:
         id: action
         with:
           type: draft
-          token: $
+          token: \${{ secrets.GITHUB_TOKEN }}
 
       - uses: benc-uk/workflow-dispatch@v1
         if: toJson(steps.action.outputs.matched)
