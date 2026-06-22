@@ -91,6 +91,9 @@ const bunLibrarySchema = z
   .object({
     type: z.literal("bun-library"),
     tsconfig: z.boolean().default(true).describe("generate tsconfig.json"),
+    tsconfigExtensions: orDetect(z.string().nonempty().nullable()).describe(
+      "the generated tsconfig.json will extend these files",
+    ),
     formatter: z
       .enum(["prettier", "biome"])
       .or(z.literal(false))

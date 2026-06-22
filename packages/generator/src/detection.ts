@@ -41,6 +41,19 @@ export default async function detectProperties({
       logger.info(`  -> detected package manager ${config.manager}`);
     }
   }
+  if (config.type === "bun-library") {
+    if (config.tsconfigExtensions === DETECT_KEY) {
+      const file = "tsconfig.extensions.ts";
+      if (await Bun.file("tsconfig.extensions.ts").exists()) {
+        config.tsconfigExtensions = file;
+        logger.info(
+          `  -> detected tsconfig extensions file ${config.tsconfigExtensions}`,
+        );
+      } else {
+        config.tsconfigExtensions = null;
+      }
+    }
+  }
 
   if (config.type === "minecraft") {
     if (config.versions === DETECT_KEY) {

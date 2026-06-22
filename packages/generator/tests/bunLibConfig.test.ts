@@ -72,4 +72,30 @@ describe("bun-lib workflow generation", () => {
 
     acceptor.expect(".prettierrc.yaml").toMatchSnapshot(".prettierrc");
   });
+
+  it("with tsconfig extensions", async () => {
+    const config = await loadConfigFixture(
+      "bun-library",
+      "configWithTsConfigExtensions.json",
+    );
+
+    const acceptor = createTestAcceptor();
+
+    await generateWithConfig(mockContext(config), acceptor);
+
+    acceptor.expect("tsconfig.json").toMatchSnapshot("tsconfig.json");
+  });
+
+  it("without tsconfig extensions", async () => {
+    const config = await loadConfigFixture(
+      "bun-library",
+      "configWithoutTsConfigExtensions.json",
+    );
+
+    const acceptor = createTestAcceptor();
+
+    await generateWithConfig(mockContext(config), acceptor);
+
+    acceptor.expect("tsconfig.json").toMatchSnapshot("tsconfig.json");
+  });
 });
