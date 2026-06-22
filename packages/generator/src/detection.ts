@@ -43,8 +43,8 @@ export default async function detectProperties({
   }
   if (config.type === "bun-library") {
     if (config.tsconfigExtensions === DETECT_KEY) {
-      const file = "tsconfig.extensions.ts";
-      if (await Bun.file("tsconfig.extensions.ts").exists()) {
+      const file = "tsconfig.extensions.json";
+      if (await Bun.file(file).exists()) {
         config.tsconfigExtensions = file;
         logger.info(
           `  -> detected tsconfig extensions file ${config.tsconfigExtensions}`,
