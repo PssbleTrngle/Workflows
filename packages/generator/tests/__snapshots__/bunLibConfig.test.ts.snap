@@ -28,6 +28,8 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          lfs: true
+          submodules: true
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -197,23 +199,14 @@ exports[`bun-lib workflow generation generates everything: tsconfig.json 1`] = `
     // Some stricter flags (disabled by default)
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "noPropertyAccessFromIndexSignature": false,
-    "declaration": true,
-    "sourceMap": true,
-    "rootDir": "./src",
-    "outDir": "./dist"
+    "noPropertyAccessFromIndexSignature": false
   },
-  "include": ["src"],
-  "references": [
-    {
-      "path": "./tsconfig.test.json"
-    }
-  ]
+  "include": ["src", "test"]
 }
 "
 `;
 
-exports[`bun-lib workflow generation generates everything: tsconfig.test.json 1`] = `
+exports[`bun-lib workflow generation generates everything: tsconfig.build.json 1`] = `
 "// <meta>
 //    <source>@pssbletrngle/github-meta-generator</source>
 //    <version>0.0.0-dev</version>
@@ -222,34 +215,14 @@ exports[`bun-lib workflow generation generates everything: tsconfig.test.json 1`
 // </meta>
 
 {
+  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "composite": true,
-    // Environment setup & latest features
-    "lib": ["ESNext"],
-    "target": "ESNext",
-    "module": "Preserve",
-    "moduleDetection": "force",
-    "jsx": "react-jsx",
-    "allowJs": true,
-    "types": ["bun"],
-    // Bundler mode
-    "moduleResolution": "bundler",
-    "verbatimModuleSyntax": true,
-    // Best practices
-    "strict": true,
-    "skipLibCheck": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true,
-    // Some stricter flags (disabled by default)
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noPropertyAccessFromIndexSignature": false,
     "declaration": true,
     "sourceMap": true,
-    "rootDir": "."
+    "rootDir": "./src",
+    "outDir": "./dist"
   },
-  "include": ["test"]
+  "include": ["src"]
 }
 "
 `;

@@ -24,18 +24,10 @@
     // Some stricter flags (disabled by default)
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "noPropertyAccessFromIndexSignature": false,
-    "declaration": true,
-    "sourceMap": true,
-    "rootDir": "./src",
-    "outDir": "./dist"
+    "noPropertyAccessFromIndexSignature": false
   },
   "include": [
-    "src"
+    "src",
+    "test"
   ],
-  "references": [
-    {
-      "path": "./tsconfig.test.json"
-    }
-  ]
 }
