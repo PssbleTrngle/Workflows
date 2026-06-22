@@ -1,6 +1,6 @@
 {
    {{#if tsconfigExtensions }}
-   "extends": "{{ tsconfigExtensions }}",
+   "extends": "./{{ tsconfigExtensions }}",
    {{/if}}
   "compilerOptions": {
     // Environment setup & latest features

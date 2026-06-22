@@ -4,6 +4,7 @@ import {
   validateConfig,
 } from "@pssbletrngle/github-meta-generator";
 import { uniq } from "@pssbletrngle/workflows-shared/util";
+import { join } from "node:path";
 import type { ConfigSchema, Resolved } from "./config";
 import type { MetadataContext } from "./context";
 
@@ -27,15 +28,23 @@ function detectVersionsFrom(branches: string[]) {
     .toReversed();
 }
 
-export default async function detectProperties({
-  config,
-  branches,
-  target,
-  logger,
-}: MetadataContext): Promise<Resolved<ConfigSchema>> {
+export default async function detectProperties(
+  { config, branches, target, logger }: MetadataContext,
+  repositoryPath?: string,
+): Promise<Resolved<ConfigSchema>> {
+  async function fileAt(...path: string[]) {
+    if (!repositoryPath) return null;
+    const file = Bun.file(join(repositoryPath, ...path));
+    if (!(await file.exists())) return;
+    return file;
+  }
+
   if (config.type === "web") {
     if (config.manager === DETECT_KEY) {
-      const { packageManager } = await Bun.file("package.json").json();
+      const packageJson = await fileAt("package.json");
+      if (!packageJson)
+        throw new Error("unable to detect package loader without package.json");
+      const { packageManager } = await packageJson.json();
       const [, match] = /^(\w+)@/.exec(packageManager) ?? [];
       config.manager = packageManagerSchema.parse(match);
       logger.info(`  -> detected package manager ${config.manager}`);
@@ -44,7 +53,7 @@ export default async function detectProperties({
   if (config.type === "bun-library") {
     if (config.tsconfigExtensions === DETECT_KEY) {
       const file = "tsconfig.extensions.json";
-      if (await Bun.file(file).exists()) {
+      if (await fileAt(file)) {
         config.tsconfigExtensions = file;
         logger.info(
           `  -> detected tsconfig extensions file ${config.tsconfigExtensions}`,

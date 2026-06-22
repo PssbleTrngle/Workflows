@@ -24,12 +24,15 @@ export default async function refresh() {
 
   const branches = await listBranches(path);
 
-  const withDetected = await detectProperties({
-    config: raw,
-    branches,
-    logger: console,
-    target,
-  });
+  const withDetected = await detectProperties(
+    {
+      config: raw,
+      branches,
+      logger: console,
+      target,
+    },
+    path,
+  );
 
   const validated = validateConfig(withDetected, false);
 

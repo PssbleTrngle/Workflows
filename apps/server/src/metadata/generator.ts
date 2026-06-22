@@ -26,7 +26,7 @@ export async function updateMetadataFiles(
   repositoryPath: string,
   context: MetadataContext,
 ): Promise<ActionResult> {
-  const config = await detectProperties(context);
+  const config = await detectProperties(context, repositoryPath);
 
   await generateInFolder(repositoryPath, config, { logger });
 
