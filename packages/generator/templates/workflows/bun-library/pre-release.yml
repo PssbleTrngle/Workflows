@@ -21,7 +21,7 @@ jobs:
           token: {{ var 'secrets.GITHUB_TOKEN' }}
 
       - uses: benc-uk/workflow-dispatch@v1
-        if: toJson(steps.action.outputs.matched)
+        if: {{ var 'toJson(steps.action.outputs.matched)' }}
         with:
           workflow: release.yml
           inputs: '{ "rc": true, "version": "{{ var 'steps.action.outputs.tag' }}-rc.{{ var 'github.run_number' }}" }'
