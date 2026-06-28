@@ -28,6 +28,8 @@ describe("bun-lib workflow generation", () => {
       .expect("tsconfig.build.json")
       .toMatchSnapshot("tsconfig.build.json");
 
+    acceptor.expect(".husky/pre-commit").toMatchSnapshot("pre-commit");
+
     acceptor.expectNothingElse();
   });
 

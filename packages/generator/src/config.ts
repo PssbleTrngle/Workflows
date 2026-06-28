@@ -99,6 +99,7 @@ const bunLibrarySchema = z
       .or(z.literal(false))
       .default(false)
       .describe("formatter libary"),
+    hooks: z.boolean().default(true).describe("add husky git hooks"),
   })
   .and(commonSchema);
 

@@ -3,6 +3,7 @@ import { type TemplateEntry } from "../dist/templates";
 import type { ConfigSchema } from "./config";
 import { generateConfig } from "./configs/generate";
 import { generateEditorConfig } from "./editorconfig/generate";
+import { generateGitHooks } from "./hooks";
 import { generateIssueTemplate } from "./issueTemplates/generate";
 import { generateLicenses } from "./licenses/generate";
 import { generatePrettierConfig } from "./prettier";
@@ -45,6 +46,11 @@ const schemaTypes: SchemaType[] = [
     value: "prettier",
     path: ".",
     generator: generatePrettierConfig,
+  },
+  {
+    key: "hooks",
+    path: ".husky",
+    generator: generateGitHooks,
   },
 ];
 

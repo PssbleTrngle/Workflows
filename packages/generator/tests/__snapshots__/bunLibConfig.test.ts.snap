@@ -178,7 +178,7 @@ exports[`bun-lib workflow generation generates everything: tsconfig.json 1`] = `
 // </meta>
 
 {
-  "extends": "detect",
+  "extends": "./detect",
   "compilerOptions": {
     // Environment setup & latest features
     "lib": ["ESNext"],
@@ -249,7 +249,7 @@ exports[`bun-lib workflow generation with tsconfig extensions: tsconfig.json 1`]
 // </meta>
 
 {
-  "extends": "tsconfig.extensions.json",
+  "extends": "./tsconfig.extensions.json",
   "compilerOptions": {
     // Environment setup & latest features
     "lib": ["ESNext"],
@@ -312,5 +312,20 @@ exports[`bun-lib workflow generation without tsconfig extensions: tsconfig.json 
   },
   "include": ["src", "test"]
 }
+"
+`;
+
+exports[`bun-lib workflow generation generates everything: pre-commit 1`] = `
+"# <meta>
+#    <source>@pssbletrngle/github-meta-generator</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>abcdef</hash>
+# </meta>
+
+bun run format
+bun run lint --fix
+
+git update-index --again
 "
 `;
