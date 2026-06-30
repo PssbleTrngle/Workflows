@@ -506,6 +506,7 @@ jobs:
           dependency-graph: generate-and-submit
 
       - uses: PssbleTrngle/find-release@v1
+        if: \${{ github.event_name != 'pull_request' }}
         id: draft
         with:
           type: draft

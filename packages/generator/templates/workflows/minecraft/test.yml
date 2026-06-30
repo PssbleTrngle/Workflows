@@ -46,6 +46,7 @@ jobs:
 
       {{#if upload.snapshots}}
       - uses: PssbleTrngle/find-release@v1
+        if: {{ var 'github.event_name != \'pull_request\'' }}
         id: draft
         with:
           type: draft
