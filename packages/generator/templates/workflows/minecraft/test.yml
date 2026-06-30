@@ -46,8 +46,7 @@ jobs:
 
       {{#if upload.snapshots}}
       - uses: PssbleTrngle/find-release@v1
-        if: {{ var 'github.event_name != \'pull_request\'' }}
-        id: action
+        id: draft
         with:
           type: draft
           token: {{ var 'secrets.GITHUB_TOKEN' }}
@@ -73,7 +72,7 @@ jobs:
 
       {{#if upload.snapshots}}
       - name: Publish -SNAPSHOT version
-        if: {{ var 'fromJSON(steps.action.outputs.matched)' }}
+        if: {{ var 'github.event_name != \'pull_request\' && fromJSON(steps.draft.outputs.matched)' }}
         run: ./gradlew publish
         continue-on-error: true
         env:
@@ -81,6 +80,6 @@ jobs:
           NEXUS_USER: {{ var 'secrets.NEXUS_USER' }}
           NEXUS_TOKEN: {{ var 'secrets.NEXUS_TOKEN' }}
           {{/if}}
-          RELEASE_VERSION: {{ var 'steps.action.outputs.tag' }}
+          RELEASE_VERSION: {{ var 'steps.draft.outputs.tag' }}
           SNAPSHOT: true
       {{/if}}

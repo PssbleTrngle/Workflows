@@ -228,6 +228,21 @@ exports[`bun-lib workflow generation generates everything: tsconfig.build.json 1
 "
 `;
 
+exports[`bun-lib workflow generation generates everything: pre-commit 1`] = `
+"# <meta>
+#    <source>@pssbletrngle/github-meta-generator</source>
+#    <version>0.0.0-dev</version>
+#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
+#    <hash>abcdef</hash>
+# </meta>
+
+bun run format
+bun run lint --fix
+
+git update-index --again
+"
+`;
+
 exports[`bun-lib workflow generation generates prettier config: .prettierrc 1`] = `
 "# <meta>
 #    <source>@pssbletrngle/github-meta-generator</source>
@@ -312,20 +327,5 @@ exports[`bun-lib workflow generation without tsconfig extensions: tsconfig.json 
   },
   "include": ["src", "test"]
 }
-"
-`;
-
-exports[`bun-lib workflow generation generates everything: pre-commit 1`] = `
-"# <meta>
-#    <source>@pssbletrngle/github-meta-generator</source>
-#    <version>0.0.0-dev</version>
-#    <timestamp>2025-01-01T00:00:00.000Z</timestamp>
-#    <hash>abcdef</hash>
-# </meta>
-
-bun run format
-bun run lint --fix
-
-git update-index --again
 "
 `;

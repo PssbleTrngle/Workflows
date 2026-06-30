@@ -506,8 +506,7 @@ jobs:
           dependency-graph: generate-and-submit
 
       - uses: PssbleTrngle/find-release@v1
-        if: \${{ github.event_name != 'pull_request' }}
-        id: action
+        id: draft
         with:
           type: draft
           token: \${{ secrets.GITHUB_TOKEN }}
@@ -518,13 +517,13 @@ jobs:
           RELEASE_VERSION: \${{ steps.action.outputs.tag }}
 
       - name: Publish -SNAPSHOT version
-        if: \${{ fromJSON(steps.action.outputs.matched) }}
+        if: \${{ github.event_name != 'pull_request' && fromJSON(steps.draft.outputs.matched) }}
         run: ./gradlew publish
         continue-on-error: true
         env:
           NEXUS_USER: \${{ secrets.NEXUS_USER }}
           NEXUS_TOKEN: \${{ secrets.NEXUS_TOKEN }}
-          RELEASE_VERSION: \${{ steps.action.outputs.tag }}
+          RELEASE_VERSION: \${{ steps.draft.outputs.tag }}
           SNAPSHOT: true
 "
 `;
