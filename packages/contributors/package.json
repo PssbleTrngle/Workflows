@@ -23,7 +23,7 @@
     "handlebars": "^4.7.8",
     "octokit": "^5.0.5",
     "prettier": "^3.9.5",
-    "zod": "^4.1.12"
+    "zod": "^4.4.3"
   },
   "peerDependencies": {
     "typescript": "^5"
