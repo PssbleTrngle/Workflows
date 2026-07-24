@@ -1,9 +1,11 @@
+import { CONTRIBUTORS_CONFIG_PATH } from "@pssbletrngle/contributors-generator";
 import type {
   RepoSearch,
   RepoSearchWithBranch,
 } from "@pssbletrngle/workflows-types";
 import config from "../../config";
 import { updateContributors } from "../../contributors";
+import { getFileContent } from "../../files";
 import logger from "../../logger";
 import { createGitUser } from "../../user";
 import type { InstallationContext } from "../auth";
@@ -40,13 +42,24 @@ async function branchChecks(
     checkProtection(subject, context.octokit),
     checkGradleSetup(subject, context.octokit),
     checkProjectSetup(subject, context.octokit),
-    updateContributors(
-      subject,
-      context.repository.clone_url,
-      context.octokit,
-      user,
-    ),
   ]);
+
+  const contributorConfig = await getFileContent(
+    subject,
+    CONTRIBUTORS_CONFIG_PATH,
+    context.octokit,
+  );
+
+  if (contributorConfig) {
+    await runChecks([
+      updateContributors(
+        subject,
+        context.repository.clone_url,
+        context.octokit,
+        user,
+      ),
+    ]);
+  }
 }
 
 export async function checkRepositoryOnly(
