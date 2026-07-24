@@ -1,0 +1,30 @@
+{
+  "name": "@pssbletrngle/contributors-generator",
+  "type": "module",
+  "module": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "build": "bun run scripts/templates.ts",
+    "dev": "bun run scripts/watch.ts",
+    "lint": "eslint {src,scripts,tests}",
+    "format": "biome format --write {src,scripts,tests}",
+    "cli": "bun run src/cli.ts",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@pssbletrngle/workflows-configs": "workspace:*",
+    "@pssbletrngle/workflows-types": "workspace:*",
+    "@pssbletrngle/workflows-shared": "workspace:*",
+    "@types/bun": "latest",
+    "handlebars": "^4.7.8",
+    "zod": "^4.1.12",
+    "prettier": "^3.9.5",
+    "octokit": "^5.0.5"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

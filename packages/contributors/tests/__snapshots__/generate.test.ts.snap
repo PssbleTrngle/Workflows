@@ -1,0 +1,26 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`generated wrappes table rows 1`] = `
+"<table>
+  <tbody>
+    <tr>
+      <td align="center">
+        <a href="https://github.com/PssbleTrngle">
+          <img
+            src="https://example/image.png"
+            width="100;"
+            alt="PssbleTrngle"
+          />
+          <br />
+          <sub><b>PssbleTrngle</b></sub>
+          <br />
+          <sub><small>Author</small></sub>
+        </a>
+      </td>
+    </tr>
+  </tbody>
+
+  <tbody></tbody>
+</table>
+"
+`;

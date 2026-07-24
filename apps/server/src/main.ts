@@ -1,3 +1,4 @@
+import { contributorsConfigSchema } from "@pssbletrngle/contributors-generator";
 import { configSchema } from "@pssbletrngle/github-meta-generator";
 import express from "express";
 import { createNodeMiddleware } from "octokit";
@@ -24,6 +25,10 @@ if (config.dev) {
 
 server.get("/schema/config.json", (_, response) => {
   response.json(configSchema);
+});
+
+server.get("/schema/contributors.json", (_, response) => {
+  response.json(contributorsConfigSchema);
 });
 
 server.get("/status", (_, response) => {

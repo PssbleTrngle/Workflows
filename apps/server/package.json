@@ -26,6 +26,7 @@
     "@pssbletrngle/workflows-shared": "workspace:*",
     "@pssbletrngle/workflows-types": "workspace:*",
     "@pssbletrngle/workflows-ui": "workspace:*",
+    "@pssbletrngle/contributors-generator": "workspace:*",
     "@types/bun": "latest",
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
