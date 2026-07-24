@@ -33,7 +33,7 @@
     "@types/express": "^5.0.4",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.4.2",
     "express": "^5.1.0",
     "http-proxy-middleware": "^3.0.5",
     "octokit": "^5.0.5",

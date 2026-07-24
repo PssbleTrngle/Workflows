@@ -19,7 +19,7 @@
     "@pssbletrngle/workflows-shared": "workspace:*",
     "@pssbletrngle/workflows-types": "workspace:*",
     "@types/bun": "latest",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.4.2",
     "octokit": "^5.0.5"
   }
 }
