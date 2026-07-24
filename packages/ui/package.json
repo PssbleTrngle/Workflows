@@ -13,7 +13,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@astrojs/node": "^10.1.1",
+    "@astrojs/node": "^11.0.2",
     "@pssbletrngle/workflows-configs": "workspace:*",
     "@pssbletrngle/workflows-shared": "workspace:*",
     "@pssbletrngle/workflows-types": "workspace:*",
