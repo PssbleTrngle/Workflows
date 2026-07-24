@@ -3,7 +3,7 @@
       {{#each rows}}
       <tr>
          {{#each this}}
-         <td align="center" valign="top" width="100">
+         <td align="center" valign="top" width="200">
             {{#if avatar}}
             <img src="{{{ avatar }}}" width="100" alt="{{ name }}" />
             {{else}}

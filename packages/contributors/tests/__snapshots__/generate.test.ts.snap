@@ -4,7 +4,7 @@ exports[`generated wrappes table rows 1`] = `
 "<table>
   <tbody>
     <tr>
-      <td align="center" valign="top" width="100">
+      <td align="center" valign="top" width="200">
         <img src="https://example/image.png" width="100" alt="PssbleTrngle" />
         <br />
         <br />
