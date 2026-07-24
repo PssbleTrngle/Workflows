@@ -4,7 +4,11 @@
       <tr>
          {{#each this}}
          <td align="center">
+            {{#if avatar}}
             <img src="{{{ avatar }}}" width="100;" alt="{{ name }}" />
+            {{else}}
+            <img src="https://placehold.net/avatar-4.svg" width="100;" alt="{{ name }}" />
+            {{/if}}
             <br />
             {{#each links}}
             <a href="{{{ url }}}">
