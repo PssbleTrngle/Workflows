@@ -43,7 +43,7 @@ export default async function onStartup(app: App) {
 
   await Promise.all(
     withContexts.map(async ({ context, subject }) => {
-      await checkViewers(subject, context.octokit);
+      await Promise.all([checkViewers(subject, context.octokit)]);
     }),
   );
 

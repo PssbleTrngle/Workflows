@@ -3,7 +3,9 @@ import type {
   RepoSearchWithBranch,
 } from "@pssbletrngle/workflows-types";
 import config from "../../config";
+import { updateContributors } from "../../contributors";
 import logger from "../../logger";
+import { createGitUser } from "../../user";
 import type { InstallationContext } from "../auth";
 import { fetchBranches } from "../branches";
 import checkIcon from "./icon";
@@ -31,11 +33,19 @@ async function branchChecks(
 ) {
   logger.debug("checking branch", subject);
 
+  const user = await createGitUser(context);
+
   await runChecks([
     refresh(subject, context),
     checkProtection(subject, context.octokit),
     checkGradleSetup(subject, context.octokit),
     checkProjectSetup(subject, context.octokit),
+    updateContributors(
+      subject,
+      context.repository.clone_url,
+      context.octokit,
+      user,
+    ),
   ]);
 }
 
