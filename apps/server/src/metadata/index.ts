@@ -1,3 +1,4 @@
+import { CONTRIBUTORS_CONFIG_PATH } from "@pssbletrngle/contributors-generator";
 import { configPath } from "@pssbletrngle/github-meta-generator";
 import type {
   GithubRepository,
@@ -5,6 +6,7 @@ import type {
   RepoSearchWithBranch,
 } from "@pssbletrngle/workflows-types";
 import type { App } from "octokit";
+import { updateContributors } from "../contributors";
 import logger from "../logger";
 import { createGitUser } from "../user";
 import { fileChanged } from "./checks/commit";
@@ -43,16 +45,23 @@ export async function registerMetadataHooks(hooks: App["webhooks"]) {
       branch,
     };
 
+    if (!installation) {
+      octokit.log.warn(`installation missing for ${repository.full_name}`);
+      return;
+    }
+
+    const user = await createGitUser({ repository, installation, octokit });
+
     if (fileChanged(commits, configPath)) {
       octokit.log.info(`config changed for ${repository.full_name}`);
-
-      if (!installation) {
-        octokit.log.warn(`installation missing for ${repository.full_name}`);
-        return;
-      }
-
-      const user = await createGitUser({ repository, installation, octokit });
       await generateMetadata(subject, repository.clone_url, octokit, user);
+    }
+
+    if (fileChanged(commits, CONTRIBUTORS_CONFIG_PATH)) {
+      octokit.log.info(
+        `${CONTRIBUTORS_CONFIG_PATH} changed for ${repository.full_name}`,
+      );
+      await updateContributors(subject, repository.clone_url, octokit, user);
     }
 
     if (fileChanged(commits, "settings.gradle.kts")) {

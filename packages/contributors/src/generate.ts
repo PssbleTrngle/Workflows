@@ -1,4 +1,3 @@
-import type { Logger } from "@pssbletrngle/workflows-types/logger";
 import { Octokit } from "octokit";
 import { format } from "prettier";
 import { template } from "../dist/template";
@@ -30,11 +29,8 @@ async function populateContributor(
 
 export async function generateContributorsTable(
   { perRow, contributors }: ContributorsConfig,
-  githubToken: string,
-  logger?: Logger,
+  octokit: Octokit,
 ) {
-  const octokit = new Octokit({ auth: githubToken, log: logger });
-
   const rows: Contributor[][] = [[]];
 
   for (let i = 0; i < contributors.length; i++) {

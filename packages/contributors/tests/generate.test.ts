@@ -1,11 +1,8 @@
-import { expect, it, mock } from "bun:test";
+import { expect, it } from "bun:test";
+import { Octokit } from "octokit";
 import { generateContributorsTable, type ContributorsConfig } from "../src";
 
-mock.module("octokit", () => ({
-  Octokit: class {
-    constructor() {}
-  },
-}));
+const octokit = {} as Octokit;
 
 it("generated wrappes table rows", async () => {
   const config: ContributorsConfig = {
@@ -19,7 +16,7 @@ it("generated wrappes table rows", async () => {
     ],
   };
 
-  const generated = await generateContributorsTable(config, "*******");
+  const generated = await generateContributorsTable(config, octokit);
 
   expect(generated).toMatchSnapshot();
 });
