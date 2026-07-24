@@ -3,7 +3,6 @@ import z from "zod";
 const platformSchmema = z.string().nonempty().or(z.boolean()).optional();
 
 const contributorSchema = z.object({
-  $schema: z.string().optional(),
   name: z.string().nonempty(),
   github: platformSchmema,
   modrinth: platformSchmema,
@@ -13,6 +12,7 @@ const contributorSchema = z.object({
 });
 
 const configSchema = z.object({
+  $schema: z.string().optional(),
   contributors: z.array(contributorSchema),
   perRow: z.number().int().positive().default(5),
 });
