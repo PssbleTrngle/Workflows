@@ -1,8 +1,7 @@
 import type { BunFile } from "bun";
 import { join } from "node:path";
-import type { Octokit } from "octokit";
 import { CONTRIBUTORS_CONFIG_PATH, parseContributorsConfig } from "./config";
-import { generateContributorsTable } from "./generate";
+import { generateContributorsTable, type Apis } from "./generate";
 
 async function replaceInFile(content: string, file: BunFile) {
   if (!(await file.exists()))
@@ -18,7 +17,7 @@ async function replaceInFile(content: string, file: BunFile) {
   await file.write(replaced);
 }
 
-export async function replaceContributorsTable(path: string, octokit: Octokit) {
+export async function replaceContributorsTable(path: string, apis: Apis) {
   const file = Bun.file(join(path, CONTRIBUTORS_CONFIG_PATH));
 
   if (!(await file.exists())) {
@@ -27,7 +26,7 @@ export async function replaceContributorsTable(path: string, octokit: Octokit) {
 
   const config = parseContributorsConfig(await file.json());
 
-  const table = await generateContributorsTable(config, octokit);
+  const table = await generateContributorsTable(config, apis);
 
   const output = Bun.file(join(path, "README.md"));
 

@@ -1,8 +1,5 @@
 import { expect, it } from "bun:test";
-import { Octokit } from "octokit";
 import { generateContributorsTable, type ContributorsConfig } from "../src";
-
-const octokit = {} as Octokit;
 
 it("generated wrappes table rows", async () => {
   const config: ContributorsConfig = {
@@ -16,7 +13,7 @@ it("generated wrappes table rows", async () => {
     ],
   };
 
-  const generated = await generateContributorsTable(config, octokit);
+  const generated = await generateContributorsTable(config);
 
   expect(generated).toMatchSnapshot();
 });

@@ -5,17 +5,12 @@ exports[`generated wrappes table rows 1`] = `
   <tbody>
     <tr>
       <td align="center">
-        <a href="https://github.com/PssbleTrngle">
-          <img
-            src="https://example/image.png"
-            width="100;"
-            alt="PssbleTrngle"
-          />
-          <br />
-          <sub><b>PssbleTrngle</b></sub>
-          <br />
-          <sub><small>Author</small></sub>
-        </a>
+        <img src="https://example/image.png" width="100;" alt="PssbleTrngle" />
+        <br />
+        <br />
+        <sub><b>PssbleTrngle</b></sub>
+        <br />
+        <sub><small>Author</small></sub>
       </td>
     </tr>
   </tbody>

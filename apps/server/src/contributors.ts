@@ -4,6 +4,7 @@ import type { Octokit } from "octokit";
 import { cloneAndModify, type GitUser } from "./git";
 import logger from "./logger";
 import { fetchBranches, isMainBranch } from "./metadata/branches";
+import { createModrinthClient } from "./modrinth";
 
 export async function updateContributors(
   subject: RepoSearchWithBranch,
@@ -19,9 +20,11 @@ export async function updateContributors(
     return;
   }
 
+  const modrinth = createModrinthClient();
+
   await cloneAndModify(subject, cloneUrl, user, [
     async (path) => {
-      await replaceContributorsTable(path, octokit);
+      await replaceContributorsTable(path, { octokit, modrinth });
       return { message: "updated contributors" };
     },
   ]);

@@ -64,6 +64,7 @@
     "apps/server": {
       "name": "@pssbletrngle/workflows-server",
       "dependencies": {
+        "@modrinth/api-client": "^0.33.0",
         "@pssbletrngle/contributors-generator": "workspace:*",
         "@pssbletrngle/github-meta-generator": "workspace:*",
         "@pssbletrngle/workflows-configs": "workspace:*",
@@ -108,6 +109,7 @@
     "packages/contributors": {
       "name": "@pssbletrngle/contributors-generator",
       "dependencies": {
+        "@modrinth/api-client": "^0.33.0",
         "@pssbletrngle/workflows-configs": "workspace:*",
         "@pssbletrngle/workflows-shared": "workspace:*",
         "@pssbletrngle/workflows-types": "workspace:*",
@@ -459,6 +461,8 @@
     "@jridgewell/sourcemap-codec": ["@jridgewell/sourcemap-codec@1.5.5", "", {}, "sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og=="],
 
     "@js-sdsl/ordered-map": ["@js-sdsl/ordered-map@4.4.2", "", {}, "sha512-iUKgm52T8HOE/makSxjqoWhe95ZJA1/G1sYsGev2JDKUSS14KAgg1LHb+Ba+IPow0xflbnSkOsZcO08C7w1gYw=="],
+
+    "@modrinth/api-client": ["@modrinth/api-client@0.33.0", "", { "dependencies": { "mitt": "^3.0.1", "ofetch": "^1.4.1" }, "peerDependencies": { "@tauri-apps/plugin-http": "^2.0.0" }, "optionalPeers": ["@tauri-apps/plugin-http"] }, "sha512-n6Oyh+J+VdtJA7U2nhwRYho9D+hkejQjFz6+yKdLeS2yqgR8YXrmA5x5CB/sAMeNhxYxpkkuoRl50ByuyBxy3g=="],
 
     "@mongodb-js/saslprep": ["@mongodb-js/saslprep@1.4.8", "", { "dependencies": { "sparse-bitfield": "^3.0.3" } }, "sha512-kpjr2jy2w71w0oqAMI8oibBmiF9lXxWkEQs5gMkW4hVE48bsqINGLxnCSYW62ck/NHXJQpQEfA9WlJ1sY0eqBg=="],
 
@@ -1307,6 +1311,8 @@
     "minimatch": ["minimatch@3.1.5", "", { "dependencies": { "brace-expansion": "^1.1.7" } }, "sha512-VgjWUsnnT6n+NUk6eZq77zeFdpW2LWDzP6zFGrCbHXiYNul5Dzqk2HHQ5uFH2DNW5Xbp8+jVzaeNt94ssEEl4w=="],
 
     "minimist": ["minimist@1.2.8", "", {}, "sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA=="],
+
+    "mitt": ["mitt@3.0.1", "", {}, "sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw=="],
 
     "mkdirp-classic": ["mkdirp-classic@0.5.3", "", {}, "sha512-gKLcREMhtuZRwRAfqP3RFW+TK4JqApVBtOIftVgjuABpAtpxhPGaDcfvbhNvD0B8iD1oUr/txX35NjcaY6Ns/A=="],
 

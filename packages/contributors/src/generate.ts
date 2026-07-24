@@ -1,35 +1,98 @@
-import { Octokit } from "octokit";
+import type { AbstractModrinthClient } from "@modrinth/api-client";
+import type { Octokit } from "octokit";
 import { format } from "prettier";
 import { template } from "../dist/template";
 import type { Contributor, ContributorsConfig } from "./config";
 
-async function populateContributor(
-  contributor: Contributor,
-  octokit: Octokit,
-): Promise<Contributor> {
-  const withDefaults = {
-    githubUser: contributor.name,
-    ...contributor,
-  };
+export type Apis = {
+  octokit?: Octokit;
+  modrinth?: AbstractModrinthClient;
+};
 
-  if (!withDefaults.avatar) {
-    try {
-      const { data } = await octokit.rest.users.getByUsername({
-        username: withDefaults.githubUser,
-      });
+type Link = {
+  icon: string;
+  name: string;
+  url: string;
+};
 
-      withDefaults.avatar = data.avatar_url;
-    } catch {
-      octokit.log.warn(`unable to fetch avatar for ${withDefaults.githubUser}`);
-    }
+type PopulatedContributor = {
+  name: string;
+  description?: string;
+  avatar?: string;
+  links: Link[];
+};
+
+function platformName(
+  name: string,
+  platformName: string | boolean | undefined,
+) {
+  if (!platformName) return undefined;
+
+  if (typeof platformName === "string") {
+    return platformName;
   }
 
-  return withDefaults;
+  return name;
+}
+
+function badgeIcon(type: string) {
+  return `https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy-minimal/available/${type}_vector.svg`;
+}
+
+async function populateContributor(
+  { name, description, ...contributor }: Contributor,
+  { octokit, modrinth }: Apis,
+): Promise<PopulatedContributor> {
+  let avatar = contributor.avatar;
+  const githubUser = platformName(name, contributor.github);
+  const modrinthUser = platformName(name, contributor.modrinth);
+  const curseforgeUser = platformName(name, contributor.curseforge);
+
+  const links: Link[] = [];
+
+  if (modrinthUser) {
+    if (modrinth && !avatar) {
+      const data = await modrinth.labrinth.users_v3.get(modrinthUser);
+      avatar = data.avatar_url;
+    }
+
+    links.push({
+      icon: badgeIcon("modrinth"),
+      name: "Modrinth",
+      url: `https://modrinth.com/user/${modrinthUser}`,
+    });
+  }
+
+  if (githubUser) {
+    if (!avatar && octokit) {
+      const { data } = await octokit.rest.users.getByUsername({
+        username: githubUser,
+      });
+
+      avatar = data.avatar_url;
+    }
+
+    links.push({
+      icon: badgeIcon("github"),
+      name: "GitHub",
+      url: `https://github.com/${githubUser}`,
+    });
+  }
+
+  if (curseforgeUser) {
+    links.push({
+      icon: badgeIcon("curseforge"),
+      name: "CurseForge",
+      url: `https://www.curseforge.com/members/${curseforgeUser}`,
+    });
+  }
+
+  return { avatar, name, links, description };
 }
 
 export async function generateContributorsTable(
   { perRow, contributors }: ContributorsConfig,
-  octokit: Octokit,
+  apis: Apis = {},
 ) {
   const rows: Contributor[][] = [[]];
 
@@ -40,7 +103,7 @@ export async function generateContributorsTable(
       rows.push(lastRow);
     }
 
-    const populated = await populateContributor(contributors[i]!, octokit);
+    const populated = await populateContributor(contributors[i]!, apis);
     lastRow.push(populated);
   }
 

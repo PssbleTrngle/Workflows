@@ -15,14 +15,15 @@
     "test": "bun test"
   },
   "dependencies": {
+    "@modrinth/api-client": "^0.33.0",
     "@pssbletrngle/workflows-configs": "workspace:*",
-    "@pssbletrngle/workflows-types": "workspace:*",
     "@pssbletrngle/workflows-shared": "workspace:*",
+    "@pssbletrngle/workflows-types": "workspace:*",
     "@types/bun": "latest",
     "handlebars": "^4.7.8",
-    "zod": "^4.1.12",
+    "octokit": "^5.0.5",
     "prettier": "^3.9.5",
-    "octokit": "^5.0.5"
+    "zod": "^4.1.12"
   },
   "peerDependencies": {
     "typescript": "^5"

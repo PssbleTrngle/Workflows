@@ -1,26 +1,30 @@
 import z from "zod";
 
-const ContributorSchema = z.object({
+const platformSchmema = z.string().nonempty().or(z.boolean()).optional();
+
+const contributorSchema = z.object({
   $schema: z.string().optional(),
   name: z.string().nonempty(),
-  githubUser: z.string().nonempty().optional(),
+  github: platformSchmema,
+  modrinth: platformSchmema,
+  curseforge: platformSchmema,
   description: z.string().nonempty().optional(),
   avatar: z.string().nonempty().optional(),
 });
 
-const ConfigSchema = z.object({
-  contributors: z.array(ContributorSchema),
+const configSchema = z.object({
+  contributors: z.array(contributorSchema),
   perRow: z.number().int().positive().default(5),
 });
 
 export function parseContributorsConfig(input: unknown) {
-  return ConfigSchema.parse(input);
+  return configSchema.parse(input);
 }
 
-export type Contributor = z.infer<typeof ContributorSchema>;
-export type ContributorsConfig = z.infer<typeof ConfigSchema>;
+export type Contributor = z.infer<typeof contributorSchema>;
+export type ContributorsConfig = z.infer<typeof configSchema>;
 
-export const contributorsConfigSchema = ConfigSchema.toJSONSchema({
+export const contributorsConfigSchema = configSchema.toJSONSchema({
   override: ({ jsonSchema }) => {
     // fields with default values do not need to be marked as required
     jsonSchema.required = jsonSchema.required?.filter((field) => {

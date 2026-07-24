@@ -43,4 +43,7 @@ export default {
   },
   startupCheck: boolEnv("STARTUP_CHECKS") ?? true,
   executeGitCommands: boolEnv("EXECUTE_GIT") ?? true,
+  modrinth: {
+    token: env("MODRINTH_TOKEN"),
+  },
 };
