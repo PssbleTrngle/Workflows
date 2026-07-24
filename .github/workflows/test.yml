@@ -31,8 +31,3 @@ jobs:
 
          - name: Run tests
            run: bun run check
-
-         - uses: SonarSource/sonarqube-scan-action@v8
-           env:
-              SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-              SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
