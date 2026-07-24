@@ -7,9 +7,7 @@ on:
       types: [opened, synchronize]
 
    push:
-      branches: 
-         - "main"
-         - "main/**"
+      {{> push-conditions }}
 
 env:
   CI: true

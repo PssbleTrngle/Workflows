@@ -5,9 +5,7 @@ on:
       types: [published]
    {{else if (eq upload.strategy "push") }}
    push:
-      branches: 
-         - "main"
-         - "main/**"
+      {{> push-conditions }}
    {{/if}}
 
 env:

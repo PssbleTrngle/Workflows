@@ -1,0 +1,8 @@
+branches:
+  - "main"
+  - "main/**"
+paths:
+  - "**.java"
+  - "**.kt"
+  - "gradle.properties"
+  - "gradle/**"

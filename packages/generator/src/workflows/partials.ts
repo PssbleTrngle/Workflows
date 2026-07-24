@@ -1,6 +1,6 @@
 import { loadTemplate } from "../../dist/templates";
 
-const partialFiles = ["java.yml"];
+const partialFiles = ["java.yml", "push-conditions.yml"];
 
 async function loadPartial(file: string) {
   const { template } = await loadTemplate("workflows", file);
