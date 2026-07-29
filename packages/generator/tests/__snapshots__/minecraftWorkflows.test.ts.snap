@@ -472,6 +472,12 @@ jobs:
           archive: false
           path: build/release.json
           retention-days: 1
+
+      - name: Create tag
+        uses: PssbleTrngle/create-tag@v1
+        with:
+          from: build/release.json
+          token: \${{ secrets.GITHUB_TOKEN }}
 "
 `;
 

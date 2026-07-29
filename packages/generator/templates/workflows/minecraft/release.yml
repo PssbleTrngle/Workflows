@@ -67,3 +67,11 @@ jobs:
               archive: false
               path: build/release.json
               retention-days: 1
+
+         {{#if (eq upload.strategy "push") }}
+         - name: Create tag
+           uses: PssbleTrngle/create-tag@v1
+           with:
+              from: build/release.json
+              token: {{ var 'secrets.GITHUB_TOKEN' }}
+         {{/if}}
