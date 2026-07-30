@@ -4,6 +4,8 @@ on:
    release:
       types: [published]
    {{else if (eq upload.strategy "push") }}
+   workflow_dispatch:
+
    push:
       {{> push-conditions }}
    {{/if}}

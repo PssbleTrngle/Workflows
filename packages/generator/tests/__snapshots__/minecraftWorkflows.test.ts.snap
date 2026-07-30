@@ -420,6 +420,8 @@ exports[`minecaft release workflows generates release on push workflow: release 
 
 name: Release
 on:
+  workflow_dispatch:
+
   push:
     branches:
       - "main"
