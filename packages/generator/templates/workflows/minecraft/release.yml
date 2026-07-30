@@ -24,7 +24,11 @@ jobs:
       runs-on: ubuntu-latest
       timeout-minutes: 20
       permissions:
+         {{#if (eq upload.strategy "push")}}
+         contents: write
+         {{else}}
          contents: read
+         {{/if}}
          {{#if upload.github}}
          packages: write
          {{else}}
