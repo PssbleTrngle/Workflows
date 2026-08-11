@@ -7,13 +7,6 @@ const repository = new NotifierRepository(console);
 export async function readFromDatabase(key: NotifactionKey): Promise<string[]> {
   if (typeof key === "string" || Array.isArray(key)) return [];
 
-  // TODO prerelease
-  if (key.type === "release") {
-    // TODO use conclusion
-    const notifiers = await repository.findMatching(key.subject);
-
-    return notifiers.flatMap((it) => it.discordWebhooks);
-  }
-  
-  return [];
+  const notifiers = await repository.findMatching(key.subject, key.type);
+  return notifiers.flatMap((it) => it.discordWebhooks);
 }

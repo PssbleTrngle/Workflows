@@ -1,8 +1,9 @@
 import { notNull } from "@pssbletrngle/workflows-shared/util";
 import type { RepoSearch } from "@pssbletrngle/workflows-types";
+import type { RepositoryNotifactionType } from "@pssbletrngle/workflows-types/metadata";
 
 export type ReleaseNotifaction = {
-  type: "release" | "prerelease";
+  type: RepositoryNotifactionType;
   conclusion?: string;
   subject: RepoSearch;
 };

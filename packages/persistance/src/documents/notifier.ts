@@ -8,6 +8,7 @@ const ruleSchema: SchemaDefinition<RepositoryRule> = {
   branch: { type: String },
   owner: { type: String },
   repo: { type: String },
+  type: { type: String, default: "release" },
 };
 
 const schema = new mongoose.Schema<Notifier>(

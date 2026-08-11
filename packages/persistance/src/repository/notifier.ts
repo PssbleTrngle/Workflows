@@ -2,7 +2,10 @@ import type { RepoSearch } from "@pssbletrngle/workflows-types";
 import type { OAuthUser } from "@pssbletrngle/workflows-types/auth";
 import type { NotifierEventConsumer } from "@pssbletrngle/workflows-types/events";
 import type { Logger } from "@pssbletrngle/workflows-types/logger";
-import type { Notifier } from "@pssbletrngle/workflows-types/metadata";
+import type {
+  Notifier,
+  RepositoryNotifactionType,
+} from "@pssbletrngle/workflows-types/metadata";
 import type { QueryFilter } from "mongoose";
 import { Notifiers } from "../documents/notifier";
 
@@ -71,12 +74,17 @@ export class NotifierRepository {
     return await Notifiers.find(this.authFilter(user), undefined);
   }
 
-  async findMatching(subject: RepoSearch): Promise<Notifier[]> {
+  async findMatching(
+    subject: RepoSearch,
+    type: RepositoryNotifactionType,
+  ): Promise<Notifier[]> {
     const filters: QueryFilter<Notifier>[] = [];
     filters.push({ "rules.owner": { $in: [subject.owner, null] } });
     filters.push({ "rules.repo": { $in: [subject.repo, null] } });
+    filters.push({ "rules.type": { $in: [type] } });
     filters.push({ "exclude.owner": { $not: { $eq: subject.owner } } });
     filters.push({ "exclude.repo": { $not: { $eq: subject.repo } } });
+    filters.push({ "exclude.type": { $not: { $eq: type } } });
     return await Notifiers.find({ $and: filters }, undefined);
   }
 

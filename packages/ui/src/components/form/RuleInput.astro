@@ -1,5 +1,9 @@
 ---
-import type { RepositoryRule } from "@pssbletrngle/workflows-types/metadata";
+import {
+  REPOSITORY_NOTIFACTION_TYPES,
+  type RepositoryRule,
+} from "@pssbletrngle/workflows-types/metadata";
+import Select from "./Select.astro";
 
 export type Props = { value?: RepositoryRule; path: string };
 
@@ -25,6 +29,9 @@ const { value, path } = Astro.props;
     name={`${path}[branch]`}
     value={value?.branch}
   />
+  <Select name={`${path}[type]`} options={REPOSITORY_NOTIFACTION_TYPES} selected={value?.type}>
+    Type
+  </Select>
 
   <button hx-on:click="this.closest('.rule-input').remove()">🗑️</button>
 </section>
@@ -32,7 +39,8 @@ const { value, path } = Astro.props;
 <style scoped>
   .rule-input {
     display: grid;
-    grid-template-columns: repeat(3, 1fr) 100px;
+    grid-template-columns: repeat(5, 1fr) 100px;
+    align-items: center;
     gap: 1em;
   }
 </style>

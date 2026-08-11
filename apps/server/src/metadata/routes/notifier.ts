@@ -1,3 +1,4 @@
+import { REPOSITORY_NOTIFACTION_TYPES } from "@pssbletrngle/workflows-types/metadata";
 import { Router } from "express";
 import z from "zod";
 import { ApiError } from "../../error";
@@ -9,6 +10,7 @@ const ruleSchema = z.object({
   repo: z.string().nonempty().nullable(),
   owner: z.string().nonempty().nullable(),
   branch: z.string().nonempty().nullable(),
+  type: z.enum(REPOSITORY_NOTIFACTION_TYPES),
 });
 
 const rulesSchema = z.array(ruleSchema).default([]);

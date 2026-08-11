@@ -1,7 +1,11 @@
 import type { RepoSearchWithBranch, WithTimestamps } from "..";
 
+export type RepositoryNotifactionType = "release" | "prerelease";
+
 export type RepositoryRule = {
   [K in keyof RepoSearchWithBranch]: RepoSearchWithBranch[K] | null;
+} & {
+  type: RepositoryNotifactionType;
 };
 
 export type Owned = {
@@ -15,3 +19,8 @@ export type Notifier = WithTimestamps &
     exclude: RepositoryRule[];
     discordWebhooks: string[];
   };
+
+export const REPOSITORY_NOTIFACTION_TYPES: RepositoryNotifactionType[] = [
+  "release",
+  "prerelease",
+];
