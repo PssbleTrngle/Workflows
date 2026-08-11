@@ -17,7 +17,7 @@ function extractTypedParts(key: TypedNotifactionKey) {
     const { owner, repo } = key.subject;
     return [owner, repo, key.conclusion].filter(notNull);
   }
-  
+
   if (key.type === "prerelease") {
     const { owner, repo } = key.subject;
     return [owner, repo, "prerelease"];
