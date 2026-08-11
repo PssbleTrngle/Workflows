@@ -2,7 +2,7 @@ import { notNull } from "@pssbletrngle/workflows-shared/util";
 import type { RepoSearch } from "@pssbletrngle/workflows-types";
 
 export type ReleaseNotifaction = {
-  type: "release";
+  type: "release" | "prerelease";
   conclusion?: string;
   subject: RepoSearch;
 };
@@ -15,6 +15,11 @@ function extractTypedParts(key: TypedNotifactionKey) {
   if (key.type === "release") {
     const { owner, repo } = key.subject;
     return [owner, repo, key.conclusion].filter(notNull);
+  }
+  
+  if (key.type === "prerelease") {
+    const { owner, repo } = key.subject;
+    return [owner, repo, "prerelease"];
   }
 
   throw new Error("unknown notifaction key");
