@@ -1,3 +1,4 @@
+import type { components } from "@octokit/openapi-types";
 import type { WebhookEventDefinition } from "@octokit/webhooks/types";
 import {
   ButtonStyle,
@@ -30,6 +31,8 @@ function conclusionColor(
 
 const moduleMetadataSchema = z.object({
   tag: z.string().nonempty(),
+  preRelease: z.boolean().default(false).optional(),
+  mavenUrl: z.string().nonempty().optional(),
   modrinthUrl: z.string().nonempty().optional(),
   curseforgeUrl: z.string().nonempty().optional(),
 });
@@ -71,22 +74,29 @@ type ModuleReleaseAttributes = {
   key?: string;
 } & z.infer<typeof moduleMetadataSchema>;
 
-async function fetchAttributes(
+type Artifacts = components["schemas"]["artifact"][];
+
+async function fetchReleaseArtifacts(
   octokit: Octokit,
   subject: RepoSearch,
   runId: number,
-): Promise<ModuleReleaseAttributes[]> {
+): Promise<Artifacts> {
   const { data } = await octokit.rest.actions.listWorkflowRunArtifacts({
     ...subject,
     run_id: runId,
   });
 
-  const files = data.artifacts
+  return data.artifacts
     .filter((it) => !it.expired)
     .filter((it) => it.name === "release.json");
+}
 
+async function fetchReleaseAttributes(
+  octokit: Octokit,
+  artifacts: Artifacts,
+): Promise<ModuleReleaseAttributes[]> {
   const attributes = await Promise.all(
-    files.map(async (it) => {
+    artifacts.map(async (it) => {
       const { data } = await octokit.request(it.archive_download_url);
       return releaseMetadataSchema.parse(data);
     }),
@@ -112,21 +122,29 @@ export function registerActionsHooks(hooks: App["webhooks"]) {
   hooks.on("workflow_run.completed", async ({ payload, octokit }) => {
     const { workflow_run, repository } = payload;
 
-    function isReleaseWorkflows() {
-      const name = workflow_run.name ?? parsePath(workflow_run.path).name;
-      return name.toLowerCase() === "release";
-    }
-
-    if (workflow_run.conclusion === "skipped") return;
-    if (!isReleaseWorkflows()) return;
-
     const subject: RepoSearch = {
       owner: repository.owner.login,
       repo: repository.name,
     };
 
+    const artifacts = await fetchReleaseArtifacts(
+      octokit,
+      subject,
+      workflow_run.id,
+    );
+
+    function isReleaseWorkflows() {
+      if (artifacts.length > 0) return true;
+      const name = workflow_run.name ?? parsePath(workflow_run.path).name;
+      return name.toLowerCase() === "release";
+    }
+
+    if (workflow_run.conclusion === "skipped") return;
+    if (workflow_run.conclusion === "cancelled") return;
+    if (!isReleaseWorkflows()) return;
+
     const [attributes, icon] = await Promise.all([
-      fetchAttributes(octokit, subject, workflow_run.id),
+      fetchReleaseAttributes(octokit, artifacts),
       getIcon(subject),
     ]);
 
@@ -140,15 +158,27 @@ export function registerActionsHooks(hooks: App["webhooks"]) {
 
     const grouped = Object.groupBy(attributes, (it) => it.tag);
 
+    const icon_url = icon ?? repository.owner.avatar_url;
+
+    const author = {
+      name: repository.name,
+      icon_url,
+    };
+
     for (const [tag, modules = []] of Object.entries(grouped)) {
+      const releases = modules.filter((it) => !it.preRelease);
+      const preReleases = modules.filter((it) => it.preRelease);
+
+      if (releases.length > 0) await sendReleaseNotifaction(tag, releases);
+      if (preReleases.length > 0)
+        await sendPreReleaseNotifaction(tag, preReleases);
+    }
+
+    async function sendReleaseNotifaction(
+      tag: string,
+      modules: ModuleReleaseAttributes[],
+    ) {
       const color = conclusionColor(workflow_run.conclusion);
-
-      const icon_url = icon ?? repository.owner.avatar_url;
-
-      const author = {
-        name: repository.name,
-        icon_url,
-      };
 
       const key: ReleaseNotifaction = {
         type: "release",
@@ -157,35 +187,6 @@ export function registerActionsHooks(hooks: App["webhooks"]) {
       };
 
       if (workflow_run.conclusion === "success") {
-        const buttonBars = modules.map(
-          ({ key, modrinthUrl, curseforgeUrl }) => {
-            const buttons: Button[] = [];
-
-            const distinctKey = modules.length > 1 ? key : null;
-            const label = ["Download", distinctKey].filter(notNull).join(" ");
-
-            if (modrinthUrl) {
-              buttons.push({
-                label: `${label} from Modrinth`,
-                style: ButtonStyle.Link,
-                url: modrinthUrl,
-                emoji: { id: "1040805511538421890" },
-              });
-            }
-
-            if (curseforgeUrl) {
-              buttons.push({
-                label: `${label} from CurseForge`,
-                style: ButtonStyle.Link,
-                url: curseforgeUrl,
-                emoji: { id: "1249535868365180948" },
-              });
-            }
-
-            return buttons;
-          },
-        );
-
         const tagCandidates: string[] = [tag];
         if (workflow_run.head_branch && workflow_run.event === "release")
           tagCandidates.push(workflow_run.head_branch);
@@ -206,7 +207,7 @@ export function registerActionsHooks(hooks: App["webhooks"]) {
             color,
             url,
           },
-          buttonBars,
+          buildDownloadButtons(modules),
         );
       } else {
         await notifications.sendEmbeds(key, {
@@ -216,6 +217,71 @@ export function registerActionsHooks(hooks: App["webhooks"]) {
           url: workflow_run.html_url,
         });
       }
+    }
+
+    async function sendPreReleaseNotifaction(
+      tag: string,
+      modules: ModuleReleaseAttributes[],
+    ) {
+      if (workflow_run.conclusion !== "success") return;
+
+      const withDownload = modules.filter((it) => it.mavenUrl);
+      if (withDownload.length === 0) return;
+
+      const key: ReleaseNotifaction = {
+        type: "prerelease",
+        conclusion: workflow_run.conclusion ?? undefined,
+        subject,
+      };
+
+      await notifications.sendEmbeds(
+        key,
+        {
+          author,
+          title: `Pre-Release ${tag}`,
+          color: 0xc038ff,
+        },
+        buildDownloadButtons(modules),
+      );
+    }
+
+    function buildDownloadButtons(modules: ModuleReleaseAttributes[]) {
+      return modules.map(
+        ({ key, modrinthUrl, curseforgeUrl, mavenUrl, preRelease }) => {
+          const buttons: Button[] = [];
+
+          const distinctKey = modules.length > 1 ? key : null;
+          const label = ["Download", distinctKey].filter(notNull).join(" ");
+
+          if (modrinthUrl) {
+            buttons.push({
+              label: `${label} from Modrinth`,
+              style: ButtonStyle.Link,
+              url: modrinthUrl,
+              emoji: { id: "1040805511538421890" },
+            });
+          }
+
+          if (curseforgeUrl) {
+            buttons.push({
+              label: `${label} from CurseForge`,
+              style: ButtonStyle.Link,
+              url: curseforgeUrl,
+              emoji: { id: "1249535868365180948" },
+            });
+          }
+
+          if (preRelease && mavenUrl) {
+            buttons.push({
+              label: `${label} from Maven`,
+              style: ButtonStyle.Link,
+              url: mavenUrl,
+            });
+          }
+
+          return buttons;
+        },
+      );
     }
   });
 }
