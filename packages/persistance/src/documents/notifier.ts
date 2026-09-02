@@ -6,8 +6,8 @@ import mongoose, { type SchemaDefinition } from "mongoose";
 
 const ruleSchema: SchemaDefinition<RepositoryRule> = {
   branch: { type: String },
-  owner: { type: String },
-  repo: { type: String },
+  owner: { type: String, lowercase: true },
+  repo: { type: String, lowercase: true },
   type: { type: String, default: "release" },
 };
 

@@ -79,11 +79,17 @@ export class NotifierRepository {
     type: RepositoryNotifactionType,
   ): Promise<Notifier[]> {
     const filters: QueryFilter<Notifier>[] = [];
-    filters.push({ "rules.owner": { $in: [subject.owner, null] } });
-    filters.push({ "rules.repo": { $in: [subject.repo, null] } });
+    filters.push({
+      "rules.owner": { $in: [subject.owner.toLowerCase(), null] },
+    });
+    filters.push({ "rules.repo": { $in: [subject.repo.toLowerCase(), null] } });
     filters.push({ "rules.type": { $in: [type] } });
-    filters.push({ "exclude.owner": { $not: { $eq: subject.owner } } });
-    filters.push({ "exclude.repo": { $not: { $eq: subject.repo } } });
+    filters.push({
+      "exclude.owner": { $not: { $eq: subject.owner.toLowerCase() } },
+    });
+    filters.push({
+      "exclude.repo": { $not: { $eq: subject.repo.toLowerCase() } },
+    });
     filters.push({ "exclude.type": { $not: { $eq: type } } });
     return await Notifiers.find({ $and: filters }, undefined);
   }

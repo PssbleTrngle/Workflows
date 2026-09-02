@@ -42,6 +42,8 @@ export async function createNotifications({
       if (hook) found.add(hook);
     }
 
+    logger.debug(`found ${found.size} matching webhooks`);
+
     return [...found.values()];
   }
 

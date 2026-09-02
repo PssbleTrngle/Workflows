@@ -10,6 +10,7 @@ import type { RepoSearch } from "@pssbletrngle/workflows-types";
 import { parse as parsePath } from "node:path";
 import { type App, type Octokit } from "octokit";
 import z from "zod";
+import logger from "./logger";
 import { Respositories } from "./metadata/database";
 import notifications from "./notifications";
 
@@ -143,6 +144,8 @@ export function registerActionsHooks(hooks: App["webhooks"]) {
     if (workflow_run.conclusion === "cancelled") return;
     if (!isReleaseWorkflows()) return;
 
+    logger.debug("received event for finished release workflow");
+
     const [attributes, icon] = await Promise.all([
       fetchReleaseAttributes(octokit, artifacts),
       getIcon(subject),
@@ -178,6 +181,8 @@ export function registerActionsHooks(hooks: App["webhooks"]) {
       tag: string,
       modules: ModuleReleaseAttributes[],
     ) {
+      logger.info("sending release notification", { ...subject, tag });
+
       const color = conclusionColor(workflow_run.conclusion);
 
       const key: ReleaseNotifaction = {
@@ -224,6 +229,8 @@ export function registerActionsHooks(hooks: App["webhooks"]) {
       modules: ModuleReleaseAttributes[],
     ) {
       if (workflow_run.conclusion !== "success") return;
+
+      logger.info("sending prerelease notification", { ...subject, tag });
 
       const withDownload = modules.filter((it) => it.mavenUrl);
       if (withDownload.length === 0) return;
