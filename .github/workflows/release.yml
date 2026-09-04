@@ -40,7 +40,7 @@ jobs:
 
          - name: Extract metadata (tags, labels) for Docker
            id: meta
-           uses: docker/metadata-action@v5
+           uses: docker/metadata-action@v6
            with:
               images: ${{ env.REGISTRY }}/${{ env.GITHUB_REPO }}-${{ matrix.app }}
               tags: |
@@ -58,7 +58,7 @@ jobs:
               GIT_COMMIT_SHA: ${{ github.sha }}
 
          - name: Build and push Docker image
-           uses: docker/build-push-action@v6
+           uses: docker/build-push-action@v7
            with:
               context: .
               file: apps/${{ matrix.app }}/Dockerfile
