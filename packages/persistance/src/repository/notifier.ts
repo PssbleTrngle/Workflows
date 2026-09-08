@@ -90,7 +90,8 @@ export class NotifierRepository {
     filters.push({
       "exclude.repo": { $not: { $eq: subject.repo.toLowerCase() } },
     });
-    filters.push({ "exclude.type": { $not: { $eq: type } } });
+    // TODO this needs to be gone or optional and in general should be a list
+    // filters.push({ "exclude.type": { $not: { $eq: type } } });
     return await Notifiers.find({ $and: filters }, undefined);
   }
 
