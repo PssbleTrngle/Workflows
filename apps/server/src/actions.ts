@@ -248,7 +248,7 @@ export function registerActionsHooks(hooks: App["webhooks"]) {
           title: `Pre-Release ${tag}`,
           color: 0xc038ff,
         },
-        buildDownloadButtons(modules),
+        buildDownloadButtons(withDownload),
       );
     }
 
