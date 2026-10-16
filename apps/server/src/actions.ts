@@ -207,7 +207,7 @@ export function registerActionsHooks(hooks: App["webhooks"]) {
           key,
           {
             author,
-            title: `Released ${tag}`,
+            title: `Released ${release?.name ?? tag}`,
             description: release?.body ?? undefined,
             color,
             url,
@@ -246,6 +246,7 @@ export function registerActionsHooks(hooks: App["webhooks"]) {
         {
           author,
           title: `Pre-Release ${tag}`,
+          description: workflow_run.head_commit.message,
           color: 0xc038ff,
         },
         buildDownloadButtons(withDownload),
