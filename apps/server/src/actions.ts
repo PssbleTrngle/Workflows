@@ -36,6 +36,7 @@ const moduleMetadataSchema = z.object({
   mavenUrl: z.string().nonempty().optional(),
   modrinthUrl: z.string().nonempty().optional(),
   curseforgeUrl: z.string().nonempty().optional(),
+  changelog: z.string().nonempty().optional(),
 });
 
 const releaseMetadataSchema = z.record(
@@ -208,7 +209,7 @@ export function registerActionsHooks(hooks: App["webhooks"]) {
           {
             author,
             title: `Released ${release?.name ?? tag}`,
-            description: release?.body ?? undefined,
+            description: release?.body ?? modules[0]?.changelog,
             color,
             url,
           },
@@ -246,7 +247,7 @@ export function registerActionsHooks(hooks: App["webhooks"]) {
         {
           author,
           title: `Pre-Release ${tag}`,
-          description: workflow_run.head_commit.message,
+          description: modules[0]?.changelog ?? workflow_run.head_commit.message,
           color: 0xc038ff,
         },
         buildDownloadButtons(withDownload),
