@@ -14,7 +14,7 @@
     "@pssbletrngle/workflows-shared": "workspace:*",
     "@pssbletrngle/workflows-types": "workspace:*",
     "@types/bun": "latest",
-    "mongoose": "^9.4.1"
+    "mongoose": "^9.8.0"
   },
   "peerDependencies": {
     "typescript": "^5"
