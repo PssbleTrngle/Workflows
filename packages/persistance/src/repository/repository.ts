@@ -45,11 +45,11 @@ export class RepositoryRepository extends MongoRepository<Repository> {
   }
 
   async update(
-    subject: RepoSearch,
+    { owner, repo }: RepoSearch,
     values: Omit<Partial<Repository>, "branches" | keyof WithTimestamps>,
   ) {
-    await Repositories.updateOne(subject, values, { upsert: true });
-    this.events?.sendRepositoryUpdate(subject);
+    await Repositories.updateOne({ owner, repo }, values, { upsert: true });
+    this.events?.sendRepositoryUpdate({ owner, repo });
   }
 
   async addViewer(subject: RepoSearch, userId: string) {
