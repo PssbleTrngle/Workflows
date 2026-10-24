@@ -247,7 +247,8 @@ export function registerActionsHooks(hooks: App["webhooks"]) {
         {
           author,
           title: `Pre-Release ${tag}`,
-          description: modules[0]?.changelog ?? workflow_run.head_commit.message,
+          description:
+            modules[0]?.changelog ?? workflow_run.head_commit.message,
           color: 0xc038ff,
         },
         buildDownloadButtons(withDownload),
